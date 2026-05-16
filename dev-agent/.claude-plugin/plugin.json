@@ -1,7 +1,7 @@
 {
   "name": "dev-agent-runtime",
   "description": "Dev Agent runtime for idea, spec, design, build, optional QA, and optional ship workflows.",
-  "version": "0.6.0",
+  "version": "0.10.0",
   "author": {
     "name": "Kevin KE / laoke.ai"
   },
@@ -12,6 +12,7 @@
     "./agents/code-reviewer.md",
     "./agents/product-designer.md",
     "./agents/security-auditor.md",
+    "./agents/technical-steward.md",
     "./agents/test-engineer.md",
     "./agents/ui-quality-reviewer.md"
   ]

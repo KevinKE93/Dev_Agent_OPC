@@ -168,6 +168,8 @@ bin/dev-flow command dev >/dev/null
 bin/dev-flow command dev-agent >/dev/null
 bin/dev-flow agent code-reviewer >/dev/null
 bin/dev-flow agent opc-code-reviewer >/dev/null
+bin/dev-flow agent technical-steward >/dev/null
+bin/dev-flow agent opc-technical-steward >/dev/null
 bin/dev-flow command figma-design >/dev/null
 bin/dev-flow command figma-library >/dev/null
 bin/dev-flow command design >/dev/null
@@ -181,6 +183,7 @@ grep -q '"stableId": "dev-agent"' dev-agent/dev-agent.manifest.json
 grep -q '"userVisibleEntry": "/dev agent"' dev-agent/dev-agent.manifest.json
 grep -q '"/dev-agent"' dev-agent/dev-agent.manifest.json
 grep -q '"roles"' dev-agent/dev-agent.manifest.json
+grep -q '"technical-steward"' dev-agent/dev-agent.manifest.json
 grep -q '"gates"' dev-agent/dev-agent.manifest.json
 grep -q 'bin/dev-flow is the only execution navigator' AGENTS.md
 grep -q 'bin/dev-flow status <project-name>' AGENTS.md

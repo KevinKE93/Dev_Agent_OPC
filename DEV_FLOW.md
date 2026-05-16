@@ -25,6 +25,9 @@ idea -> spec -> design -> build -> qa -> ship
 `qa` and `ship` are optional unless the user or project applicability requires
 them. Product, agent-contract, planning, testing, and review checks are folded
 into `spec`, `build`, `qa`, and `ship`.
+`technical-steward` is an optional quality role, not a seventh phase. Use it to
+challenge high-risk plans, implementation evidence, too-smooth QA, and release
+readiness before the main host advances.
 
 | Intent | Prompt alias | Native action | Loads |
 |---|---|---|---|
@@ -33,7 +36,7 @@ into `spec`, `build`, `qa`, and `ship`.
 | Design the experience | `Use local flow: design` | `/dev agent flow design` | `design-flow` |
 | Implement a slice | `Use local flow: build` | `/dev agent flow build` | `incremental-implementation` with micro-plan and proof-first checks |
 | Optional QA | `Use local flow: qa` | `/dev agent flow qa` | functional, monkey, visual, and quality review when required |
-| Optional launch | `Use local flow: ship` | `/dev agent flow ship` | `shipping-and-launch` |
+| Optional launch | `Use local flow: ship` | `/dev agent flow ship` | `shipping-and-launch` with technical stewardship when risk warrants it |
 
 Stable native entrypoints:
 

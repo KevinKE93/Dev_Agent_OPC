@@ -91,5 +91,5 @@ When analyzing test coverage:
 ## Composition
 
 - **Invoke directly when:** the user asks for test design, coverage analysis, or a Prove-It test for a specific bug.
-- **Invoke via:** `/dev agent role test-engineer` for a focused test pass, `/dev agent flow build` for proof-first implementation support, `/dev agent flow qa` for optional QA, or `/dev agent flow ship` for release fan-out alongside `code-reviewer` and `security-auditor`.
+- **Invoke via:** `/dev agent role test-engineer` for a focused test pass, `/dev agent flow build` for proof-first implementation support, `/dev agent flow qa` for optional QA, or `/dev agent flow ship` for release fan-out alongside `technical-steward`, `code-reviewer`, and `security-auditor`.
 - **Do not invoke from another persona.** Recommendations to add tests belong in your report; the user or a native command decides when to act on them. See [agents/README.md](README.md).

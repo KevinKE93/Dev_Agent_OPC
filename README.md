@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="#发布日志"><img alt="Version" src="https://img.shields.io/badge/version-v0.7-blue.svg"></a>
+  <a href="#发布日志"><img alt="Version" src="https://img.shields.io/badge/version-v0.10-blue.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green.svg"></a>
   <a href="DEV_FLOW.md"><img alt="Dev Agent Runtime" src="https://img.shields.io/badge/dev--agent-runtime-111827.svg"></a>
   <img alt="Lean Flow" src="https://img.shields.io/badge/lean-flow-f97316.svg">
@@ -109,6 +109,18 @@ bin/dev-flow install claude-code --scope user
 ### 流程管控
 
 - **主阶段**：idea、spec、design、build、qa、ship。
+
+6 大步骤能力索引：
+
+| 步骤 | 作用 | 流程与角色能力 |
+|---|---|---|
+| [Idea](dev-agent/references/lifecycle-flow-capabilities.md#idea-flow) | 把模糊想法收敛成可进入 spec 的问题、方向、范围和归因。 | 查看触发方式、产物、结束 gate 和可用角色 |
+| [Spec](dev-agent/references/lifecycle-flow-capabilities.md#spec-flow) | 输出 PRD 与 buildable SPEC，明确产品、技术、测试、风险和 UI/design 适用性。 | 查看触发方式、产物、结束 gate 和可用角色 |
+| [Design](dev-agent/references/lifecycle-flow-capabilities.md#design-flow) | 为 UI、视觉、品牌、动效和高保真实现生成 build-ready 设计交付。 | 查看触发方式、产物、结束 gate 和可用角色 |
+| [Build](dev-agent/references/lifecycle-flow-capabilities.md#build-flow) | 在项目根目录实现最小可验证 slice，并记录 proof 或 blocker。 | 查看触发方式、产物、结束 gate 和可用角色 |
+| [QA](dev-agent/references/lifecycle-flow-capabilities.md#qa-flow) | 按需执行功能、monkey/exploratory、视觉对比和质量风险检查。 | 查看触发方式、产物、结束 gate 和可用角色 |
+| [Ship](dev-agent/references/lifecycle-flow-capabilities.md#ship-flow) | 按需准备发布证据、回滚方案、监控风险和 GO/NO-GO 决策。 | 查看触发方式、产物、结束 gate 和可用角色 |
+
 - **目录边界**：`.dev-agent/` 存放 spec、design、tasks、reviews 等过程文件；项目根目录存放真实代码、配置和开发产物。
 - **精简职责**：产品/PRD 与 agent contract 归入 Spec；轻量计划和 proof-first 归入 Build；测试与 review 归入 QA/Ship。
 - **Idea 归因**：idea brief 记录用户明确需求、agent 推断、产品决策和待确认项，避免后续 spec 混淆来源。
@@ -118,11 +130,13 @@ bin/dev-flow install claude-code --scope user
 - **环境边界**：宿主机 SDK、模拟器、MCP、凭证和系统服务记录在 `HOST_REQUIREMENTS.md`，不混入项目 runtime。
 - **自主循环**：`AUTONOMY_LOOP` 默认给出 heartbeat 建议；遇到 blocker、高风险审批或最终阶段已验证时停止。
 - **Subagent 并行**：`SUBAGENTS` 默认给出可并行任务包；host 支持时可把 explorer、worker、verifier 等侧线任务交给子 agent。
+- **技术质量制衡**：`technical-steward` 作为独立技术质量负责人，在高风险方案、证据不足、QA 过顺或发布前挑战架构、实现和验收证据，不新增第 7 阶段。
 - **UI 打磨预算**：runtime visual pass 默认一次；P0/P1 阻塞当前任务，P2/P3 记录到 `UI_DEBT.md` 后继续推进。
 - **QA 开关**：`AUTOMATED_QA="required"` 开启功能/monkey QA；`VISUAL_QA="required"` 开启视觉 QA。
 
 ### 发布日志
 
+- `v0.10`：新增 `technical-steward` 技术质量负责人角色，用于高风险方案、证据不足、QA 过顺和发布前的独立技术质量把关；补充 6 大流程能力索引文档。
 - `v0.9`：新增 HTML/CSS 设计稿实现方式作为正式设计交付标准，提升 UI 还原度、验收效率和代码生成效率；优化未初始化项目的目录创建，避免在项目根目录生成空的过程文件夹。
 - `v0.8`：新项目默认把过程管理文件放在 `.dev-agent/`，开发产出的代码和项目文件保留在项目根目录；`migrate` 可迁移旧 `.dev-flow` / root-level 过程目录。
 - `v0.7`：强化 idea/spec 工作流；idea brief 增加需求归因表；Spec 明确 PRD 与 SPEC 分工、产品域展开清单、外部参考吸收规则，并为 UI 项目增加最小 spec 覆盖门禁。
@@ -211,6 +225,18 @@ bin/dev-flow install claude-code --scope user
 ### Process Controls
 
 - **Primary phases**: idea, spec, design, build, qa, ship.
+
+Six-step capability index:
+
+| Step | Purpose | Flow And Role Capabilities |
+|---|---|---|
+| [Idea](dev-agent/references/lifecycle-flow-capabilities.md#idea-flow) | Turn a rough idea into a spec-ready problem, direction, scope, and attribution brief. | View triggers, outputs, completion gates, and available roles |
+| [Spec](dev-agent/references/lifecycle-flow-capabilities.md#spec-flow) | Produce PRD and buildable SPEC across product, technical, test, risk, and UI/design applicability. | View triggers, outputs, completion gates, and available roles |
+| [Design](dev-agent/references/lifecycle-flow-capabilities.md#design-flow) | Produce build-ready design handoff for UI, visual direction, brand, motion, and high-fidelity implementation. | View triggers, outputs, completion gates, and available roles |
+| [Build](dev-agent/references/lifecycle-flow-capabilities.md#build-flow) | Implement the smallest verified source slice in the project root and record proof or blockers. | View triggers, outputs, completion gates, and available roles |
+| [QA](dev-agent/references/lifecycle-flow-capabilities.md#qa-flow) | Run optional functional, monkey/exploratory, visual comparison, and quality-risk checks. | View triggers, outputs, completion gates, and available roles |
+| [Ship](dev-agent/references/lifecycle-flow-capabilities.md#ship-flow) | Prepare optional release evidence, rollback, monitoring risk, and GO/NO-GO decision. | View triggers, outputs, completion gates, and available roles |
+
 - **Directory boundary**: `.dev-agent/` stores process files such as specs, design, tasks, and reviews; the project root stores real code, config, and development output.
 - **Lean responsibilities**: product/PRD and agent contracts live in Spec; micro-planning and proof-first checks live in Build; testing and review live in QA/Ship.
 - **Idea attribution**: idea briefs record user-stated needs, agent inferences, product decisions, and open confirmations so later specs do not blur source boundaries.
@@ -220,11 +246,13 @@ bin/dev-flow install claude-code --scope user
 - **Environment boundary**: host SDKs, simulators, MCP servers, credentials, and services are recorded in `HOST_REQUIREMENTS.md` instead of project runtime output.
 - **Autonomy loop**: `AUTONOMY_LOOP` suggests heartbeat continuation by default, and stops on blockers, high-risk approval, or verified final phases.
 - **Subagent parallelism**: `SUBAGENTS` suggests optional task packets so host clients can delegate explorer, worker, and verifier work when supported.
+- **Technical quality challenge**: `technical-steward` acts as an independent quality steward for high-risk plans, thin evidence, too-smooth QA, or release readiness; it challenges architecture, implementation, and evidence without adding a seventh phase.
 - **UI polish budget**: runtime visual passes default to one; P0/P1 blocks the task, while P2/P3 goes to `UI_DEBT.md` and work advances.
 - **QA switches**: `AUTOMATED_QA="required"` enables functional/monkey QA; `VISUAL_QA="required"` enables visual QA.
 
 ### Release Notes
 
+- `v0.10`: Adds the `technical-steward` role for independent technical quality sign-off on high-risk plans, thin evidence, too-smooth QA, and release readiness; adds the six-step flow capability index.
 - `v0.9`: Adds HTML/CSS design packages as the formal design handoff format to improve UI fidelity, review efficiency, and code-generation efficiency; fixes directory creation for uninitialized projects so empty process folders are not created at the project root.
 - `v0.8`: Defaults process-management files to `.dev-agent/` while keeping development output and source files at the project root; `migrate` can move old `.dev-flow` and root-level process directories.
 - `v0.7`: Strengthens the idea/spec workflow; adds requirement attribution to idea briefs; clarifies PRD/SPEC ownership, product-domain expansion, external-reference absorption, and minimum UI spec coverage gates.

@@ -16,4 +16,4 @@ Before coding, decide whether the build is ready:
 5. Micro-plan/prove when useful, then implement the smallest focused slice.
 6. Run checks, record `.dev-agent/reviews/VERIFICATION.md` or `BLOCKED_BUILD.md`, then `verify-phase build`.
 
-If the implementation stalls or fails, invoke `debugging-and-error-recovery`.
+If implementation stalls, use `debugging-and-error-recovery`; if quality risk is high or evidence is thin, use `technical-steward` before delivery.

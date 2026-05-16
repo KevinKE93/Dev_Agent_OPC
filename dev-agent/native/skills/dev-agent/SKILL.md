@@ -43,9 +43,9 @@ Focused auxiliary flows include `figma-design`, `figma-library`, `debug`, `ui`,
 `api`, `security`, and `code-simplify`.
 
 Supported roles are `code-reviewer`, `product-designer`, `security-auditor`,
-`test-engineer`, and `ui-quality-reviewer`. Invoke roles only on explicit user
-request or when the current risk needs that specialist view; lifecycle phases do
-not auto-require personas.
+`technical-steward`, `test-engineer`, and `ui-quality-reviewer`. Invoke roles
+only on explicit user request or when the current risk needs that specialist
+view; lifecycle phases do not auto-require personas.
 
 When command snippets are unavailable, locate the installed runtime in one of:
 

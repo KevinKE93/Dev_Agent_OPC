@@ -23,7 +23,7 @@ Usage:
   bin/dev-flow show <alias-or-skill>
   bin/dev-flow path <alias-or-skill>
   bin/dev-flow command <dev|dev-agent|idea|spec|design|figma-design|figma-library|build|qa|ship|debug|ui|api|security|code-simplify>
-  bin/dev-flow agent <code-reviewer|product-designer|test-engineer|security-auditor|ui-quality-reviewer>
+  bin/dev-flow agent <code-reviewer|product-designer|technical-steward|test-engineer|security-auditor|ui-quality-reviewer>
   bin/dev-flow refs
   bin/dev-flow install <codex|claude-code|gemini|openclaw|opencode> [--scope project|user] [--dest path] [--mode native|full]
   bin/dev-flow uninstall <codex|claude-code|gemini|openclaw|opencode> [--scope project|user] [--dest path]
@@ -3720,6 +3720,7 @@ persona_name() {
     opc-code-reviewer) echo "code-reviewer" ;;
     opc-product-designer) echo "product-designer" ;;
     opc-security-auditor) echo "security-auditor" ;;
+    opc-technical-steward) echo "technical-steward" ;;
     opc-test-engineer) echo "test-engineer" ;;
     opc-ui-quality-reviewer) echo "ui-quality-reviewer" ;;
     *) echo "${1:-}" ;;

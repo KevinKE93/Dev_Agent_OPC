@@ -24,6 +24,7 @@ user → code-reviewer → report → user
 
 **Examples:**
 - "Review this PR" → `code-reviewer`
+- "Challenge this technical plan before build" → `technical-steward`
 - "Find security issues in `auth.ts`" → `security-auditor`
 - "What tests are missing for the checkout flow?" → `test-engineer`
 
@@ -41,7 +42,7 @@ A native command that wraps one focused workflow or role with the project's skil
 
 **Use when:** the same single-persona invocation happens repeatedly with the same setup.
 
-**Examples in this repo:** `/dev agent role code-reviewer`, `/dev agent role test-engineer`, `/dev agent flow code-simplify`.
+**Examples in this repo:** `/dev agent role code-reviewer`, `/dev agent role technical-steward`, `/dev agent role test-engineer`, `/dev agent flow code-simplify`.
 
 **Cost:** same as direct invocation. The native command is just a saved prompt.
 
@@ -54,9 +55,10 @@ A native command that wraps one focused workflow or role with the project's skil
 Multiple personas operate on the same input concurrently, each producing an independent report. A merge step (in the main agent's context) synthesizes them into a single decision.
 
 ```
-                    ┌─→ code-reviewer    ─┐
-/dev agent flow ship ─┼─→ security-auditor ─┤→ merge → go/no-go + rollback
-                    └─→ test-engineer    ─┘
+                    ┌─→ technical-steward ─┐
+                    ├─→ code-reviewer      ┤
+/dev agent flow ship ─┼─→ security-auditor   ┤→ merge → go/no-go + rollback
+                    └─→ test-engineer      ┘
 ```
 
 **Use when:**
@@ -126,9 +128,10 @@ This catalog is harness-agnostic, but most readers will run it on Claude Code. H
 
 Plugin subagents go in `agents/` at the plugin root. Dev Agent OPC keeps optional
 Claude plugin metadata in `.claude-plugin/plugin.json`, so personas such as
-`agents/code-reviewer.md`, `agents/security-auditor.md`, and
-`agents/test-engineer.md` can be auto-discovered when this runtime is enabled as
-a plugin. No path configuration is needed in that mode.
+`agents/code-reviewer.md`, `agents/security-auditor.md`,
+`agents/technical-steward.md`, and `agents/test-engineer.md` can be
+auto-discovered when this runtime is enabled as a plugin. No path configuration
+is needed in that mode.
 
 ### Subagents vs. Agent Teams
 
@@ -165,7 +168,8 @@ Before defining a custom subagent, check whether one of these covers the role:
 | `Plan` | Read-only research during plan mode. |
 | `general-purpose` | Multi-step tasks needing both exploration and modification. |
 
-Don't redefine these. Layer your specialist personas (code-reviewer, security-auditor, test-engineer) on top of them.
+Don't redefine these. Layer your specialist personas (code-reviewer,
+technical-steward, security-auditor, test-engineer) on top of them.
 
 ### Frontmatter restrictions for plugin agents
 

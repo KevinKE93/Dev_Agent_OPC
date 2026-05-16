@@ -47,6 +47,8 @@ Map user intent to the smallest useful flow:
 - Release readiness: `shipping-and-launch`
 
 For APIs or public module boundaries, include `api-and-interface-design`.
+For high-risk plans, thin evidence, too-smooth QA, or release readiness, include
+the `technical-steward` persona as an independent quality challenge.
 
 ## Personas, Skills, And Commands
 
@@ -56,7 +58,7 @@ For APIs or public module boundaries, include `api-and-interface-design`.
 
 Personas do not invoke other personas. Use parallel fan-out only when independent
 reviews can run separately and then be merged by the main agent, such as release
-review across code, security, and test perspectives.
+review across technical stewardship, code, security, and test perspectives.
 
 ## Maintenance Rules
 

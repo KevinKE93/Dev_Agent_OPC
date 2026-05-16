@@ -34,6 +34,8 @@ For APIs or public module boundaries, also load
 work, also load `dev-agent/skills/security-and-hardening/SKILL.md`.
 For production release, remote smoke, or data reset work, also load
 `dev-agent/references/production-data-safety.md`.
+For high-risk architecture, thin evidence, too-smooth QA, or release readiness,
+use `dev-agent/agents/technical-steward.md` as an independent quality challenge.
 
 Do not bury problems in code. If requirements, design assets, host permissions,
 SDKs, or risk boundaries are insufficient, return the issue to the owning flow
@@ -51,6 +53,7 @@ bin/dev-flow show design
 bin/dev-flow command build
 bin/dev-flow command qa
 bin/dev-flow agent product-designer
+bin/dev-flow agent technical-steward
 bin/dev-flow agent ui-quality-reviewer
 bin/dev-flow refs
 

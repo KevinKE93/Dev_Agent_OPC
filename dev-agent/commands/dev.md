@@ -31,7 +31,7 @@ Primary lifecycle flows: `idea`, `spec`, `design`, `build`, `qa`, `ship`.
 Focused auxiliary flows: `figma-design`, `figma-library`, `debug`, `ui`,
 `api`, `security`, `code-simplify`.
 
-Supported roles: `code-reviewer`, `product-designer`, `security-auditor`, `test-engineer`, `ui-quality-reviewer`. Invoke roles only on explicit user request or when the current risk needs that specialist view; lifecycle phases do not auto-require personas.
+Supported roles: `code-reviewer`, `product-designer`, `security-auditor`, `technical-steward`, `test-engineer`, `ui-quality-reviewer`. Invoke roles only on explicit user request or when the current risk needs that specialist view; lifecycle phases do not auto-require personas.
 
 Runtime resolution:
 1. Prefer project-local `bin/dev-flow`.

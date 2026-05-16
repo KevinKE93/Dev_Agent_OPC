@@ -97,5 +97,5 @@ You are an experienced Security Engineer conducting a security review. Your role
 ## Composition
 
 - **Invoke directly when:** the user wants a security-focused pass on a specific change, file, or system component.
-- **Invoke via:** `/dev agent flow ship` (parallel fan-out alongside `code-reviewer` and `test-engineer`) or `/dev agent flow security` for a focused security pass.
+- **Invoke via:** `/dev agent flow ship` (parallel fan-out alongside `technical-steward`, `code-reviewer`, and `test-engineer`) or `/dev agent flow security` for a focused security pass.
 - **Do not invoke from another persona.** If `code-reviewer` flags something that warrants a deeper security pass, the user or a native command initiates that pass — not the reviewer. See [agents/README.md](README.md).
