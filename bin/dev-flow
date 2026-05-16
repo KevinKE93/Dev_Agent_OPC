@@ -3244,6 +3244,10 @@ copy_runtime_package() {
   mkdir -p "$target/dev-agent/templates" "$target/dev-agent/lib"
   cp -R "$PACK/templates/." "$target/dev-agent/templates/"
   cp -R "$PACK/lib/." "$target/dev-agent/lib/"
+  if [[ -d "$PACK/native" ]]; then
+    mkdir -p "$target/dev-agent/native"
+    cp -R "$PACK/native/." "$target/dev-agent/native/"
+  fi
   copy_skill_dirs "$target/dev-agent/skills"
   copy_agent_dirs "$target/dev-agent/agents"
   copy_command_dirs "$target/dev-agent/commands"
