@@ -3248,6 +3248,12 @@ copy_runtime_package() {
     mkdir -p "$target/dev-agent/native"
     cp -R "$PACK/native/." "$target/dev-agent/native/"
   fi
+  for adapter_dir in .claude .gemini .claude-plugin; do
+    if [[ -d "$PACK/$adapter_dir" ]]; then
+      mkdir -p "$target/dev-agent/$adapter_dir"
+      cp -R "$PACK/$adapter_dir/." "$target/dev-agent/$adapter_dir/"
+    fi
+  done
   copy_skill_dirs "$target/dev-agent/skills"
   copy_agent_dirs "$target/dev-agent/agents"
   copy_command_dirs "$target/dev-agent/commands"
