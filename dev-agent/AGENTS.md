@@ -42,7 +42,7 @@ Map user intent to the smallest useful flow:
 - Customer-facing UI, visual direction, references, or screen acceptance: `design-flow`
 - Build slices, lightweight task slicing, and local proof: `incremental-implementation`
 - Debugging or unexpected behavior: `debugging-and-error-recovery`
-- UI implementation, optional QA, and quality review: `frontend-ui-engineering`
+- UI implementation, optional Acceptance QA, and quality review: `frontend-ui-engineering`
 - Security-sensitive work: `security-and-hardening`
 - Release readiness: `shipping-and-launch`
 

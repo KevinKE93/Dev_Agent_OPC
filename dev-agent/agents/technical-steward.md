@@ -44,8 +44,8 @@ Read only what is needed for the decision:
 - Design handoff and `SCREEN_ACCEPTANCE.md` when UI applies.
 - Current implementation diff, source boundaries, and project conventions.
 - `VERIFICATION.md`, `FUNCTIONAL_TEST.md`, `MONKEY_TEST.md`,
-  `VISUAL_COMPARISON.md`, `BLOCKED_BUILD.md`, `UI_DEBT.md`, and launch evidence
-  when present.
+  `ACCEPTANCE_QA.html`, `VISUAL_COMPARISON.md`, `BLOCKED_BUILD.md`,
+  `UI_DEBT.md`, and launch evidence when present.
 - Prior persona reports when the review is part of QA or Ship.
 
 ## Output Format

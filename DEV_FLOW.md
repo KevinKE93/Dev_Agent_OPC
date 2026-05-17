@@ -35,7 +35,7 @@ readiness before the main host advances.
 | Write PRD + buildable spec | `Use local flow: spec` | `/dev agent flow spec` | `spec-driven-development` with agent contract when needed |
 | Design the experience | `Use local flow: design` | `/dev agent flow design` | `design-flow` |
 | Implement a slice | `Use local flow: build` | `/dev agent flow build` | `incremental-implementation` with micro-plan and proof-first checks |
-| Optional QA | `Use local flow: qa` | `/dev agent flow qa` | functional, monkey, visual, and quality review when required |
+| Optional QA | `Use local flow: qa` | `/dev agent flow qa` | acceptance, monkey, visual, and quality review when required |
 | Optional launch | `Use local flow: ship` | `/dev agent flow ship` | `shipping-and-launch` with technical stewardship when risk warrants it |
 
 Stable native entrypoints:
@@ -158,10 +158,11 @@ VISUAL_QA="required"
 ```
 
 in `<project-name>/.dev-agent/state/applicability.env`, or run it when the user
-asks. Automated QA records `.dev-agent/reviews/FUNCTIONAL_TEST.md` and
-`.dev-agent/reviews/MONKEY_TEST.md`; visual QA records `.dev-agent/reviews/VISUAL_COMPARISON.md` with
-`Overall score: N/100`. Runtime screenshots are required only for exceptions,
-blocked flows, or explicit user requests.
+asks. Automated QA records `.dev-agent/reviews/FUNCTIONAL_TEST.md`,
+`.dev-agent/reviews/MONKEY_TEST.md`, and `.dev-agent/reviews/ACCEPTANCE_QA.html`;
+visual QA records `.dev-agent/reviews/VISUAL_COMPARISON.md` with `Overall score:
+N/100`. Runtime screenshots are required only for exceptions, blocked flows, or
+explicit user requests.
 
 Do not enter QA automatically after each build slice. Run QA after the overall
 requested implementation is complete, when these flags require it, or when the
@@ -184,7 +185,7 @@ reference for release verification and destructive data reset decisions.
 | Spec | `.dev-agent/product/PRD.md`, `.dev-agent/specs/SPEC.md` |
 | Design, when UI applies | `.dev-agent/design/DESIGN.md`, `VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`, `DESIGN_ARTIFACTS.md`, design contract inputs when required |
 | Build | source under the project root, `.dev-agent/reviews/VERIFICATION.md` or `.dev-agent/reviews/BLOCKED_BUILD.md`, UI implementation trace when UI applies, optional autonomy/delegation logs, `.dev-agent/reviews/UI_DEBT.md` when polish remains |
-| QA, when required | `.dev-agent/reviews/FUNCTIONAL_TEST.md`, `MONKEY_TEST.md`, `VISUAL_COMPARISON.md` as applicable |
+| QA, when required | `.dev-agent/reviews/FUNCTIONAL_TEST.md`, `MONKEY_TEST.md`, `ACCEPTANCE_QA.html`, `VISUAL_COMPARISON.md` as applicable |
 | Ship, when requested | `.dev-agent/ship/LAUNCH.md` with risk, rollback, and GO/NO-GO |
 
 Only stop for human review at requirement confirmation, customer-facing visual

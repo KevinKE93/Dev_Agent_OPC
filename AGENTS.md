@@ -24,7 +24,7 @@ Use this lean lifecycle for non-trivial product or engineering work:
 2. Spec: `dev-agent/skills/spec-driven-development/SKILL.md`; write PRD, scope, stories, metrics, technical spec, and agent runtime contract when needed
 3. Design: `dev-agent/skills/design-flow/SKILL.md` when customer-facing UX or visual direction matters
 4. Build: `dev-agent/skills/incremental-implementation/SKILL.md`; include lightweight task slicing and proof-first verification inside build
-5. QA: optional; use functional/monkey/visual QA only when the project or user requires it
+5. QA: optional; use acceptance/monkey/visual QA only when the project or user requires it
 6. Ship: optional; use `dev-agent/skills/shipping-and-launch/SKILL.md` only for release/go-no-go work
 
 For debugging, load `dev-agent/skills/debugging-and-error-recovery/SKILL.md`.
@@ -134,10 +134,11 @@ missing, return to design/spec instead of guessing.
 
 QA is optional by default. Enable it by setting `AUTOMATED_QA="required"` or
 `VISUAL_QA="required"` in `<project-name>/.dev-agent/state/applicability.env`, or
-run it when the user asks. Automated QA records `.dev-agent/reviews/FUNCTIONAL_TEST.md` and
-`.dev-agent/reviews/MONKEY_TEST.md`; visual QA records `.dev-agent/reviews/VISUAL_COMPARISON.md` with
-`Overall score: N/100`. Runtime screenshots are required only for exceptions,
-blocked flows, or explicit user requests.
+run it when the user asks. Automated QA records `.dev-agent/reviews/FUNCTIONAL_TEST.md`,
+`.dev-agent/reviews/MONKEY_TEST.md`, and `.dev-agent/reviews/ACCEPTANCE_QA.html`;
+visual QA records `.dev-agent/reviews/VISUAL_COMPARISON.md` with `Overall score:
+N/100`. Runtime screenshots are required only for exceptions, blocked flows, or
+explicit user requests.
 
 Production or formal environments must not run write smoke tests. Treat
 production verification as read-only/rejection-only evidence: health checks,
@@ -170,7 +171,7 @@ created inside `.dev-agent/` when `next`, `phase`, or a gate needs that phase.
 - Optional agent notes: `.dev-agent/agent/` for legacy/imported material; canonical agent runtime contract belongs in `.dev-agent/specs/SPEC.md`
 - Design: `.dev-agent/design/DESIGN.md`, `VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`, `DESIGN_ARTIFACTS.md`, `DESIGN_IMAGE_DESCRIPTIONS.md`, `FIGMA_HANDOFF.md`, `.dev-agent/design/approved/`, `.dev-agent/design/cut-assets/`
 - Build planning/evidence: `.dev-agent/tasks/status.md`, `.dev-agent/tasks/quality-gates.md`, `.dev-agent/tasks/IMPLEMENTATION_TRACE.md`, `.dev-agent/tasks/AUTONOMY.md`, `.dev-agent/tasks/DELEGATION.md`, `.dev-agent/tasks/subagents/TEMPLATE.md`, `.dev-agent/reviews/VERIFICATION.md`, `.dev-agent/reviews/BLOCKED_BUILD.md`, `.dev-agent/reviews/UI_DEBT.md`
-- Optional QA: `.dev-agent/reviews/FUNCTIONAL_TEST.md`, `.dev-agent/reviews/MONKEY_TEST.md`, `.dev-agent/reviews/VISUAL_COMPARISON.md`, `.dev-agent/reviews/visual-screenshots/`
+- Optional QA: `.dev-agent/reviews/FUNCTIONAL_TEST.md`, `.dev-agent/reviews/MONKEY_TEST.md`, `.dev-agent/reviews/ACCEPTANCE_QA.html`, `.dev-agent/reviews/VISUAL_COMPARISON.md`, `.dev-agent/reviews/acceptance-screenshots/`, `.dev-agent/reviews/visual-screenshots/`
 - Optional ship: `.dev-agent/ship/LAUNCH.md`
 - Source roots: project-root `src/`, `app/`, `apps/`, `packages/`, or another project-local source directory
 

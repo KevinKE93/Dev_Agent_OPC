@@ -4,13 +4,14 @@ Use this rubric after implementation.
 
 ## Required Evidence
 
-- `reviews/FUNCTIONAL_TEST.md` covers critical happy paths and recovery paths.
-- `reviews/MONKEY_TEST.md` covers random, repeated, invalid, resize, navigation, and stress interactions.
+- `reviews/FUNCTIONAL_TEST.md` covers Acceptance Navigator happy paths and recovery paths.
+- `reviews/MONKEY_TEST.md` covers Monkey Stability Runner random, repeated, invalid, resize, navigation, and stress interactions.
+- `reviews/ACCEPTANCE_QA.html` summarizes automated QA scope, runtime, issues, and decision when Acceptance QA runs.
 - `reviews/VISUAL_COMPARISON.md` compares the implemented UI to approved visual assets, HTML/CSS design packages, cut assets, references, and screen acceptance criteria.
 - `VISUAL_COMPARISON.md` includes a per-screen fidelity matrix covering every `SCREEN_ACCEPTANCE.md` screen.
 - Every fidelity matrix row includes screen, approved asset/package path, runtime surface, fidelity score, decision, and notes.
 - `VISUAL_COMPARISON.md` includes `Overall score: N/100`; the workflow gate expects at least 90/100 for high-fidelity delivery.
-- `reviews/visual-screenshots/` is used only when an exception occurs or a flow cannot be completed.
+- `reviews/acceptance-screenshots/` or `reviews/visual-screenshots/` is used only when an exception occurs or a flow cannot be completed.
 
 ## Blocking Issues
 

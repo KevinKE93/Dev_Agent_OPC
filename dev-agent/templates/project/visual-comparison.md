@@ -9,6 +9,7 @@ Overall score: 0/100
 - Cut assets:
 - Runtime UI surfaces:
 - Exception screenshots, only if a flow was blocked:
+- Acceptance QA report, if automated QA ran: reviews/ACCEPTANCE_QA.html
 
 ## Screen Fidelity Matrix
 | Screen | Approved asset path | Runtime surface | Fidelity score | Decision | Notes |

@@ -1,9 +1,15 @@
 # Monkey Test: {{PROJECT}}
 
-Record random, exploratory, stress, or resilience testing here after implementation.
+Record the Monkey Stability Runner pass here after implementation.
 
 ## Scope
 
-## Events / Inputs
+## Events / Inputs / Timebox
+
+| Area | Events | Signals Watched | Result | Evidence |
+|---|---|---|---|---|
+| TODO | TODO | Crash, blank screen, frozen UI, data loss, severe jank, unhandled error | TODO | TODO |
+
+## Issues Found
 
 ## Result

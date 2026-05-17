@@ -92,4 +92,5 @@ When analyzing test coverage:
 
 - **Invoke directly when:** the user asks for test design, coverage analysis, or a Prove-It test for a specific bug.
 - **Invoke via:** `/dev agent role test-engineer` for a focused test pass, `/dev agent flow build` for proof-first implementation support, `/dev agent flow qa` for optional QA, or `/dev agent flow ship` for release fan-out alongside `technical-steward`, `code-reviewer`, and `security-auditor`.
+- In QA, use `references/acceptance-qa.md` to split deterministic acceptance flow proof from monkey stability evidence, and report gaps in `FUNCTIONAL_TEST.md`, `MONKEY_TEST.md`, or `ACCEPTANCE_QA.html`.
 - **Do not invoke from another persona.** Recommendations to add tests belong in your report; the user or a native command decides when to act on them. See [agents/README.md](README.md).

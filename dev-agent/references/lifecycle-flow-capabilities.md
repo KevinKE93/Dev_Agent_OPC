@@ -26,7 +26,7 @@ gate.
 | [Spec](#spec-flow) | Produce PRD and buildable SPEC | `/dev agent flow spec` | `bin/dev-flow verify-phase <project> spec` | Main host, optional technical/product/security/test judgment |
 | [Design](#design-flow) | Produce build-ready UX and visual handoff | `/dev agent flow design` | `bin/dev-flow design-check <project>` | `product-designer` |
 | [Build](#build-flow) | Implement verified slices in source code | `/dev agent flow build` | `bin/dev-flow verify-phase <project> build` and `bin/dev-flow check <project>` | Main host, optional `technical-steward`/reviewer/test/security roles |
-| [QA](#qa-flow) | Run optional functional, monkey, visual, and quality QA | `/dev agent flow qa` | `bin/dev-flow qa-check <project>` when QA is required | `technical-steward`, `test-engineer`, `ui-quality-reviewer` |
+| [QA](#qa-flow) | Run optional acceptance, monkey, visual, and quality QA | `/dev agent flow qa` | `bin/dev-flow qa-check <project>` when QA is required | `technical-steward`, `test-engineer`, `ui-quality-reviewer` |
 | [Ship](#ship-flow) | Prepare release evidence, rollback, and GO/NO-GO | `/dev agent flow ship` | `bin/dev-flow ship-check <project>` | `technical-steward`, `code-reviewer`, `security-auditor`, `test-engineer` |
 
 <a id="idea-flow"></a>
@@ -254,10 +254,12 @@ gate.
 
 **Owns**
 
-- Optional functional QA, monkey/exploratory QA, visual QA, and quality risk
+- Optional Acceptance QA, monkey/exploratory QA, visual QA, and quality risk
   review after the requested implementation scope is complete.
-- Functional QA covers happy paths and recovery paths from acceptance criteria
-  or `SCREEN_ACCEPTANCE.md`.
+- Acceptance QA uses `acceptance-qa.md` to split deterministic user-flow
+  validation from monkey stability validation.
+- Functional evidence covers happy paths and recovery paths from acceptance
+  criteria or `SCREEN_ACCEPTANCE.md`.
 - Monkey/exploratory QA stresses navigation, repeated actions, invalid inputs,
   resizing, and state changes.
 - Visual QA compares implemented UI against `DESIGN.md`, `VISUAL_SYSTEM.md`,
@@ -270,7 +272,8 @@ gate.
 
 **Triggers**
 
-- `AUTOMATED_QA="required"` enables functional and monkey/exploratory QA.
+- `AUTOMATED_QA="required"` enables Acceptance QA: functional user-flow proof,
+  monkey/exploratory stability proof, and an HTML evidence report.
 - `VISUAL_QA="required"` enables visual comparison QA.
 - The user explicitly asks for QA, visual comparison, extra validation, or
   review evidence.
@@ -278,14 +281,15 @@ gate.
   QA is required by project applicability.
 - Direct native call: `/dev agent flow qa <project-name>`.
 - Local command context: `dev-agent/commands/qa.md` and
-  `dev-agent/references/visual-qa-rubric.md`.
+  `dev-agent/references/acceptance-qa.md` plus
+  `dev-agent/references/visual-qa-rubric.md` when visual QA applies.
 
 **Role capabilities**
 
 - [test-engineer](../agents/test-engineer.md) owns test strategy, coverage
-  analysis, and proof-oriented verification.
+  analysis, Acceptance QA lanes, and proof-oriented verification.
 - [ui-quality-reviewer](../agents/ui-quality-reviewer.md) owns visual
-  comparison scoring, UI functional evidence, monkey evidence, responsive
+  comparison scoring, UI acceptance evidence, monkey evidence, responsive
   review, accessibility, and exception screenshot review.
 - [technical-steward](../agents/technical-steward.md) reviews whether QA
   evidence is strong enough to trust final technical readiness and can send the
@@ -302,7 +306,8 @@ gate.
 - When QA is required, `reviews/VERIFICATION.md` must exist and have substance.
 - If `AUTOMATED_QA` is required:
   `reviews/FUNCTIONAL_TEST.md` and `reviews/MONKEY_TEST.md` must exist and have
-  substance.
+  substance. `reviews/ACCEPTANCE_QA.html` is the human-readable QA evidence
+  report and should be produced with the same pass.
 - If `VISUAL_QA` is required for a UI project:
   `design/DESIGN.md`, `design/VISUAL_SYSTEM.md`,
   `design/SCREEN_ACCEPTANCE.md`, and `reviews/VISUAL_COMPARISON.md` must exist.
@@ -311,8 +316,8 @@ gate.
 - `VISUAL_COMPARISON.md` must include `Compared Inputs`,
   `Screen Fidelity Matrix`, `Score Breakdown`, `Differences`, and `Decision`.
 - If an exception or blocked-flow record exists, screenshot evidence must be
-  under `reviews/visual-screenshots/`, or `reviews/BLOCKED_SCREENSHOT.md` must
-  explain why capture is impossible.
+  under `reviews/acceptance-screenshots/` or `reviews/visual-screenshots/`, or
+  `reviews/BLOCKED_SCREENSHOT.md` must explain why capture is impossible.
 - Main gate commands:
   `bin/dev-flow verify-phase <project-name> qa` and
   `bin/dev-flow qa-check <project-name>`.

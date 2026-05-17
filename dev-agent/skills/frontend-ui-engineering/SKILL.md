@@ -1,6 +1,6 @@
 ---
 name: frontend-ui-engineering
-description: Use when building, modifying, or reviewing user-facing UI, responsive states, accessibility, visual fidelity, functional QA, monkey testing, or product-grade frontend polish.
+description: Use when building, modifying, or reviewing user-facing UI, responsive states, accessibility, visual fidelity, acceptance QA, monkey testing, or product-grade frontend polish.
 ---
 
 # Frontend UI Engineering
@@ -145,24 +145,27 @@ overall requested customer-facing UI scope:
 
 1. Confirm every screen/state in the batch is implemented or marked blocked in
    `tasks/IMPLEMENTATION_TRACE.md`.
-2. Run functional happy-path and recovery-path checks; save
-   `reviews/FUNCTIONAL_TEST.md`.
-3. Run monkey or exploratory checks across navigation, repeated actions,
-   invalid inputs, resizing, and state changes; save `reviews/MONKEY_TEST.md`.
-4. When `VISUAL_QA` is required, compare the UI against the required design
+2. For `AUTOMATED_QA`, use `references/acceptance-qa.md`: run an Acceptance
+   Navigator pass for critical flows and save `reviews/FUNCTIONAL_TEST.md`.
+3. Run a Monkey Stability Runner pass across navigation, repeated actions,
+   invalid inputs, resizing, state changes, and obvious performance risks; save
+   `reviews/MONKEY_TEST.md`.
+4. Summarize both automated QA lanes in `reviews/ACCEPTANCE_QA.html`; if host
+   subagents are available, split the lanes and merge evidence in the main host.
+5. When `VISUAL_QA` is required, compare the UI against the required design
    contract inputs; save `reviews/VISUAL_COMPARISON.md`.
-5. `VISUAL_COMPARISON.md` must include `Overall score: N/100`, per-screen rows
+6. `VISUAL_COMPARISON.md` must include `Overall score: N/100`, per-screen rows
    for every `SCREEN_ACCEPTANCE.md` screen, approved asset path, runtime
    surface, score, decision, differences, and final decision.
-6. Review implementation quality before delivery: correctness, state coverage,
+7. Review implementation quality before delivery: correctness, state coverage,
    accessibility, source boundaries, simplicity, security/privacy impact, and
    performance risk. Use specialist personas only when risk warrants it.
-7. High-fidelity delivery requires at least 90/100 unless the user explicitly
+8. High-fidelity delivery requires at least 90/100 unless the user explicitly
    narrows scope or lowers the bar.
-8. Capture runtime screenshots under `reviews/visual-screenshots/` only when
-   `reviews/EXCEPTION.md` or `reviews/BLOCKED_FLOW.md` records an exception or
-   blocked flow, or when the user explicitly asks for screenshots.
-9. Run `bin/dev-flow qa-check <project-name>` when QA is required.
+9. Capture runtime screenshots under `reviews/acceptance-screenshots/` or
+   `reviews/visual-screenshots/` only when an exception, blocked flow, visible
+   broken UI, or explicit user request requires screenshots.
+10. Run `bin/dev-flow qa-check <project-name>` when QA is required.
 
 Do not enter QA automatically after each build slice. Keep building until the
 requested implementation is complete, then run QA only when required or requested.

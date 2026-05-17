@@ -24,7 +24,7 @@
     { "name": "figma-design", "skill": "figma-use + figma-generate-design", "command": "dev-agent/commands/figma-design.md", "phase": "design", "defaultGate": "bin/dev-flow figma-check <project>" },
     { "name": "figma-library", "skill": "figma-use + figma-generate-library", "command": "dev-agent/commands/figma-library.md", "phase": "design", "defaultGate": "bin/dev-flow figma-check <project>" },
     { "name": "build", "skill": "incremental-implementation with micro-plan and proof-first checklist", "command": "dev-agent/commands/build.md", "phase": "build", "defaultGate": "bin/dev-flow env-check <project> when host-dependent, then bin/dev-flow verify-phase <project> build, then bin/dev-flow check <project>" },
-    { "name": "qa", "skill": "frontend-ui-engineering with optional functional, monkey, visual, and quality review", "command": "dev-agent/commands/qa.md", "phase": "qa", "defaultGate": "bin/dev-flow qa-check <project> when QA is required" },
+    { "name": "qa", "skill": "frontend-ui-engineering with optional acceptance, monkey, visual, and quality review", "command": "dev-agent/commands/qa.md", "phase": "qa", "defaultGate": "bin/dev-flow qa-check <project> when QA is required" },
     { "name": "ship", "skill": "shipping-and-launch", "command": "dev-agent/commands/ship.md", "phase": "ship", "defaultGate": "bin/dev-flow ship-check <project>" },
     { "name": "debug", "skill": "debugging-and-error-recovery", "command": "dev-agent/commands/debug.md", "phase": null, "defaultGate": null },
     { "name": "ui", "skill": "frontend-ui-engineering", "command": "dev-agent/commands/ui.md", "phase": "build", "defaultGate": "bin/dev-flow qa-check <project>" },
@@ -38,7 +38,7 @@
     { "name": "security-auditor", "persona": "security-auditor", "path": "dev-agent/agents/security-auditor.md", "bestFor": "Threat analysis and security-sensitive changes." },
     { "name": "technical-steward", "persona": "technical-steward", "path": "dev-agent/agents/technical-steward.md", "bestFor": "Independent technical quality sign-off, architecture challenge, evidence review, and final readiness." },
     { "name": "test-engineer", "persona": "test-engineer", "path": "dev-agent/agents/test-engineer.md", "bestFor": "Test strategy, gaps, coverage, and verification evidence." },
-    { "name": "ui-quality-reviewer", "persona": "ui-quality-reviewer", "path": "dev-agent/agents/ui-quality-reviewer.md", "bestFor": "Functional QA, monkey testing, and visual comparison review." }
+    { "name": "ui-quality-reviewer", "persona": "ui-quality-reviewer", "path": "dev-agent/agents/ui-quality-reviewer.md", "bestFor": "Acceptance QA, monkey testing, and visual comparison review." }
   ],
   "gates": [
     { "name": "verify-phase", "command": "bin/dev-flow verify-phase <project> <phase>" },

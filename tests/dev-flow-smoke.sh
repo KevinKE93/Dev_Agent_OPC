@@ -190,6 +190,13 @@ grep -q 'bin/dev-flow status <project-name>' AGENTS.md
 grep -q 'bin/dev-flow next <project-name>' AGENTS.md
 grep -q 'Do not start by bulk-reading Markdown' AGENTS.md
 grep -q '唯一执行导航器' README.md
+grep -q 'Acceptance QA' README.md
+grep -q 'dev-agent/references/acceptance-qa.md' dev-agent/commands/qa.md
+grep -q 'dev-agent/references/acceptance-qa.md' dev-agent/.claude/commands/qa.md
+grep -q 'dev-agent/references/acceptance-qa.md' dev-agent/.gemini/commands/qa.toml
+test -f dev-agent/references/acceptance-qa.md
+test -f dev-agent/templates/project/acceptance-qa.html
+bin/dev-flow refs | grep -q 'acceptance-qa.md'
 grep -q 'bin/dev-flow status <project-name>' dev-agent/native/skills/dev-agent/SKILL.md
 grep -q 'bin/dev-flow next <project-name>' dev-agent/native/skills/dev-agent/SKILL.md
 grep -q 'Do not bulk-read Markdown' dev-agent/commands/dev.md
@@ -996,6 +1003,9 @@ fi
 write_file "$DELEGATED/.dev-agent/reviews/VISUAL_COMPARISON.md" \
   "# Visual Comparison" "" "Overall score: 92/100" "" "## Compared Inputs" "- design/approved/onboarding-default.png" "- design/approved/dashboard-empty.png" "## Screen Fidelity Matrix" "| Screen | Approved asset path | Runtime surface | Fidelity score | Decision | Notes |" "|---|---|---|---|---|---|" "| Onboarding | design/approved/onboarding-default.png | apps/web/index.html | 46/50 | pass | Good |" "| Dashboard | design/approved/dashboard-empty.png | apps/web/index.html | 46/50 | pass | Good |" "## Score Breakdown" "- Layout and hierarchy: 18/20" "- Component fidelity: 18/20" "- State coverage: 19/20" "- Responsiveness: 18/20" "- Polish: 19/20" "## Differences" "- None blocking." "## Decision" "Pass."
 bin/dev-flow qa-check "$(basename "$DELEGATED")" >/dev/null
+bin/dev-flow phase "$(basename "$DELEGATED")" qa "Run acceptance QA" >/dev/null
+test -f "$DELEGATED/.dev-agent/reviews/ACCEPTANCE_QA.html"
+test -d "$DELEGATED/.dev-agent/reviews/acceptance-screenshots"
 cp -R "$DELEGATED" "$BAD_VISUAL"
 write_file "$BAD_VISUAL/.dev-agent/reviews/VISUAL_COMPARISON.md" \
   "# Visual Comparison" "" "Overall score: 92/100" "" "## Compared Inputs" "- design/approved/onboarding-default.png" "- design/approved/dashboard-empty.png" "## Screen Fidelity Matrix" "| Screen | Approved asset path | Runtime surface | Fidelity score | Decision | Notes |" "|---|---|---|---|---|---|" "| Onboarding | design/approved/onboarding-default.png | apps/web/index.html | 46/50 | pass | Good |" "| Dashboard | design/approved/dashboard-empty.png |  | 46/50 |  | Missing runtime and decision should fail |" "## Score Breakdown" "- Layout and hierarchy: 18/20" "- Component fidelity: 18/20" "- State coverage: 19/20" "- Responsiveness: 18/20" "- Polish: 19/20" "## Differences" "- Missing row fields." "## Decision" "Fail."
@@ -1068,7 +1078,9 @@ test -f "$ADAPTER_OUT/runtime/dev-agent/.claude/commands/dev.md"
 test -f "$ADAPTER_OUT/runtime/dev-agent/.gemini/commands/dev.toml"
 test -f "$ADAPTER_OUT/runtime/dev-agent/.claude-plugin/plugin.json"
 test -f "$ADAPTER_OUT/runtime/tests/dev-flow-smoke.sh"
+test -f "$ADAPTER_OUT/runtime/dev-agent/references/acceptance-qa.md"
 test -d "$ADAPTER_OUT/runtime/dev-agent/templates/project"
+test -f "$ADAPTER_OUT/runtime/dev-agent/templates/project/acceptance-qa.html"
 test -f "$ADAPTER_OUT/runtime/dev-agent/templates/project/host-requirements.md"
 test -f "$ADAPTER_OUT/runtime/dev-agent/templates/project/autonomy.md"
 test -f "$ADAPTER_OUT/runtime/dev-agent/templates/project/delegation.md"
@@ -1098,6 +1110,8 @@ test -f "$INSTALL_DEST/dev-agent-runtime/dev-agent/native/skills/dev-agent/SKILL
 test -f "$INSTALL_DEST/dev-agent-runtime/dev-agent/.claude/commands/dev.md"
 test -f "$INSTALL_DEST/dev-agent-runtime/dev-agent/.gemini/commands/dev.toml"
 test -f "$INSTALL_DEST/dev-agent-runtime/dev-agent/.claude-plugin/plugin.json"
+test -f "$INSTALL_DEST/dev-agent-runtime/dev-agent/references/acceptance-qa.md"
+test -f "$INSTALL_DEST/dev-agent-runtime/dev-agent/templates/project/acceptance-qa.html"
 "$INSTALL_DEST/dev-agent-runtime/bin/dev-flow" list >/dev/null
 mkdir -p "$INSTALL_WORKSPACE"
 (

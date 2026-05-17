@@ -11,7 +11,7 @@ Use this rubric before customer-facing UI build.
 - Platform fit: iOS, Android, web, desktop, or embedded constraints are named when applicable.
 - Accessibility: keyboard, focus, screen reader labels, touch targets, contrast, reduced motion, and error messaging are covered.
 - Content realism: examples use realistic copy and data lengths, not filler text.
-- Implementation handoff: `SCREEN_ACCEPTANCE.md` names the functional, monkey/exploratory, and visual comparison checks required before delivery, with screenshots only for exceptions or blocked flows.
+- Implementation handoff: `SCREEN_ACCEPTANCE.md` names the acceptance, monkey/exploratory, and visual comparison checks required before delivery, with screenshots only for exceptions or blocked flows.
 
 ## Blocking Issues
 

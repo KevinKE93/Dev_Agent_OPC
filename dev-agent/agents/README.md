@@ -11,7 +11,7 @@ a host that supports native subagents.
 | [security-auditor](security-auditor.md) | Security Engineer | Vulnerability detection and risk review |
 | [technical-steward](technical-steward.md) | Technical Quality Steward | Independent architecture, evidence, and final readiness challenge |
 | [test-engineer](test-engineer.md) | QA Engineer | Test strategy, coverage analysis, and proof-oriented verification |
-| [ui-quality-reviewer](ui-quality-reviewer.md) | UI Quality Reviewer | Visual comparison scoring, functional QA evidence, and exception screenshot review |
+| [ui-quality-reviewer](ui-quality-reviewer.md) | UI Quality Reviewer | Visual comparison scoring, acceptance QA evidence, and exception screenshot review |
 
 ## Composition Rules
 
@@ -28,7 +28,7 @@ go/no-go decision.
 ## Use Cases
 
 - Use `product-designer` before customer-facing UI implementation when visual direction, reference intake, or screen acceptance is needed.
-- Use `ui-quality-reviewer` before delivery for visual comparison, functional QA evidence, and exception-only screenshot review.
+- Use `ui-quality-reviewer` before delivery for visual comparison, acceptance QA evidence, and exception-only screenshot review.
 - Use `code-reviewer` for implementation risk, maintainability, correctness, and regression review.
 - Use `security-auditor` for auth, permissions, secrets, payments, data deletion, and other high-risk surfaces.
 - Use `technical-steward` for independent technical sign-off, architecture challenge, evidence review, and final quality gap analysis.

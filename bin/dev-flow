@@ -53,7 +53,7 @@ Aliases:
   spec      -> spec-driven-development
   design    -> design-flow
   build     -> incremental-implementation
-  qa        -> optional functional/monkey/visual QA
+  qa        -> optional acceptance/monkey/visual QA
   debug     -> debugging-and-error-recovery
   ui        -> frontend-ui-engineering
   api       -> api-and-interface-design
@@ -503,6 +503,7 @@ write_qa_templates() {
   local project_type="$3"
   write_project_template "$dir" "reviews/FUNCTIONAL_TEST.md" "functional-test.md" "$project" "$project_type"
   write_project_template "$dir" "reviews/MONKEY_TEST.md" "monkey-test.md" "$project" "$project_type"
+  write_project_template "$dir" "reviews/ACCEPTANCE_QA.html" "acceptance-qa.html" "$project" "$project_type"
   write_project_template "$dir" "reviews/VISUAL_COMPARISON.md" "visual-comparison.md" "$project" "$project_type"
 }
 
@@ -535,7 +536,7 @@ ensure_phase_artifacts() {
       write_build_templates "$dir" "$project" "$project_type"
       ;;
     qa)
-      mkdir -p "$dir/reviews/visual-screenshots"
+      mkdir -p "$dir/reviews/acceptance-screenshots" "$dir/reviews/visual-screenshots"
       write_qa_templates "$dir" "$project" "$project_type"
       ;;
     ship)
@@ -550,7 +551,7 @@ phase_default_task() {
     spec) echo "Write PRD and buildable SPEC.md" ;;
     design) echo "Resolve design direction and build handoff" ;;
     build) echo "Think through architecture, environment, and implement the next slice" ;;
-    qa) echo "Run optional functional, monkey, and visual QA for the completed build" ;;
+    qa) echo "Run optional acceptance, monkey, and visual QA for the completed build" ;;
     ship) echo "Prepare optional launch evidence and go/no-go decision" ;;
     *) echo "Continue workflow" ;;
   esac
@@ -594,7 +595,8 @@ phase_skill_files() {
       ;;
     qa)
       echo "- dev-agent/skills/frontend-ui-engineering/SKILL.md when UI applies"
-      echo "- embedded functional, monkey, visual, and review checklist"
+      echo "- dev-agent/references/acceptance-qa.md"
+      echo "- embedded acceptance, monkey, visual, and review checklist"
       ;;
     *)
       echo "- dev-agent/skills/$(skill_name "$phase")/SKILL.md"
@@ -650,7 +652,7 @@ phase_load_list() {
     qa)
       echo "- implemented source and existing tests"
       echo "- $process_root/reviews/VERIFICATION.md or relevant command output"
-      echo "- $process_root/reviews/FUNCTIONAL_TEST.md, MONKEY_TEST.md, and VISUAL_COMPARISON.md when QA is required"
+      echo "- $process_root/reviews/FUNCTIONAL_TEST.md, MONKEY_TEST.md, ACCEPTANCE_QA.html, and VISUAL_COMPARISON.md when QA is required"
       ;;
     ship)
       echo "- $process_root/ship/ and $process_root/reviews/"
@@ -706,8 +708,9 @@ phase_required_outputs() {
       if qa_required "$project"; then
         load_project_applicability "$project"
         if setting_enabled "$AUTOMATED_QA"; then
-        echo "- $process_root/reviews/FUNCTIONAL_TEST.md"
-        echo "- $process_root/reviews/MONKEY_TEST.md"
+          echo "- $process_root/reviews/FUNCTIONAL_TEST.md"
+          echo "- $process_root/reviews/MONKEY_TEST.md"
+          echo "- $process_root/reviews/ACCEPTANCE_QA.html"
         fi
         if phase_is_applicable "$project" design && visual_qa_required "$project"; then
           echo "- $process_root/reviews/VISUAL_COMPARISON.md after the UI batch is complete"
@@ -1103,7 +1106,7 @@ delegation_recommendation_for_phase() {
       echo "  - verifier: run gates and report command evidence after implementation"
       ;;
     qa)
-      echo "  - verifier: run functional, monkey, or visual checks in parallel with fix preparation"
+      echo "  - verifier: run acceptance, monkey, or visual checks in parallel with fix preparation"
       echo "  - reviewer: inspect failures and isolate regressions without changing code"
       ;;
     ship)
@@ -1283,6 +1286,11 @@ count_reference_links() {
 count_visual_screenshots() {
   local dir="$1"
   count_supported_artifacts image "$dir/reviews/visual-screenshots"
+}
+
+count_acceptance_screenshots() {
+  local dir="$1"
+  count_supported_artifacts image "$dir/reviews/acceptance-screenshots"
 }
 
 count_design_mockups() {
@@ -1535,7 +1543,7 @@ is_forbidden_design_source() {
   local lower
   lower="$(printf '%s' "$raw" | tr '[:upper:]' '[:lower:]')"
   case "$lower" in
-    *screenshot*|*screencap*|*screencapture*|*snapshot*|*capture*|*playwright*|*puppeteer*|*chrome*|*localhost*|*browser*|*simulator*|*runtime*|*render*|*rasteriz*|*html-to-image*|*html2canvas*|*canvas*|*svg*|*design/drafts*|*design/mocks*|*design/screenshots*|*reviews/visual-screenshots*|*apps/*|*prototype*|*wireframe*|*sketch*|*draft*|*草图*|*原型*|*截图*|*截屏*|*渲染*)
+    *screenshot*|*screencap*|*screencapture*|*snapshot*|*capture*|*playwright*|*puppeteer*|*chrome*|*localhost*|*browser*|*simulator*|*runtime*|*render*|*rasteriz*|*html-to-image*|*html2canvas*|*canvas*|*svg*|*design/drafts*|*design/mocks*|*design/screenshots*|*reviews/acceptance-screenshots*|*reviews/visual-screenshots*|*apps/*|*prototype*|*wireframe*|*sketch*|*draft*|*草图*|*原型*|*截图*|*截屏*|*渲染*)
       return 1
       ;;
   esac
@@ -2894,7 +2902,7 @@ qa_check_impl() {
   mockups="$(count_design_mockups "$dir")"
   design_assets="$(count_approved_design_artifacts "$dir")"
   html_packages="$(count_approved_html_design_packages "$dir")"
-  screenshots="$(count_visual_screenshots "$dir")"
+  screenshots="$(( $(count_visual_screenshots "$dir") + $(count_acceptance_screenshots "$dir") ))"
   load_project_applicability "$project"
   if ! qa_required "$project"; then
     echo "QA check skipped for $project: AUTOMATED_QA=$AUTOMATED_QA, VISUAL_QA=$VISUAL_QA."
@@ -2953,7 +2961,7 @@ qa_check_impl() {
   fi
   if qa_exception_recorded "$dir"; then
     if [[ "$screenshots" -eq 0 && ! -s "$dir/reviews/BLOCKED_SCREENSHOT.md" ]]; then
-      echo "Exception or blocked-flow record found; add screenshot evidence under reviews/visual-screenshots/ or document why capture is impossible in reviews/BLOCKED_SCREENSHOT.md." >&2
+      echo "Exception or blocked-flow record found; add screenshot evidence under reviews/acceptance-screenshots/ or reviews/visual-screenshots/, or document why capture is impossible in reviews/BLOCKED_SCREENSHOT.md." >&2
       failures=$((failures + 1))
     fi
   fi
@@ -3424,7 +3432,7 @@ EOF
   cat > "$target/GEMINI.md" <<'EOF'
 # Dev Flow Quality
 
-Use the bundled skills for lifecycle-driven software delivery. For customer-facing UI, design-flow owns reference intake and screen acceptance; frontend-ui-engineering owns implementation, functional QA, monkey testing, and visual comparison.
+Use the bundled skills for lifecycle-driven software delivery. For customer-facing UI, design-flow owns reference intake and screen acceptance; frontend-ui-engineering owns implementation, acceptance QA, monkey testing, and visual comparison.
 EOF
 }
 
