@@ -182,8 +182,8 @@ instead of leaving build to guess.
 [Framework, test locations, coverage requirements, test levels]
 
 ## UI / Design Applicability
-[Whether UI/design applies, whether formal HTML/CSS design packages are
-required, and whether existing design resources are build-ready.]
+[Whether UI/design applies, whether formal visual sources and HTML/CSS
+companions are required, and whether existing design resources are build-ready.]
 
 ## Privacy / Security
 [Data handling, permissions, deletion, secrets, compliance-sensitive choices]

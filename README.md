@@ -130,8 +130,8 @@ bin/dev-flow install claude-code --scope user
 - **精简职责**：产品/PRD 与 agent contract 归入 Spec；轻量计划和 proof-first 归入 Build；测试与 review 归入 QA/Ship。
 - **Idea 归因**：idea brief 记录用户明确需求、agent 推断、产品决策和待确认项，避免后续 spec 混淆来源。
 - **Spec 门禁**：UI 项目的 PRD 需覆盖 MVP、核心流程/IA、验收和非目标；SPEC 需覆盖技术栈、命令、数据/领域模型、测试、UI/design 适用性、隐私/安全和未决问题。
-- **设计实现方式**：正式设计交付以 `design-artifacts` 中的 HTML/CSS design package 合同为准，用高保真 HTML/CSS 和必要的 CSS/JS/Lottie 动效作为实现目标，提高还原度、验收效率和代码生成效率。
-- **设计门禁**：customer-facing UI 在 build 前运行 `design-check`；没有参考时需用户委托视觉方向或提供参考；logo、app icon、品牌 KV 和高质量位图素材必须有 Image Gen / GPT Image 来源。
+- **设计实现方式**：正式设计交付以 `design-artifacts` 中的“正式高保真视觉源 + HTML/CSS companion”合同为准；product-designer 的输出只作为方向和要求，不作为开发资源。
+- **设计门禁**：customer-facing UI 在 build 前运行 `design-check`；没有参考时需用户委托视觉方向或提供参考；正式设计源必须来自 Image Gen/GPT Image、Figma、设计师上传、外部设计工具或设计系统导出，HTML/CSS 只能作为 companion handoff；logo、app icon、品牌 KV 和高质量位图素材必须有 Image Gen / GPT Image 来源。
 - **环境边界**：宿主机 SDK、模拟器、MCP、凭证和系统服务记录在 `HOST_REQUIREMENTS.md`，不混入项目 runtime。
 - **分层 Brief**：`bin/dev-flow next` 默认输出 L0 navigator；`--phase-brief` 展开 command/skill/load/outputs；`--full` 用于流程维护和导航器排障。
 - **任务规划**：`bin/dev-flow next` 和 `bin/dev-flow plan` 会把 TODO 或阶段输出整理进 `TASKS.md` / `EXECUTION_PLAN.md`，先做 Plan Review 再执行。
@@ -253,8 +253,8 @@ Six-step capability index:
 - **Lean responsibilities**: product/PRD and agent contracts live in Spec; micro-planning and proof-first checks live in Build; testing and review live in QA/Ship.
 - **Idea attribution**: idea briefs record user-stated needs, agent inferences, product decisions, and open confirmations so later specs do not blur source boundaries.
 - **Spec gate**: UI project PRDs must cover MVP, core flows/IA, acceptance, and non-goals; SPEC files must cover stack, commands, data/domain model, testing, UI/design applicability, privacy/security, and open questions.
-- **Design implementation format**: formal design handoff follows the HTML/CSS design-package contract in `design-artifacts`; high-fidelity HTML/CSS plus CSS/JS/Lottie motion files are the preferred implementation target for better UI fidelity, review speed, and code-generation efficiency.
-- **Design gate**: customer-facing UI runs `design-check` before build; missing references require user input or delegated visual direction; logo, app icon, brand KV, and high-quality bitmap assets require Image Gen / GPT Image provenance.
+- **Design implementation format**: formal design handoff follows the formal high-fidelity visual source plus HTML/CSS companion contract in `design-artifacts`; product-designer output is direction and requirements only, not a development resource.
+- **Design gate**: customer-facing UI runs `design-check` before build; missing references require user input or delegated visual direction; formal sources must come from Image Gen/GPT Image, Figma, designer upload, external design tooling, or design-system export, while HTML/CSS is companion handoff only; logo, app icon, brand KV, and high-quality bitmap assets require Image Gen / GPT Image provenance.
 - **Environment boundary**: host SDKs, simulators, MCP servers, credentials, and services are recorded in `HOST_REQUIREMENTS.md` instead of project runtime output.
 - **Task planning**: `next` and `plan` normalize TODO lists or phase outputs into `TASKS.md` / `EXECUTION_PLAN.md`, then require plan review before execution.
 - **Autonomy loop**: `AUTONOMY_LOOP` suggests heartbeat continuation by default; multiple clear pending tasks enable 1-minute safe-batch heartbeats, and the loop stops on blockers, high-risk approval, failed review, or verified final phases.
@@ -267,7 +267,7 @@ Six-step capability index:
 
 - `v0.11`: Adds Acceptance QA as a QA method, pairing simulated user-flow acceptance with monkey stability testing and a directly openable `ACCEPTANCE_QA.html` evidence report.
 - `v0.10`: Adds the `technical-steward` role for independent technical quality sign-off on high-risk plans, thin evidence, too-smooth QA, and release readiness; adds the six-step flow capability index.
-- `v0.9`: Adds HTML/CSS design packages as the formal design handoff format to improve UI fidelity, review efficiency, and code-generation efficiency; fixes directory creation for uninitialized projects so empty process folders are not created at the project root.
+- `v0.9`: Adds formal visual source plus HTML/CSS companion handoff rules to improve UI fidelity, review efficiency, and code-generation efficiency; fixes directory creation for uninitialized projects so empty process folders are not created at the project root.
 - `v0.8`: Defaults process-management files to `.dev-agent/` while keeping development output and source files at the project root; `migrate` can move old `.dev-flow` and root-level process directories.
 - `v0.7`: Strengthens the idea/spec workflow; adds requirement attribution to idea briefs; clarifies PRD/SPEC ownership, product-domain expansion, external-reference absorption, and minimum UI spec coverage gates.
 - `v0.6`: Collapses the lifecycle to `idea → spec → design → build → QA → ship`; folds PRD and agent contracts into Spec; folds micro-planning and proof-first checks into Build; makes QA/Ship optional by default; removes the default PDCA branch.

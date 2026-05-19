@@ -24,8 +24,15 @@ when the spec or project applicability clearly marks UI/design as not needed.
   artifact reference and executable gates.
 - Drafts, sketches, low-fidelity prototypes, and runtime screenshots are input
   evidence only. They cannot be the build target.
-- Prefer high-fidelity HTML/CSS design packages for implementation handoff.
-  Use JS or Lottie assets when motion must be reproduced.
+- Product-designer output is design judgment only. It can define UX, IA,
+  screen/state, visual-system, and blocker requirements for Image Gen/GPT
+  Image, Figma, or human design, but it is not a development resource by itself.
+- Require a formal high-fidelity visual source before high-fidelity build:
+  Image Gen/GPT Image raster boards, Figma frames, human-designer exports,
+  external design-tool exports, or design-system board exports.
+- Use high-fidelity HTML/CSS companion packages as implementation-readable
+  handoff for those formal visual sources. Use JS or Lottie assets when motion must be
+  reproduced.
 - Generate new logo, app-icon, brand/KV, and high-quality bitmap assets only
   through the `imagegen` skill or an explicit Codex CLI image-generation path.
   Do not author SVG/HTML/canvas locally and render PNG for final identity assets.
@@ -41,7 +48,7 @@ Save design artifacts under `<project-name>/.dev-agent/design/`:
 - `DESIGN_IMAGE_DESCRIPTIONS.md` when required by the design artifact contract
 - `FIGMA_HANDOFF.md` when required by the Figma handoff contract
 - `REFERENCE_BOARD.md` when visual direction is delegated
-- approved HTML/CSS design packages under `design/approved/html/`
+- HTML/CSS companion packages under `design/approved/html/`
 - formal visual assets, brand/KV assets, logos/icons, and runtime element
   assets when required
 - references, drafts, and mocks under their matching non-approved folders
@@ -108,9 +115,16 @@ Use `dev-agent/templates/project/` for file templates. Use
    - Decide whether user-provided resources are build-ready: they need enough
      HTML/CSS, visual-system, state, asset, and motion detail for a model or
      engineer to reproduce the UI without guessing.
+   - If the spec/applicability says no UI/UX design is needed, keep
+     `UI_FLOW=disabled` and do not invent a design phase. Build may proceed
+     after spec/build gates.
+   - If UI applies but the task is lightweight and no formal visual source is
+     required, record the rationale in `SCREEN_ACCEPTANCE.md` and
+     applicability; build may use `DESIGN.md`, `VISUAL_SYSTEM.md`, and
+     `SCREEN_ACCEPTANCE.md`.
    - If resources are insufficient, list the missing resources and route them
      to generation: visual-system and brand/KV direction, required screen
-     images, HTML/CSS packages, CSS/JS or Lottie motion files when needed, and
+     images, HTML/CSS companion packages, CSS/JS or Lottie motion files when needed, and
      logo/app-icon sizes when product identity is in scope.
    - For logo, app-icon, brand/KV, and high-quality bitmap asset generation,
      load `imagegen` or use the Codex CLI image-generation path explicitly. Save
@@ -123,12 +137,17 @@ Use `dev-agent/templates/project/` for file templates. Use
      run `bin/dev-flow figma-check <project-name>`.
 
 9. **Produce design packages**
-    - For each accepted screen and important state, create or collect a separate
-      HTML file under `.dev-agent/design/approved/html/` with CSS resources that encode the
-      visual system and responsive layout. Add JS or Lottie files only when
+    - For each accepted screen and important state that needs high-fidelity
+      design, create or collect a formal visual source first: generated raster
+      board, Figma export, human-designer export, external design export, or
+      design-system board export.
+    - For each formal visual source, create or collect a separate HTML file
+      under `.dev-agent/design/approved/html/` with CSS resources that encode
+      the visual system and responsive layout. Add JS or Lottie files only when
       motion is part of acceptance.
-    - Use generated or uploaded images as visual targets and asset sources, but
-      keep the HTML/CSS package as the implementation-readable handoff.
+    - Use generated, uploaded, Figma, external, or design-system visuals as the
+      source of truth, and keep the HTML/CSS companion package as the
+      implementation-readable companion handoff.
     - When identity assets are required, provide logo or app-icon variants sized
       for the target platform from Image Gen/GPT Image outputs. Local SVG
       renders are drafts only and must not be treated as final PNG assets.

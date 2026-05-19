@@ -149,8 +149,11 @@ and use `bin/dev-flow design-check <project-name> --allow-no-reference`.
 
 Do not require sketches or prototypes. The design flow produces only what the
 current build needs. Satisfy `dev-agent/references/design-artifacts.md` as the
-current HTML/CSS design-package contract, and run `bin/dev-flow design-check
-<project-name>`. When Figma is used, satisfy
+formal visual source plus HTML/CSS companion contract, and run
+`bin/dev-flow design-check <project-name>`. Product-designer output is direction
+only; Image Gen/GPT Image, Figma, human-design exports, external design tools,
+or design-system exports must provide high-fidelity design sources when formal
+design is required. When Figma is used, satisfy
 `dev-agent/references/figma-handoff.md` and run
 `bin/dev-flow figma-check <project-name>`.
 

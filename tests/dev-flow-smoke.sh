@@ -7,6 +7,7 @@ LAZY_PROJECT="$ROOT/__${RUN_ID}_lazy"
 EXISTING_UNINIT="$ROOT/__${RUN_ID}_existing_uninit"
 UI_BLOCK="$ROOT/__${RUN_ID}_ui_block"
 LIGHT_UI="$ROOT/__${RUN_ID}_light_ui"
+UI_DESIGN_DISABLED="$ROOT/__${RUN_ID}_ui_design_disabled"
 SPEC_GAP="$ROOT/__${RUN_ID}_spec_gap"
 DELEGATED="$ROOT/__${RUN_ID}_delegated"
 INVALID="$ROOT/__${RUN_ID}_invalid"
@@ -43,6 +44,7 @@ LIGHT_UI_NEXT_OUT="/private/tmp/dev-flow-${RUN_ID}-light-ui-next.out"
 LIGHT_UI_POLISH_OUT="/private/tmp/dev-flow-${RUN_ID}-light-ui-polish.out"
 LIGHT_UI_POLISH_NEXT_OUT="/private/tmp/dev-flow-${RUN_ID}-light-ui-polish-next.out"
 LIGHT_UI_POLISH_STOP_OUT="/private/tmp/dev-flow-${RUN_ID}-light-ui-polish-stop.out"
+UI_DESIGN_DISABLED_OUT="/private/tmp/dev-flow-${RUN_ID}-ui-design-disabled.out"
 SPEC_GAP_OUT="/private/tmp/dev-flow-${RUN_ID}-spec-gap.out"
 INVALID_OUT="/private/tmp/dev-flow-${RUN_ID}-invalid.out"
 EXCEPTION_OUT="/private/tmp/dev-flow-${RUN_ID}-exception.out"
@@ -56,6 +58,7 @@ SCREENSHOT_SWAP_OUT="/private/tmp/dev-flow-${RUN_ID}-screenshot-swap.out"
 DRAFT_PATH_OUT="/private/tmp/dev-flow-${RUN_ID}-draft-path.out"
 AI_MISSING_HTML_OUT="/private/tmp/dev-flow-${RUN_ID}-ai-missing-html.out"
 HTML_MISSING_CSS_OUT="/private/tmp/dev-flow-${RUN_ID}-html-missing-css.out"
+HTML_ONLY_OUT="/private/tmp/dev-flow-${RUN_ID}-html-only.out"
 FIGMA_MISSING_SOURCE_OUT="/private/tmp/dev-flow-${RUN_ID}-figma-missing-source.out"
 FIGMA_BAD_EXPORT_OUT="/private/tmp/dev-flow-${RUN_ID}-figma-bad-export.out"
 API_OUT="/private/tmp/dev-flow-${RUN_ID}-api.out"
@@ -91,7 +94,7 @@ cleanup_path() {
 }
 
 cleanup() {
-  cleanup_path "$LAZY_PROJECT" "$EXISTING_UNINIT" "$UI_BLOCK" "$LIGHT_UI" "$SPEC_GAP" "$DELEGATED" "$INVALID" "$SVG_ONLY" "$SVG_LEAK" "$SVG_CUT_ALLOWED" "$SELF_RENDERED_PNG" "$IDENTITY_BAD_SOURCE" "$MISSING_COVERAGE" "$SCREENSHOT_SWAP" "$DRAFT_PATH" "$NO_CUTS" "$HTML_ONLY" "$HTML_MISSING_CSS" "$AI_MISSING_HTML" "$FIGMA_GOOD" "$FIGMA_SECTION_BOUNDARY" "$FIGMA_MISSING_SOURCE" "$FIGMA_BAD_EXPORT" "$API_PROJECT" "$AGENT_PROJECT" "$AUTO_TASK_PROJECT" "$PLAN_PROJECT" "$ENV_PROJECT" "$BAD_ENV" "$LEGACY_PROJECT" "$OLD_LAYOUT" "$BAD_VISUAL" "$ADAPTER_OUT" "$INSTALL_DEST" "$INSTALL_WORKSPACE" "$UI_BLOCK_OUT" "$LIGHT_UI_NEXT_OUT" "$LIGHT_UI_POLISH_OUT" "$LIGHT_UI_POLISH_NEXT_OUT" "$LIGHT_UI_POLISH_STOP_OUT" "$SPEC_GAP_OUT" "$INVALID_OUT" "$EXCEPTION_OUT" "$SVG_ONLY_OUT" "$SVG_LEAK_OUT" "$SVG_CUT_ALLOWED_OUT" "$SELF_RENDERED_PNG_OUT" "$IDENTITY_BAD_SOURCE_OUT" "$MISSING_COVERAGE_OUT" "$SCREENSHOT_SWAP_OUT" "$DRAFT_PATH_OUT" "$AI_MISSING_HTML_OUT" "$HTML_MISSING_CSS_OUT" "$FIGMA_MISSING_SOURCE_OUT" "$FIGMA_BAD_EXPORT_OUT" "$API_OUT" "$API_NEXT_OUT" "$API_AUTONOMY_OUT" "$API_DELEGATE_OUT" "$API_DELEGATE_DISABLED_OUT" "$AGENT_OUT" "$AUTO_TASK_NEXT_OUT" "$PLAN_OUT" "$PLAN_NEXT_OUT" "$PLAN_AUTONOMY_OUT" "$PLAN_TASK_OUT" "$ENV_OUT" "$BAD_ENV_OUT" "$DOCTOR_OUT" "$BAD_VISUAL_OUT" "$TRACE_MISSING_HTML_OUT" "$NEXT_UI_OUT"
+  cleanup_path "$LAZY_PROJECT" "$EXISTING_UNINIT" "$UI_BLOCK" "$LIGHT_UI" "$UI_DESIGN_DISABLED" "$SPEC_GAP" "$DELEGATED" "$INVALID" "$SVG_ONLY" "$SVG_LEAK" "$SVG_CUT_ALLOWED" "$SELF_RENDERED_PNG" "$IDENTITY_BAD_SOURCE" "$MISSING_COVERAGE" "$SCREENSHOT_SWAP" "$DRAFT_PATH" "$NO_CUTS" "$HTML_ONLY" "$HTML_MISSING_CSS" "$AI_MISSING_HTML" "$FIGMA_GOOD" "$FIGMA_SECTION_BOUNDARY" "$FIGMA_MISSING_SOURCE" "$FIGMA_BAD_EXPORT" "$API_PROJECT" "$AGENT_PROJECT" "$AUTO_TASK_PROJECT" "$PLAN_PROJECT" "$ENV_PROJECT" "$BAD_ENV" "$LEGACY_PROJECT" "$OLD_LAYOUT" "$BAD_VISUAL" "$ADAPTER_OUT" "$INSTALL_DEST" "$INSTALL_WORKSPACE" "$UI_BLOCK_OUT" "$LIGHT_UI_NEXT_OUT" "$LIGHT_UI_POLISH_OUT" "$LIGHT_UI_POLISH_NEXT_OUT" "$LIGHT_UI_POLISH_STOP_OUT" "$UI_DESIGN_DISABLED_OUT" "$SPEC_GAP_OUT" "$INVALID_OUT" "$EXCEPTION_OUT" "$SVG_ONLY_OUT" "$SVG_LEAK_OUT" "$SVG_CUT_ALLOWED_OUT" "$SELF_RENDERED_PNG_OUT" "$IDENTITY_BAD_SOURCE_OUT" "$MISSING_COVERAGE_OUT" "$SCREENSHOT_SWAP_OUT" "$DRAFT_PATH_OUT" "$AI_MISSING_HTML_OUT" "$HTML_MISSING_CSS_OUT" "$HTML_ONLY_OUT" "$FIGMA_MISSING_SOURCE_OUT" "$FIGMA_BAD_EXPORT_OUT" "$API_OUT" "$API_NEXT_OUT" "$API_AUTONOMY_OUT" "$API_DELEGATE_OUT" "$API_DELEGATE_DISABLED_OUT" "$AGENT_OUT" "$AUTO_TASK_NEXT_OUT" "$PLAN_OUT" "$PLAN_NEXT_OUT" "$PLAN_AUTONOMY_OUT" "$PLAN_TASK_OUT" "$ENV_OUT" "$BAD_ENV_OUT" "$DOCTOR_OUT" "$BAD_VISUAL_OUT" "$TRACE_MISSING_HTML_OUT" "$NEXT_UI_OUT"
 }
 trap cleanup EXIT
 
@@ -269,8 +272,8 @@ if rg -n 'Valid Source type values|Allowed `Source type`|manual-design|local-app
   echo "Design contract drift: non-authoritative files must point to references and gates instead of restating hard source rules." >&2
   exit 1
 fi
-if rg -n 'artifact contract|approved asset|approved design|Figma|SVG|HTML companion|DESIGN_ARTIFACTS|FIGMA_HANDOFF|ASSET_MANIFEST|design-artifacts' dev-agent/agents/product-designer.md >/dev/null; then
-  rg -n 'artifact contract|approved asset|approved design|Figma|SVG|HTML companion|DESIGN_ARTIFACTS|FIGMA_HANDOFF|ASSET_MANIFEST|design-artifacts' dev-agent/agents/product-designer.md >&2
+if rg -n 'artifact contract|approved asset|approved design|Source type|DESIGN_ARTIFACTS|FIGMA_HANDOFF|ASSET_MANIFEST|design-artifacts' dev-agent/agents/product-designer.md >/dev/null; then
+  rg -n 'artifact contract|approved asset|approved design|Source type|DESIGN_ARTIFACTS|FIGMA_HANDOFF|ASSET_MANIFEST|design-artifacts' dev-agent/agents/product-designer.md >&2
   echo "product-designer must stay a design-judgment persona, not an artifact schema contract." >&2
   exit 1
 fi
@@ -618,6 +621,42 @@ if bin/dev-flow phase "$(basename "$UI_BLOCK")" build "Attempt build without des
 fi
 grep -q "Phase verification failed: $(basename "$UI_BLOCK")/design" "$UI_BLOCK_OUT"
 
+bin/dev-flow init "$(basename "$UI_DESIGN_DISABLED")" --type ui >/dev/null
+printf '%s\n' \
+  'UI_FLOW="disabled"' \
+  'UI_REFERENCES="disabled"' \
+  'UI_DESIGN_ASSETS="disabled"' \
+  'UI_FIGMA_HANDOFF="disabled"' \
+  'UI_MOCKUPS="disabled"' \
+  'VISUAL_QA="disabled"' \
+  >> "$UI_DESIGN_DISABLED/.dev-agent/state/applicability.env"
+write_file "$UI_DESIGN_DISABLED/.dev-agent/ideas/idea-brief.md" \
+  "# Idea Brief" "" "Refactor customer-facing route constants." "No UI or UX behavior changes are in scope." "The workflow should not require design."
+write_file "$UI_DESIGN_DISABLED/.dev-agent/product/PRD.md" \
+  "# PRD" "" \
+  "## Objective" "Refactor route constants for an existing customer-facing app." \
+  "## MVP Scope" "Move string constants without changing screens, flows, copy, or styling." \
+  "## Core Flows" "Existing app navigation continues to resolve the same route names." \
+  "## Acceptance Criteria" "The route constant module exists and existing route references still pass tests." \
+  "## Non-Goals" "No UI, UX, visual, IA, or interaction changes."
+write_file "$UI_DESIGN_DISABLED/.dev-agent/specs/SPEC.md" \
+  "# Spec" "" \
+  "## Tech Stack" "Existing browser UI code." \
+  "## Commands" "Static source inspection for the fixture." \
+  "## Data Model" "Route constant names and string values only." \
+  "## Testing Strategy" "Verify source constants exist." \
+  "## UI / Design Applicability" "UI_FLOW is disabled because this is a code-only refactor with no UI, UX, IA, copy, visual, or interaction behavior changes." \
+  "## Privacy / Security" "No user data or permission behavior changes." \
+  "## Open Questions" "None for the fixture."
+write_file "$UI_DESIGN_DISABLED/.dev-agent/tasks/IMPLEMENTATION_TRACE.md" \
+  "# Implementation Trace" "" "## Trace" "- Code-only refactor; design phase is explicitly not applicable."
+write_file "$UI_DESIGN_DISABLED/apps/web/routes.js" \
+  "export const ROUTES = { home: '/', settings: '/settings' };"
+write_file "$UI_DESIGN_DISABLED/.dev-agent/reviews/VERIFICATION.md" \
+  "# Verification" "" "## Result" "Route constants fixture exists."
+bin/dev-flow phase "$(basename "$UI_DESIGN_DISABLED")" build "Code-only refactor without design" >"$UI_DESIGN_DISABLED_OUT" 2>&1
+grep -q "Updated $(basename "$UI_DESIGN_DISABLED") to phase: build" "$UI_DESIGN_DISABLED_OUT"
+
 bin/dev-flow init "$(basename "$LIGHT_UI")" >/dev/null
 write_file "$LIGHT_UI/.dev-agent/ideas/idea-brief.md" \
   "# Idea Brief" "" "Build a simple customer-facing status page." "Use delegated visual direction." "Formal design boards are not required for this fixture."
@@ -718,7 +757,7 @@ if bin/dev-flow design-check "$(basename "$SVG_ONLY")" --allow-no-reference >"$S
   echo "Expected SVG-only approved design artifact to fail." >&2
   exit 1
 fi
-grep -q "Missing final approved design package" "$SVG_ONLY_OUT"
+grep -q "Missing final approved visual design asset" "$SVG_ONLY_OUT"
 
 bin/dev-flow init "$(basename "$SVG_LEAK")" >/dev/null
 write_file "$SVG_LEAK/.dev-agent/ideas/idea-brief.md" \
@@ -907,26 +946,30 @@ bin/dev-flow asset-check "$(basename "$NO_CUTS")" >/dev/null
 
 bin/dev-flow init "$(basename "$HTML_ONLY")" >/dev/null
 write_file "$HTML_ONLY/.dev-agent/ideas/idea-brief.md" \
-  "# Idea Brief" "" "Build a UI from a formal HTML/CSS design package." "Use delegated visual direction." "Verify HTML package handoff can be the approved design asset."
+  "# Idea Brief" "" "Build a UI from a standalone HTML/CSS package." "Use delegated visual direction." "Verify HTML-only handoff cannot masquerade as the formal design source."
 write_file "$HTML_ONLY/.dev-agent/specs/SPEC.md" \
-  "# Spec" "" "Create a dashboard UI." "Use a high-fidelity HTML/CSS package as the approved design handoff." "This is an audit fixture."
+  "# Spec" "" "Create a dashboard UI." "Use a high-fidelity visual design source with HTML/CSS as companion handoff." "This fixture must fail when the visual source is missing."
 write_file "$HTML_ONLY/.dev-agent/design/DESIGN.md" \
-  "# Design" "" "## UX Problem" "Users need a polished interface." "## Recommended Direction" "Use the HTML/CSS design package as the build-readable target." "## Alternatives Considered" "- Raster-only board: less useful for implementation." "## Information Architecture" "Dashboard only." "## Interaction Model" "Primary action only." "## Visual System" "Encoded in the approved HTML/CSS package." "## Design Artifacts" "Approved HTML/CSS package required." "## Build Implications" "Build from verified package tokens and layout."
+  "# Design" "" "## UX Problem" "Users need a polished interface." "## Recommended Direction" "Use a formal visual source and HTML/CSS companion handoff." "## Alternatives Considered" "- HTML-only source: insufficient because it can be a local implementation draft." "## Information Architecture" "Dashboard only." "## Interaction Model" "Primary action only." "## Visual System" "Encoded in the approved companion package." "## Design Artifacts" "Formal visual source required." "## Build Implications" "Build only after source provenance is verified."
 write_file "$HTML_ONLY/.dev-agent/design/VISUAL_SYSTEM.md" \
-  "# Visual System" "" "## Reference Influence" "Delegated visual direction." "## Palette" "Defined in CSS tokens." "## Typography" "Defined in CSS." "## Spacing and Layout" "Defined in CSS grid rules." "## Components and Motion" "Buttons have visible states." "## Forbidden Patterns" "No draft prototype handoff."
+  "# Visual System" "" "## Reference Influence" "Delegated visual direction." "## Palette" "Defined in CSS tokens." "## Typography" "Defined in CSS." "## Spacing and Layout" "Defined in CSS grid rules." "## Components and Motion" "Buttons have visible states." "## Forbidden Patterns" "No HTML-only source handoff."
 write_file "$HTML_ONLY/.dev-agent/design/SCREEN_ACCEPTANCE.md" \
-  "# Screen Acceptance" "" "## Dashboard" "- Requirement source: specs/SPEC.md." "- Required content: dashboard body." "- Required states: default." "- Breakpoints: 320, 768, 1440." "- Required design package: design/approved/html/dashboard.html." "- Visual acceptance: follows the HTML/CSS package hierarchy." "- Accessibility acceptance: primary action reachable."
+  "# Screen Acceptance" "" "## Dashboard" "- Requirement source: specs/SPEC.md." "- Required content: dashboard body." "- Required states: default." "- Breakpoints: 320, 768, 1440." "- Required design assets: formal visual source plus design/approved/html/dashboard.html companion." "- Visual acceptance: follows the formal visual source and companion hierarchy." "- Accessibility acceptance: primary action reachable."
 write_file "$HTML_ONLY/.dev-agent/design/DESIGN_ARTIFACTS.md" \
   "# Design Artifacts" "" "## Required Coverage" "- Dashboard HTML/CSS package." "## Screen Coverage" "| Screen | State | Source type | Source reference | Approved asset path | Resolution / export | Status | Implementation notes |" "|---|---|---|---|---|---|---|---|" "| Dashboard | Default | html-design | html-design://smoke/dashboard | design/approved/html/dashboard.html | 1440x900 HTML/CSS package | approved | HTML package is the build-readable design handoff |"
 write_file "$HTML_ONLY/.dev-agent/design/REFERENCE_BOARD.md" \
-  "# Reference Board" "" "## Delegated Direction" "Use a polished product dashboard encoded in HTML/CSS." "## Patterns" "- CSS tokens." "- Stable responsive grid."
+  "# Reference Board" "" "## Delegated Direction" "Use a polished product dashboard encoded in HTML/CSS only as companion handoff." "## Patterns" "- CSS tokens." "- Stable responsive grid."
 write_file "$HTML_ONLY/.dev-agent/design/cut-assets/ASSET_MANIFEST.md" \
   "# Cut Assets" "" "## Decision" "- CUT_ASSETS_REQUIRED: no" "- Rationale: this fixture uses CSS and platform icons only."
 write_html_description "$HTML_ONLY/.dev-agent/design/approved/html/dashboard.html" "Dashboard"
-bin/dev-flow design-check "$(basename "$HTML_ONLY")" --allow-no-reference >/dev/null
-bin/dev-flow asset-check "$(basename "$HTML_ONLY")" >/dev/null
+if bin/dev-flow design-check "$(basename "$HTML_ONLY")" --allow-no-reference >"$HTML_ONLY_OUT" 2>&1; then
+  cat "$HTML_ONLY_OUT" >&2
+  echo "Expected HTML-only design source to fail." >&2
+  exit 1
+fi
+grep -q "HTML/CSS companion cannot be the formal design source" "$HTML_ONLY_OUT"
 
-cp -R "$HTML_ONLY" "$HTML_MISSING_CSS"
+cp -R "$NO_CUTS" "$HTML_MISSING_CSS"
 write_html_without_css "$HTML_MISSING_CSS/.dev-agent/design/approved/html/dashboard.html" "Dashboard"
 if bin/dev-flow design-check "$(basename "$HTML_MISSING_CSS")" --allow-no-reference >"$HTML_MISSING_CSS_OUT" 2>&1; then
   cat "$HTML_MISSING_CSS_OUT" >&2

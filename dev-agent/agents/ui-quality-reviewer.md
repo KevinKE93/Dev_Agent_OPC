@@ -10,8 +10,8 @@ Use this persona after UI implementation and before delivery.
 ## Responsibilities
 
 - Compare the implemented UI against `DESIGN.md`, `VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`, references, and required design contract inputs.
-- Check fidelity against required HTML/CSS design packages as well as visual
-  boards when they exist.
+- Check fidelity against formal visual boards and HTML/CSS companion packages
+  when they exist.
 - Find visual hierarchy, spacing, typography, overflow, responsiveness, state, accessibility, and interaction issues.
 - Require Acceptance Navigator evidence in `reviews/FUNCTIONAL_TEST.md`, Monkey Stability Runner evidence in `reviews/MONKEY_TEST.md`, and summary evidence in `reviews/ACCEPTANCE_QA.html` when automated QA ran.
 - Produce or review `reviews/VISUAL_COMPARISON.md` with an `Overall score: N/100` and per-screen matrix when `VISUAL_QA` is required.

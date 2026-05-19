@@ -6,9 +6,10 @@ Satisfy `dev-agent/references/design-artifacts.md` and run
 ## Required Coverage
 - Derive the canonical screen list from the idea, PRD, user stories, acceptance criteria, spec, design, and interaction model.
 - Record every required screen or global surface as a `##` section in `SCREEN_ACCEPTANCE.md` with a `Requirement source:` line.
-- Produce or collect formal layout/state assets and HTML/CSS design packages only when the reference requires them.
+- Produce or collect formal layout/state raster/PDF assets only when the reference requires them.
 - Add Screen Coverage rows for exact `SCREEN_ACCEPTANCE.md` headings when formal packages are required or already present.
-- Put build-ready HTML/CSS packages under `design/approved/html/`; use one HTML file per screen/state when visual differences matter.
+- Put build-ready HTML/CSS companion packages under `design/approved/html/`; use one HTML file per screen/state when visual differences matter.
+- Do not use product-designer prose, local HTML, Playwright/browser screenshots, or self-rendered SVG/canvas output as the formal source.
 
 ## Screen Coverage
 | Screen | State | Source type | Source reference | Approved asset path | Resolution / export | Status | Implementation notes |

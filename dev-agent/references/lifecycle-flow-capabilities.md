@@ -142,8 +142,14 @@ gate.
   breakpoints, actions, accessibility, and visual acceptance.
 - Decides whether formal design assets are needed and whether existing assets
   are build-ready.
-- Uses high-fidelity HTML/CSS design packages as the preferred build handoff
-  when formal design is required.
+- Treats product-designer output as direction only; it cannot be used as a
+  development resource without a formal visual source or an explicit
+  no-formal-assets applicability decision.
+- Requires formal high-fidelity visual sources when formal design is required:
+  Image Gen/GPT Image boards, Figma frames, human-designer exports, external
+  design exports, or design-system board exports.
+- Uses high-fidelity HTML/CSS companion packages as build handoff, not
+  as standalone formal design source.
 - Requires Image Gen / GPT Image provenance for final logo, app icon, brand/KV,
   and high-quality bitmap assets. Local SVG or canvas renders are drafts only.
 - Handles Figma handoff when Figma is used.
@@ -162,9 +168,11 @@ gate.
 
 **Role capabilities**
 
-- [product-designer](../agents/product-designer.md) is the primary specialist
-  for reference interpretation, UX judgment, IA, visual system, states, and
-  missing design-resource decisions.
+- [product-designer](../agents/product-designer.md) is the specialist for
+  reference interpretation, UX judgment, IA, visual system, states, design
+  applicability, and missing resource decisions. Its output feeds Image
+  Gen/GPT Image, Figma, or human design; it does not become build input by
+  itself.
 - Use Image Gen / GPT Image tooling for required identity and high-quality
   bitmap assets.
 - Use Figma-specific flows only when the project needs a Figma handoff,
@@ -179,8 +187,8 @@ gate.
 - If references are required, reference assets or links must exist. If visual
   direction is delegated, `REFERENCE_BOARD.md` must exist.
 - If formal design assets are required, the design artifact contract must be
-  satisfied, including approved HTML/CSS packages and asset coverage when in
-  scope.
+  satisfied, including formal visual source coverage and HTML/CSS companion
+  packages when in scope.
 - If Figma is used, `bin/dev-flow figma-check <project-name>` must pass.
 - Main gate command:
   `bin/dev-flow design-check <project-name>`.
@@ -270,7 +278,7 @@ gate.
 - Monkey/exploratory QA stresses navigation, repeated actions, invalid inputs,
   resizing, and state changes.
 - Visual QA compares implemented UI against `DESIGN.md`, `VISUAL_SYSTEM.md`,
-  `SCREEN_ACCEPTANCE.md`, approved assets, HTML/CSS design packages, cut
+  `SCREEN_ACCEPTANCE.md`, formal visual assets, HTML/CSS companion packages, cut
   assets, references, and required design inputs.
 - Quality review covers correctness, state coverage, simplicity, boundaries,
   accessibility, security/privacy, and performance.
