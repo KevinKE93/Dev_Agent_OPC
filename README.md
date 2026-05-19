@@ -70,7 +70,10 @@ bin/dev-flow status <project-name>
 bin/dev-flow next <project-name>
 ```
 
-然后只读取 `next` 返回的 command、skill、references 和项目文件。
+默认 `next` 是 L0 navigator，只返回当前任务、验收、proof、gate、Plan
+Review 和 autonomy/heartbeat 决策；需要阶段级上下文时再运行
+`bin/dev-flow next <project-name> --phase-brief`，维护或排障流程包时才用
+`--full`。只读取所选 brief 层明确要求的上下文。
 
 本地使用：
 
@@ -78,6 +81,8 @@ bin/dev-flow next <project-name>
 bin/dev-flow init <project-name> --type ui
 bin/dev-flow status <project-name>
 bin/dev-flow next <project-name>
+bin/dev-flow next <project-name> --phase-brief
+bin/dev-flow plan <project-name>
 bin/dev-flow autonomy <project-name>
 bin/dev-flow delegate <project-name>
 bin/dev-flow ui-polish <project-name>
@@ -128,7 +133,9 @@ bin/dev-flow install claude-code --scope user
 - **设计实现方式**：正式设计交付以 `design-artifacts` 中的 HTML/CSS design package 合同为准，用高保真 HTML/CSS 和必要的 CSS/JS/Lottie 动效作为实现目标，提高还原度、验收效率和代码生成效率。
 - **设计门禁**：customer-facing UI 在 build 前运行 `design-check`；没有参考时需用户委托视觉方向或提供参考；logo、app icon、品牌 KV 和高质量位图素材必须有 Image Gen / GPT Image 来源。
 - **环境边界**：宿主机 SDK、模拟器、MCP、凭证和系统服务记录在 `HOST_REQUIREMENTS.md`，不混入项目 runtime。
-- **自主循环**：`AUTONOMY_LOOP` 默认给出 heartbeat 建议；遇到 blocker、高风险审批或最终阶段已验证时停止。
+- **分层 Brief**：`bin/dev-flow next` 默认输出 L0 navigator；`--phase-brief` 展开 command/skill/load/outputs；`--full` 用于流程维护和导航器排障。
+- **任务规划**：`bin/dev-flow next` 和 `bin/dev-flow plan` 会把 TODO 或阶段输出整理进 `TASKS.md` / `EXECUTION_PLAN.md`，先做 Plan Review 再执行。
+- **自主循环**：`AUTONOMY_LOOP` 默认给出 heartbeat 建议；多项清晰任务会启用 1 分钟安全批次 heartbeat，遇到 blocker、高风险审批或最终阶段已验证时停止。
 - **Subagent 并行**：`SUBAGENTS` 默认给出可并行任务包；host 支持时可把 explorer、worker、verifier 等侧线任务交给子 agent。
 - **技术质量制衡**：`technical-steward` 作为独立技术质量负责人，在高风险方案、证据不足、QA 过顺或发布前挑战架构、实现和验收证据，不新增第 7 阶段。
 - **UI 打磨预算**：runtime visual pass 默认一次；P0/P1 阻塞当前任务，P2/P3 记录到 `UI_DEBT.md` 后继续推进。
@@ -186,8 +193,11 @@ bin/dev-flow status <project-name>
 bin/dev-flow next <project-name>
 ```
 
-Then read only the command, skill, references, and project files named by
-`next`.
+The default `next` output is an L0 navigator with the current task, acceptance,
+proof command, gate, plan review, and autonomy/heartbeat decision. Expand with
+`bin/dev-flow next <project-name> --phase-brief` for command/skill/load/output
+details, and use `--full` only for workflow maintenance or navigator debugging.
+Read only the context required by the selected brief layer.
 
 Local commands:
 
@@ -195,6 +205,7 @@ Local commands:
 bin/dev-flow init <project-name> --type ui
 bin/dev-flow status <project-name>
 bin/dev-flow next <project-name>
+bin/dev-flow next <project-name> --phase-brief
 bin/dev-flow autonomy <project-name>
 bin/dev-flow delegate <project-name>
 bin/dev-flow ui-polish <project-name>
@@ -245,7 +256,8 @@ Six-step capability index:
 - **Design implementation format**: formal design handoff follows the HTML/CSS design-package contract in `design-artifacts`; high-fidelity HTML/CSS plus CSS/JS/Lottie motion files are the preferred implementation target for better UI fidelity, review speed, and code-generation efficiency.
 - **Design gate**: customer-facing UI runs `design-check` before build; missing references require user input or delegated visual direction; logo, app icon, brand KV, and high-quality bitmap assets require Image Gen / GPT Image provenance.
 - **Environment boundary**: host SDKs, simulators, MCP servers, credentials, and services are recorded in `HOST_REQUIREMENTS.md` instead of project runtime output.
-- **Autonomy loop**: `AUTONOMY_LOOP` suggests heartbeat continuation by default, and stops on blockers, high-risk approval, or verified final phases.
+- **Task planning**: `next` and `plan` normalize TODO lists or phase outputs into `TASKS.md` / `EXECUTION_PLAN.md`, then require plan review before execution.
+- **Autonomy loop**: `AUTONOMY_LOOP` suggests heartbeat continuation by default; multiple clear pending tasks enable 1-minute safe-batch heartbeats, and the loop stops on blockers, high-risk approval, failed review, or verified final phases.
 - **Subagent parallelism**: `SUBAGENTS` suggests optional task packets so host clients can delegate explorer, worker, and verifier work when supported.
 - **Technical quality challenge**: `technical-steward` acts as an independent quality steward for high-risk plans, thin evidence, too-smooth QA, or release readiness; it challenges architecture, implementation, and evidence without adding a seventh phase.
 - **UI polish budget**: runtime visual passes default to one; P0/P1 blocks the task, while P2/P3 goes to `UI_DEBT.md` and work advances.

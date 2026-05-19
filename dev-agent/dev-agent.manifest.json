@@ -23,6 +23,7 @@
     { "name": "design", "skill": "design-flow", "command": "dev-agent/commands/design.md", "phase": "design", "defaultGate": "bin/dev-flow design-check <project>" },
     { "name": "figma-design", "skill": "figma-use + figma-generate-design", "command": "dev-agent/commands/figma-design.md", "phase": "design", "defaultGate": "bin/dev-flow figma-check <project>" },
     { "name": "figma-library", "skill": "figma-use + figma-generate-library", "command": "dev-agent/commands/figma-library.md", "phase": "design", "defaultGate": "bin/dev-flow figma-check <project>" },
+    { "name": "plan", "skill": "task planning and autonomy review control", "command": "dev-agent/commands/plan.md", "phase": null, "defaultGate": "bin/dev-flow plan <project>" },
     { "name": "build", "skill": "incremental-implementation with micro-plan and proof-first checklist", "command": "dev-agent/commands/build.md", "phase": "build", "defaultGate": "bin/dev-flow env-check <project> when host-dependent, then bin/dev-flow verify-phase <project> build, then bin/dev-flow check <project>" },
     { "name": "qa", "skill": "frontend-ui-engineering with optional acceptance, monkey, visual, and quality review", "command": "dev-agent/commands/qa.md", "phase": "qa", "defaultGate": "bin/dev-flow qa-check <project> when QA is required" },
     { "name": "ship", "skill": "shipping-and-launch", "command": "dev-agent/commands/ship.md", "phase": "ship", "defaultGate": "bin/dev-flow ship-check <project>" },

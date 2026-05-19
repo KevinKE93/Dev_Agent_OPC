@@ -15,9 +15,12 @@ bin/dev-flow status <project-name>
 bin/dev-flow next <project-name>
 ```
 
-Then load only the command, skill, references, and project files named by
-`next`. Use direct command/persona reads only when `next` asks for them or when
-maintaining the workflow pack itself.
+Default `next` is the L0 navigator for the immediate task, gate, plan review,
+and autonomy/heartbeat decision. Expand with `bin/dev-flow next <project-name>
+--phase-brief` only when the task needs command/skill/load/output details, and
+use `--full` only when maintaining the workflow pack or debugging the navigator.
+Use direct command/persona reads only when the selected brief layer asks for
+them.
 
 Supported actions:
 
@@ -28,8 +31,8 @@ Supported actions:
 
 Primary lifecycle flows: `idea`, `spec`, `design`, `build`, `qa`, `ship`.
 
-Focused auxiliary flows: `figma-design`, `figma-library`, `debug`, `ui`,
-`api`, `security`, `code-simplify`.
+Focused auxiliary flows: `figma-design`, `figma-library`, `plan`, `debug`,
+`ui`, `api`, `security`, `code-simplify`.
 
 Supported roles: `code-reviewer`, `product-designer`, `security-auditor`, `technical-steward`, `test-engineer`, `ui-quality-reviewer`. Invoke roles only on explicit user request or when the current risk needs that specialist view; lifecycle phases do not auto-require personas.
 
@@ -38,6 +41,6 @@ Runtime resolution:
 2. If unavailable, use an installed runtime at `.codex/dev-agent-runtime/bin/dev-flow`, `${CODEX_HOME:-$HOME/.codex}/dev-agent-runtime/bin/dev-flow`, `.claude/dev-agent-runtime/bin/dev-flow`, or the host adapter's `dev-agent-runtime/bin/dev-flow`.
 3. Installed runtime commands read and write `<project-name>/` under the active workspace/current shell directory, or under `DEV_FLOW_WORKSPACE_ROOT` when that env var is set.
 
-Do not create a new workflow. Load only the required context from the `next`
-brief, write outputs under `<project-name>/`, run the listed gate, then
-record the next lifecycle phase with `phase` after the gate passes.
+Do not create a new workflow. Load only the required context from the selected
+`next` brief layer, write outputs under `<project-name>/`, run the listed gate,
+then record the next lifecycle phase with `phase` after the gate passes.

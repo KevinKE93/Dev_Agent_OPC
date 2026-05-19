@@ -11,10 +11,12 @@ bin/dev-flow status <project-name>
 bin/dev-flow next <project-name>
 ```
 
-Do not start by bulk-reading Markdown. Load only the command, skill, references,
-and project files named by `bin/dev-flow next`. Use broader Markdown reads only
-when maintaining this workflow pack itself, creating/migrating a project, or
-debugging a broken navigator.
+Do not start by bulk-reading Markdown. `bin/dev-flow next <project-name>` is a
+layered brief: default output is the L0 navigator for the immediate task and
+heartbeat decision; use `--phase-brief` only when entering a phase, a gate fails,
+or task acceptance is unclear; use `--full` only for workflow-pack maintenance,
+creating/migrating a project, or debugging a broken navigator. Load only the
+context named by the selected brief layer.
 
 ## Primary Workflow
 
@@ -59,7 +61,9 @@ bin/dev-flow refs
 
 bin/dev-flow init <project-name> [--type ui|agent|api|library|docs]
 bin/dev-flow status <project-name>
-bin/dev-flow next <project-name>
+bin/dev-flow next <project-name> [--brief|--phase-brief|--full]
+bin/dev-flow plan <project-name>
+bin/dev-flow task <project-name> <next|start|done|block> [task-id] [reason]
 bin/dev-flow autonomy <project-name>
 bin/dev-flow delegate <project-name>
 bin/dev-flow ui-polish <project-name>
@@ -85,10 +89,13 @@ strict design gates on. QA and ship stay optional unless `AUTOMATED_QA`,
 
 At the beginning of every project session, run `bin/dev-flow status <project-name>`
 and `bin/dev-flow next <project-name>` to recover the current phase, minimal
-context, required outputs, blockers, and next gate. Treat `next` as the source of
-truth for what to read and what to run. `bin/dev-flow phase` records state only;
-it does not execute skill work. Use `--force` only to intentionally record early
-state, then complete missing artifacts before delivery.
+task brief, blockers, plan review, autonomy decision, and next gate. Treat
+`next` as the source of truth for what to read and what to run. Expand to
+`bin/dev-flow next <project-name> --phase-brief` for the command/skill/load
+lists and required outputs; expand to `--full` when you need the complete
+execution navigator. `bin/dev-flow phase` records state only; it does not
+execute skill work. Use `--force` only to intentionally record early state, then
+complete missing artifacts before delivery.
 
 `bin/dev-flow autonomy <project-name>` reports whether the host should continue
 autonomously or schedule a heartbeat; `bin/dev-flow delegate <project-name>`
@@ -170,7 +177,7 @@ created inside `.dev-agent/` when `next`, `phase`, or a gate needs that phase.
 - Product/spec: `.dev-agent/product/PRD.md`, `.dev-agent/specs/SPEC.md`
 - Optional agent notes: `.dev-agent/agent/` for legacy/imported material; canonical agent runtime contract belongs in `.dev-agent/specs/SPEC.md`
 - Design: `.dev-agent/design/DESIGN.md`, `VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`, `DESIGN_ARTIFACTS.md`, `DESIGN_IMAGE_DESCRIPTIONS.md`, `FIGMA_HANDOFF.md`, `.dev-agent/design/approved/`, `.dev-agent/design/cut-assets/`
-- Build planning/evidence: `.dev-agent/tasks/status.md`, `.dev-agent/tasks/quality-gates.md`, `.dev-agent/tasks/IMPLEMENTATION_TRACE.md`, `.dev-agent/tasks/AUTONOMY.md`, `.dev-agent/tasks/DELEGATION.md`, `.dev-agent/tasks/subagents/TEMPLATE.md`, `.dev-agent/reviews/VERIFICATION.md`, `.dev-agent/reviews/BLOCKED_BUILD.md`, `.dev-agent/reviews/UI_DEBT.md`
+- Build planning/evidence: `.dev-agent/tasks/status.md`, `.dev-agent/tasks/TASKS.md`, `.dev-agent/tasks/EXECUTION_PLAN.md`, `.dev-agent/tasks/quality-gates.md`, `.dev-agent/tasks/IMPLEMENTATION_TRACE.md`, `.dev-agent/tasks/AUTONOMY.md`, `.dev-agent/tasks/DELEGATION.md`, `.dev-agent/tasks/subagents/TEMPLATE.md`, `.dev-agent/reviews/VERIFICATION.md`, `.dev-agent/reviews/BLOCKED_BUILD.md`, `.dev-agent/reviews/UI_DEBT.md`
 - Optional QA: `.dev-agent/reviews/FUNCTIONAL_TEST.md`, `.dev-agent/reviews/MONKEY_TEST.md`, `.dev-agent/reviews/ACCEPTANCE_QA.html`, `.dev-agent/reviews/VISUAL_COMPARISON.md`, `.dev-agent/reviews/acceptance-screenshots/`, `.dev-agent/reviews/visual-screenshots/`
 - Optional ship: `.dev-agent/ship/LAUNCH.md`
 - Source roots: project-root `src/`, `app/`, `apps/`, `packages/`, or another project-local source directory
@@ -180,6 +187,15 @@ direction when no reference is available, high-risk architecture decisions,
 security/payment/permission/data-deletion behavior, and production launch
 approval. Routine implementation, tests, and local documentation should continue
 automatically when the current spec, design, and build gate are clear.
+
+For task automation, `bin/dev-flow next <project-name>` and `bin/dev-flow plan
+<project-name>` normalize explicit TODO lists or phase outputs into
+`.dev-agent/tasks/TASKS.md` and `.dev-agent/tasks/EXECUTION_PLAN.md`. When
+multiple pending tasks have clear outputs, acceptance, proof commands, and
+low-risk status, hosts may schedule 1-minute heartbeat batches. A batch can
+execute more than one task only when tasks share a safe proof path. Pause the
+heartbeat and surface the blocker when plan review fails, approval is required,
+proof fails, or task acceptance is unclear.
 
 Create development output in the project root using the simplest layout that fits
 the stack, for example `src/`, `app/`, `apps/`, `packages/`, `server/`, or stack

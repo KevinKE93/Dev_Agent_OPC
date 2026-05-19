@@ -6,10 +6,14 @@ they can schedule heartbeat follow-ups.
 
 ## Current Policy
 - AUTONOMY_LOOP:
+- AUTONOMY_TASK_MODE:
+- AUTONOMY_REVIEW_BEFORE_EXECUTE:
+- AUTONOMY_HEARTBEAT_ON_TASK_LIST:
+- AUTONOMY_BATCH_POLICY:
 - HEARTBEAT_INTERVAL:
 - AUTONOMY_MAX_CYCLES:
 - AUTONOMY_STOP_ON:
 
 ## Cycle Log
-| Time | Phase | Continue | Heartbeat | Action | Stop reason / blocker |
-|---|---|---|---|---|---|
+| Time | Phase | Continue | Heartbeat | Batch policy | Action | Stop reason / blocker |
+|---|---|---|---|---|---|---|

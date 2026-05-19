@@ -22,7 +22,7 @@ Usage:
   bin/dev-flow manifest
   bin/dev-flow show <alias-or-skill>
   bin/dev-flow path <alias-or-skill>
-  bin/dev-flow command <dev|dev-agent|idea|spec|design|figma-design|figma-library|build|qa|ship|debug|ui|api|security|code-simplify>
+  bin/dev-flow command <dev|dev-agent|idea|spec|design|figma-design|figma-library|plan|build|qa|ship|debug|ui|api|security|code-simplify>
   bin/dev-flow agent <code-reviewer|product-designer|technical-steward|test-engineer|security-auditor|ui-quality-reviewer>
   bin/dev-flow refs
   bin/dev-flow install <codex|claude-code|gemini|openclaw|opencode> [--scope project|user] [--dest path] [--mode native|full]
@@ -30,7 +30,9 @@ Usage:
   bin/dev-flow init <project-name> [--type ui|agent|api|library|docs]
   bin/dev-flow status <project-name>
   bin/dev-flow phase <project-name> <idea|spec|design|build|qa|ship> [task] [--force]
-  bin/dev-flow next <project-name>
+  bin/dev-flow next <project-name> [--brief|--phase-brief|--full]
+  bin/dev-flow plan <project-name>
+  bin/dev-flow task <project-name> <next|start|done|block> [task-id] [reason]
   bin/dev-flow verify-phase <project-name> <idea|spec|design|build|qa|ship>
   bin/dev-flow env-check <project-name>
   bin/dev-flow ship-check <project-name>
@@ -61,9 +63,9 @@ Aliases:
   ship      -> shipping-and-launch
 
 Applicability:
-  Product, agent-contract, planning, testing, and review checks are folded into spec, build, qa, and ship.
+  Product, agent-contract, testing, and review checks are folded into spec, build, qa, and ship. Task planning is surfaced by next and plan.
   Optional gates are controlled by <project-name>/.dev-agent/state/applicability.env.
-  Set AGENT_CONTRACT, UI_FLOW, UI_REFERENCES, UI_DESIGN_ASSETS, UI_FIGMA_HANDOFF, AUTOMATED_QA, VISUAL_QA, SHIP_FLOW, AUTONOMY_LOOP, or SUBAGENTS to auto, required, delegated, suggest, enabled, or disabled as supported.
+  Set AGENT_CONTRACT, UI_FLOW, UI_REFERENCES, UI_DESIGN_ASSETS, UI_FIGMA_HANDOFF, AUTOMATED_QA, VISUAL_QA, SHIP_FLOW, AUTONOMY_LOOP, AUTONOMY_TASK_MODE, AUTONOMY_HEARTBEAT_ON_TASK_LIST, AUTONOMY_BATCH_POLICY, or SUBAGENTS to auto, required, delegated, suggest, enabled, or disabled as supported.
   Project type is recorded in <project-name>/.dev-agent/state/schema.env.
 EOF
 }
@@ -302,6 +304,18 @@ autonomy_path() {
   fi
 }
 
+tasks_path() {
+  local dir
+  dir="$(project_process_root "${1:-}")"
+  echo "$dir/tasks/TASKS.md"
+}
+
+execution_plan_path() {
+  local dir
+  dir="$(project_process_root "${1:-}")"
+  echo "$dir/tasks/EXECUTION_PLAN.md"
+}
+
 require_project() {
   local dir
   dir="$(project_path "${1:-}")"
@@ -489,6 +503,8 @@ write_build_templates() {
   local project="$2"
   local project_type="$3"
   write_project_template "$dir" "tasks/status.md" "status.md" "$project" "$project_type"
+  write_project_template "$dir" "tasks/TASKS.md" "tasks.md" "$project" "$project_type"
+  write_project_template "$dir" "tasks/EXECUTION_PLAN.md" "execution-plan.md" "$project" "$project_type"
   write_project_template "$dir" "tasks/quality-gates.md" "quality-gates.md" "$project" "$project_type"
   write_project_template "$dir" "tasks/IMPLEMENTATION_TRACE.md" "implementation-trace.md" "$project" "$project_type"
   write_project_template "$dir" "tasks/AUTONOMY.md" "autonomy.md" "$project" "$project_type"
@@ -513,6 +529,8 @@ ensure_status_artifacts() {
   local project_type="$3"
   mkdir -p "$dir/tasks"
   write_project_template "$dir" "tasks/status.md" "status.md" "$project" "$project_type"
+  write_project_template "$dir" "tasks/TASKS.md" "tasks.md" "$project" "$project_type"
+  write_project_template "$dir" "tasks/EXECUTION_PLAN.md" "execution-plan.md" "$project" "$project_type"
 }
 
 ensure_phase_artifacts() {
@@ -785,6 +803,361 @@ phase_blockers() {
   esac
 }
 
+task_primary_gate_for_phase() {
+  local project="$1"
+  local phase="$2"
+  case "$phase" in
+    design) echo "bin/dev-flow design-check $project" ;;
+    build) echo "bin/dev-flow verify-phase $project build && bin/dev-flow check $project" ;;
+    qa) echo "bin/dev-flow verify-phase $project qa" ;;
+    ship) echo "bin/dev-flow ship-check $project" ;;
+    *) echo "bin/dev-flow verify-phase $project $phase" ;;
+  esac
+}
+
+task_markdown_rows_count() {
+  local path="$1"
+  [[ -f "$path" ]] || { echo 0; return 0; }
+  awk -F'|' '
+    function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
+    /^\|/ {
+      id = trim($2)
+      if (id ~ /^TASK-/) count++
+    }
+    END { print count + 0 }
+  ' "$path"
+}
+
+task_status_count() {
+  local path="$1"
+  local wanted="$2"
+  [[ -f "$path" ]] || { echo 0; return 0; }
+  awk -F'|' -v wanted="$wanted" '
+    function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
+    function want(status) {
+      split(wanted, values, ",")
+      for (i in values) if (status == values[i]) return 1
+      return 0
+    }
+    /^\|/ {
+      id = trim($2)
+      status = tolower(trim($9))
+      if (id ~ /^TASK-/ && want(status)) count++
+    }
+    END { print count + 0 }
+  ' "$path"
+}
+
+task_review_issue_count() {
+  local path="$1"
+  [[ -f "$path" ]] || { echo 0; return 0; }
+  awk -F'|' '
+    function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
+    function bad(s) {
+      s = tolower(trim(s))
+      return s == "" || s ~ /(tbd|todo|unclear|unknown|待确认|不明确)/
+    }
+    /^\|/ {
+      id = trim($2)
+      status = tolower(trim($9))
+      if (id ~ /^TASK-/ && status !~ /^(done|blocked|skipped)$/ && (bad($6) || bad($7))) count++
+    }
+    END { print count + 0 }
+  ' "$path"
+}
+
+task_high_risk_count() {
+  local path="$1"
+  [[ -f "$path" ]] || { echo 0; return 0; }
+  awk -F'|' '
+    function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
+    /^\|/ {
+      id = trim($2)
+      status = tolower(trim($9))
+      text = tolower(trim($3) " " trim($5) " " trim($8))
+      if (id ~ /^TASK-/ && status !~ /^(done|skipped)$/ && text ~ /(high|payment|billing|security|permission|credential|secret|privacy|delete|destructive|production|launch|ship|高风险|权限|隐私|删除|生产)/) count++
+    }
+    END { print count + 0 }
+  ' "$path"
+}
+
+task_next_pending_summary() {
+  local path="$1"
+  [[ -f "$path" ]] || return 0
+  awk -F'|' '
+    function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
+    /^\|/ {
+      id = trim($2)
+      status = tolower(trim($9))
+      if (id ~ /^TASK-/ && status ~ /^(pending|planned|todo)$/) {
+        print id " - " trim($3)
+        exit
+      }
+    }
+  ' "$path"
+}
+
+task_next_pending_column() {
+  local path="$1"
+  local column="$2"
+  [[ -f "$path" ]] || return 0
+  awk -F'|' -v column="$column" '
+    function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
+    /^\|/ {
+      id = trim($2)
+      status = tolower(trim($9))
+      if (id ~ /^TASK-/ && status ~ /^(pending|planned|todo)$/) {
+        print trim($column)
+        exit
+      }
+    }
+  ' "$path"
+}
+
+task_plan_source_label() {
+  local path="$1"
+  if [[ -f "$path" ]] && grep -q 'auto-generated from current phase outputs' "$path"; then
+    echo "generated from current phase outputs"
+  else
+    echo "existing task list"
+  fi
+}
+
+append_generated_task_if_needed() {
+  local project="$1"
+  local phase="$2"
+  local path gate id title
+  path="$(tasks_path "$project")"
+  if [[ "$(task_markdown_rows_count "$path")" -gt 0 ]]; then
+    return 0
+  fi
+  gate="$(task_primary_gate_for_phase "$project" "$phase")"
+  id="TASK-${phase}-001"
+  title="$(phase_default_task "$phase")"
+  {
+    echo "| $id | $title | current phase | Required outputs for phase: $phase | $gate passes | $gate | normal | pending | auto-generated from current phase outputs |"
+  } >> "$path"
+}
+
+task_review_status() {
+  local project="$1"
+  local path blocked high_risk review_issues rows
+  path="$(tasks_path "$project")"
+  rows="$(task_markdown_rows_count "$path")"
+  if [[ "$rows" -eq 0 ]]; then
+    echo "pause"
+    return 0
+  fi
+  blocked="$(task_status_count "$path" "blocked")"
+  if [[ "$blocked" -gt 0 ]]; then
+    echo "pause"
+    return 0
+  fi
+  high_risk="$(task_high_risk_count "$path")"
+  if [[ "$high_risk" -gt 0 ]] || current_task_is_high_risk_loaded; then
+    echo "approval-required"
+    return 0
+  fi
+  review_issues="$(task_review_issue_count "$path")"
+  if [[ "$review_issues" -gt 0 ]]; then
+    echo "pause"
+    return 0
+  fi
+  echo "pass"
+}
+
+task_review_reason() {
+  local project="$1"
+  local path status
+  path="$(tasks_path "$project")"
+  status="$(task_review_status "$project")"
+  case "$status" in
+    pass) echo "tasks have clear outputs, acceptance, and proof commands" ;;
+    approval-required) echo "task plan includes high-risk work requiring approval" ;;
+    *)
+      if [[ "$(task_status_count "$path" "blocked")" -gt 0 ]]; then
+        echo "task plan has blocked item"
+      elif [[ "$(task_review_issue_count "$path")" -gt 0 ]]; then
+        echo "task plan has unclear acceptance or proof"
+      else
+        echo "task plan is missing executable tasks"
+      fi
+      ;;
+  esac
+}
+
+ensure_task_plan_artifacts() {
+  local project="$1"
+  local phase="$2"
+  local dir project_type
+  dir="$(project_process_root "$project")"
+  load_project_schema "$project"
+  project_type="$PROJECT_TYPE"
+  mkdir -p "$dir/tasks"
+  write_project_template "$dir" "tasks/TASKS.md" "tasks.md" "$project" "$project_type"
+  write_project_template "$dir" "tasks/EXECUTION_PLAN.md" "execution-plan.md" "$project" "$project_type"
+  append_generated_task_if_needed "$project" "$phase"
+}
+
+write_execution_plan_snapshot() {
+  local project="$1"
+  local phase="$2"
+  local path plan_path now status pending in_progress blocked source next_task
+  path="$(tasks_path "$project")"
+  plan_path="$(execution_plan_path "$project")"
+  now="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+  status="$(task_review_status "$project")"
+  pending="$(task_status_count "$path" "pending,planned,todo")"
+  in_progress="$(task_status_count "$path" "in_progress,in-progress,doing")"
+  blocked="$(task_status_count "$path" "blocked")"
+  source="$(task_plan_source_label "$path")"
+  next_task="$(task_next_pending_summary "$path")"
+  {
+    echo
+    echo "## Plan Snapshot $now"
+    echo "- Phase: $phase"
+    echo "- Source: $source"
+    echo "- Plan Review: $status"
+    echo "- Review reason: $(task_review_reason "$project")"
+    echo "- Pending tasks: $pending"
+    echo "- In progress tasks: $in_progress"
+    echo "- Blocked tasks: $blocked"
+    echo "- Safe Batch Policy: execute a batch of clear, low-risk tasks per heartbeat; stop before ambiguity, high-risk work, or failed proof."
+    echo "- Next task: ${next_task:-none}"
+  } >> "$plan_path"
+}
+
+task_plan_summary_for_phase() {
+  local project="$1"
+  local phase="$2"
+  local path plan_path pending in_progress done blocked review source next_task
+  load_project_applicability "$project"
+  ensure_task_plan_artifacts "$project" "$phase"
+  path="$(tasks_path "$project")"
+  plan_path="$(execution_plan_path "$project")"
+  pending="$(task_status_count "$path" "pending,planned,todo")"
+  in_progress="$(task_status_count "$path" "in_progress,in-progress,doing")"
+  done="$(task_status_count "$path" "done")"
+  blocked="$(task_status_count "$path" "blocked")"
+  review="$(task_review_status "$project")"
+  source="$(task_plan_source_label "$path")"
+  next_task="$(task_next_pending_summary "$path")"
+  echo "Task plan:"
+  echo "- Mode: $AUTONOMY_TASK_MODE"
+  echo "- Board: $(project_process_display_root "$project")/tasks/TASKS.md"
+  echo "- Execution plan: $(project_process_display_root "$project")/tasks/EXECUTION_PLAN.md"
+  echo "- Source: $source"
+  echo "- Pending tasks: $pending"
+  echo "- In progress tasks: $in_progress"
+  echo "- Done tasks: $done"
+  echo "- Blocked tasks: $blocked"
+  echo "- Plan Review: $review"
+  echo "- Review reason: $(task_review_reason "$project")"
+  echo "- Batch policy: $AUTONOMY_BATCH_POLICY"
+  echo "- Heartbeat interval: $HEARTBEAT_INTERVAL"
+  echo "- Next task: ${next_task:-none}"
+}
+
+task_plan_compact_for_phase() {
+  local project="$1"
+  local phase="$2"
+  local path pending blocked review source next_task
+  load_project_applicability "$project"
+  ensure_task_plan_artifacts "$project" "$phase"
+  path="$(tasks_path "$project")"
+  pending="$(task_status_count "$path" "pending,planned,todo")"
+  blocked="$(task_status_count "$path" "blocked")"
+  review="$(task_review_status "$project")"
+  source="$(task_plan_source_label "$path")"
+  next_task="$(task_next_pending_summary "$path")"
+  echo "Task plan:"
+  echo "- Brief level: L0 navigator"
+  echo "- Source: $source"
+  echo "- Pending tasks: $pending"
+  echo "- Blocked tasks: $blocked"
+  echo "- Plan Review: $review"
+  echo "- Review reason: $(task_review_reason "$project")"
+  echo "- Batch policy: $AUTONOMY_BATCH_POLICY"
+  echo "- Next task: ${next_task:-none}"
+}
+
+task_list_has_clear_multi_pending() {
+  local project="$1"
+  local path pending review
+  path="$(tasks_path "$project")"
+  pending="$(task_status_count "$path" "pending,planned,todo")"
+  review="$(task_review_status "$project")"
+  [[ "$pending" -ge 2 && "$review" == "pass" ]]
+}
+
+plan_task_queue_impl() {
+  local project="$1"
+  require_project "$project"
+  ensure_control_for_uninitialized_project "$project"
+  load_project_state "$project"
+  load_project_schema "$project"
+  ensure_status_artifacts "$(project_process_root "$project")" "$project" "$PROJECT_TYPE"
+  ensure_task_plan_artifacts "$project" "$CURRENT_PHASE"
+  write_execution_plan_snapshot "$project" "$CURRENT_PHASE"
+  task_plan_summary_for_phase "$project" "$CURRENT_PHASE"
+}
+
+task_next_impl() {
+  local project="$1"
+  local path next_task
+  require_project "$project"
+  ensure_control_for_uninitialized_project "$project"
+  load_project_state "$project"
+  load_project_schema "$project"
+  ensure_task_plan_artifacts "$project" "$CURRENT_PHASE"
+  path="$(tasks_path "$project")"
+  next_task="$(task_next_pending_summary "$path")"
+  if [[ -z "$next_task" ]]; then
+    echo "Next task: none"
+    return 0
+  fi
+  echo "Next task: $next_task"
+}
+
+task_update_status_impl() {
+  local project="$1"
+  local task_id="$2"
+  local status="$3"
+  local note="${4:-}"
+  local path tmp
+  require_project "$project"
+  ensure_control_for_uninitialized_project "$project"
+  load_project_state "$project"
+  load_project_schema "$project"
+  ensure_task_plan_artifacts "$project" "$CURRENT_PHASE"
+  path="$(tasks_path "$project")"
+  tmp="$path.tmp"
+  if ! awk -F'|' -v task_id="$task_id" -v new_status="$status" -v new_note="$note" '
+    function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
+    BEGIN { changed = 0 }
+    /^\|/ {
+      id = trim($2)
+      if (id == task_id) {
+        note = new_note == "" ? trim($10) : new_note
+        print "| " id " | " trim($3) " | " trim($4) " | " trim($5) " | " trim($6) " | " trim($7) " | " trim($8) " | " new_status " | " note " |"
+        changed = 1
+        next
+      }
+    }
+    { print }
+    END { if (!changed) exit 3 }
+  ' "$path" > "$tmp"; then
+    rm -f "$tmp"
+    echo "Unknown task id: ${task_id:-<missing>}" >&2
+    return 1
+  fi
+  mv "$tmp" "$path"
+  if [[ "$status" == "blocked" ]]; then
+    write_project_state "$project" "$CURRENT_PHASE" "$CURRENT_TASK" "${note:-Task blocked: $task_id}" "$LAST_VERIFICATION"
+  fi
+  echo "Updated $task_id to $status"
+}
+
 load_autonomy_state() {
   local path
   path="$(autonomy_path "${1:-}")"
@@ -890,7 +1263,7 @@ ui_polish_budget_exhausted_loaded() {
 autonomy_stop_reason_loaded() {
   local project="$1"
   local phase="$2"
-  local dir assets links next_phase
+  local dir assets links next_phase review
   dir="$(project_process_root "$project")"
   if setting_disabled "$AUTONOMY_LOOP"; then
     echo "autonomy disabled"
@@ -907,6 +1280,20 @@ autonomy_stop_reason_loaded() {
   if ui_polish_applies_loaded "$project" "$phase" && ui_polish_budget_exhausted_loaded && current_task_is_polish_loaded; then
     echo "polish loop requires explicit user approval"
     return 0
+  fi
+  if [[ "${AUTONOMY_REVIEW_BEFORE_EXECUTE:-required}" != "disabled" ]]; then
+    ensure_task_plan_artifacts "$project" "$phase"
+    review="$(task_review_status "$project")"
+    case "$review" in
+      approval-required)
+        echo "task plan requires approval"
+        return 0
+        ;;
+      pause)
+        echo "$(task_review_reason "$project")"
+        return 0
+        ;;
+    esac
   fi
   case "$phase" in
     design)
@@ -933,6 +1320,11 @@ autonomy_stop_reason_loaded() {
 }
 
 autonomy_heartbeat_label_loaded() {
+  local project="${1:-}"
+  if [[ -n "$project" ]] && setting_enabled "${AUTONOMY_HEARTBEAT_ON_TASK_LIST:-enabled}" && task_list_has_clear_multi_pending "$project"; then
+    echo "enabled"
+    return 0
+  fi
   if setting_enabled "$AUTONOMY_LOOP"; then
     echo "enabled"
     return 0
@@ -950,6 +1342,10 @@ autonomy_heartbeat_label_loaded() {
 autonomy_next_action_for_phase() {
   local project="${1:-}"
   local phase="${2:-}"
+  if [[ -n "$project" ]] && task_list_has_clear_multi_pending "$project"; then
+    echo "execute a safe batch of clear pending tasks, update TASKS.md statuses, run proof commands, then keep heartbeat only while review remains pass"
+    return 0
+  fi
   case "$phase" in
     idea)
       echo "refine .dev-agent/ideas/idea-brief.md, capture assumptions, then run verify-phase idea"
@@ -992,7 +1388,7 @@ autonomy_decision_for_phase() {
     heartbeat="no"
   else
     continue="yes"
-    heartbeat="$(autonomy_heartbeat_label_loaded)"
+    heartbeat="$(autonomy_heartbeat_label_loaded "$project")"
     reason="current gate can continue without human input"
   fi
   approval="no"
@@ -1009,6 +1405,8 @@ autonomy_decision_for_phase() {
   echo "- Max idle cycles: $AUTONOMY_MAX_IDLE_CYCLES"
   echo "- Stop on: $AUTONOMY_STOP_ON"
   echo "- Cycle count: $AUTONOMY_CYCLE_COUNT"
+  echo "- Plan Review: $(task_review_status "$project")"
+  echo "- Batch policy: $AUTONOMY_BATCH_POLICY"
   if ui_polish_applies_loaded "$project" "$phase"; then
     echo "- UI polish budget: $(ui_polish_count_loaded)/$(ui_polish_budget_loaded) used"
     echo "- UI debt policy: $UI_DEBT_POLICY"
@@ -1017,6 +1415,41 @@ autonomy_decision_for_phase() {
     else
       echo "- Runtime visual pass: optional; record only one pass before moving P2/P3 issues to UI debt"
     fi
+  fi
+  echo "- Next autonomous action: $action"
+  echo "- Requires user approval: $approval"
+  echo "- Reason: $reason"
+}
+
+autonomy_decision_compact_for_phase() {
+  local project="$1"
+  local phase="${2:-idea}"
+  local reason continue heartbeat approval action
+  load_project_state "$project"
+  load_project_applicability "$project"
+  load_autonomy_state "$project"
+  reason=""
+  if reason="$(autonomy_stop_reason_loaded "$project" "$phase")"; then
+    continue="no"
+    heartbeat="no"
+  else
+    continue="yes"
+    heartbeat="$(autonomy_heartbeat_label_loaded "$project")"
+    reason="current gate can continue without human input"
+  fi
+  approval="no"
+  case "$reason" in
+    approval*) approval="yes" ;;
+  esac
+  action="$(autonomy_next_action_for_phase "$project" "$phase")"
+  echo "Autonomy:"
+  echo "- Continue: $continue"
+  echo "- Heartbeat: $heartbeat"
+  echo "- Interval: $HEARTBEAT_INTERVAL"
+  echo "- Plan Review: $(task_review_status "$project")"
+  echo "- Batch policy: $AUTONOMY_BATCH_POLICY"
+  if ui_polish_applies_loaded "$project" "$phase"; then
+    echo "- UI polish budget: $(ui_polish_count_loaded)/$(ui_polish_budget_loaded) used"
   fi
   echo "- Next autonomous action: $action"
   echo "- Requires user approval: $approval"
@@ -1129,6 +1562,7 @@ next_prompt_for_phase() {
     return 0
   fi
   next_phase="$(next_applicable_phase_after "$project" "$phase")"
+  echo "Brief level: L2 phase"
   echo "Execution navigator: follow this brief; do not bulk-read workflow Markdown."
   echo "Next command: Use local flow: $phase"
   echo "Command file: dev-agent/commands/$phase.md"
@@ -1154,9 +1588,102 @@ next_prompt_for_phase() {
     echo "- Workflow is at the final applicable phase; keep verification evidence and blockers current."
   fi
   echo
+  task_plan_compact_for_phase "$project" "$phase"
+  echo
+  autonomy_decision_compact_for_phase "$project" "$phase"
+  echo
+  echo "Subagents: run bin/dev-flow delegate $project when host subagents are available."
+}
+
+next_full_prompt_for_phase() {
+  local project="$1"
+  local phase="${2:-idea}"
+  local next_phase
+  if ! is_valid_phase "$phase"; then
+    echo "Unknown phase: ${phase:-<missing>}"
+    echo "Valid phases: idea, spec, design, build, qa, ship"
+    return 0
+  fi
+  next_phase="$(next_applicable_phase_after "$project" "$phase")"
+  echo "Brief level: L3 full"
+  echo "Execution navigator: follow this brief; do not bulk-read workflow Markdown."
+  echo "Next command: Use local flow: $phase"
+  echo "Command file: dev-agent/commands/$phase.md"
+  echo "Primary skill files:"
+  phase_skill_files "$project" "$phase"
+  echo
+  echo "Load:"
+  phase_load_list "$project" "$phase"
+  echo
+  echo "Required outputs:"
+  phase_required_outputs "$project" "$phase"
+  echo
+  echo "Gate before next phase:"
+  phase_gate_list "$project" "$phase"
+  echo
+  echo "Blocked if:"
+  phase_blockers "$project" "$phase"
+  echo
+  echo "After pass:"
+  if [[ -n "$next_phase" ]]; then
+    echo "- bin/dev-flow phase $project $next_phase \"$(phase_default_task "$next_phase")\""
+  else
+    echo "- Workflow is at the final applicable phase; keep verification evidence and blockers current."
+  fi
+  echo
+  task_plan_summary_for_phase "$project" "$phase"
+  echo
   autonomy_decision_for_phase "$project" "$phase"
   echo
   delegation_recommendation_for_phase "$project" "$phase"
+}
+
+next_brief_for_phase() {
+  local project="$1"
+  local phase="${2:-idea}"
+  local next_phase path next_task expected acceptance proof risk
+  if ! is_valid_phase "$phase"; then
+    echo "Unknown phase: ${phase:-<missing>}"
+    echo "Valid phases: idea, spec, design, build, qa, ship"
+    return 0
+  fi
+  next_phase="$(next_applicable_phase_after "$project" "$phase")"
+  load_project_applicability "$project"
+  ensure_task_plan_artifacts "$project" "$phase"
+  path="$(tasks_path "$project")"
+  next_task="$(task_next_pending_summary "$path")"
+  expected="$(task_next_pending_column "$path" 5)"
+  acceptance="$(task_next_pending_column "$path" 6)"
+  proof="$(task_next_pending_column "$path" 7)"
+  risk="$(task_next_pending_column "$path" 8)"
+  echo "Brief level: L0 navigator"
+  echo "Next command: Use local flow: $phase"
+  echo "Command file: dev-agent/commands/$phase.md"
+  echo "Next task: ${next_task:-none}"
+  if [[ -n "$expected" ]]; then
+    echo "Expected output: $expected"
+  fi
+  if [[ -n "$acceptance" ]]; then
+    echo "Acceptance: $acceptance"
+  fi
+  if [[ -n "$proof" ]]; then
+    echo "Proof command: $proof"
+  fi
+  if [[ -n "$risk" ]]; then
+    echo "Risk: $risk"
+  fi
+  echo "Gate: $(task_primary_gate_for_phase "$project" "$phase")"
+  if [[ -n "$next_phase" ]]; then
+    echo "After pass: bin/dev-flow phase $project $next_phase \"$(phase_default_task "$next_phase")\""
+  else
+    echo "After pass: Workflow is at the final applicable phase; keep verification evidence and blockers current."
+  fi
+  echo "Stop if: $AUTONOMY_STOP_ON"
+  echo "Expand: bin/dev-flow next $project --phase-brief | --full"
+  echo
+  task_plan_compact_for_phase "$project" "$phase"
+  echo
+  autonomy_decision_compact_for_phase "$project" "$phase"
 }
 
 mime_type_for_file() {
@@ -2460,10 +2987,14 @@ load_project_applicability() {
   VISUAL_QA="auto"
   SHIP_FLOW="auto"
   AUTONOMY_LOOP="suggest"
+  AUTONOMY_TASK_MODE="task-list"
+  AUTONOMY_REVIEW_BEFORE_EXECUTE="required"
+  AUTONOMY_HEARTBEAT_ON_TASK_LIST="enabled"
+  AUTONOMY_BATCH_POLICY="safe-batch"
   HEARTBEAT_INTERVAL="1m"
   AUTONOMY_MAX_CYCLES="10"
   AUTONOMY_MAX_IDLE_CYCLES="2"
-  AUTONOMY_STOP_ON="complete,blocked,approval-required,no-progress,gate-failed"
+  AUTONOMY_STOP_ON="complete,blocked,approval-required,plan-review-failed,no-progress,gate-failed"
   SUBAGENTS="auto"
   MAX_PARALLEL_SUBAGENTS="3"
   SUBAGENT_MODE="sidecar"
@@ -3583,7 +4114,7 @@ remove_installed_path() {
 remove_legacy_native_files() {
   local target="$1"
   local name
-  for name in opc-flow opc-role opc-next opc-check dev-flow dev-role dev-next dev-check pm agent plan test review; do
+  for name in opc-flow opc-role opc-next opc-check dev-flow dev-role dev-next dev-check pm agent test review; do
     remove_installed_path "$target/commands/$name.md"
     remove_installed_path "$target/commands/$name.toml"
   done
@@ -3905,6 +4436,7 @@ case "$cmd" in
     ;;
   next)
     project="${2:-}"
+    brief_mode="${3:---brief}"
     require_project "$project"
     ensure_control_for_uninitialized_project "$project"
     load_project_state "$project"
@@ -3917,7 +4449,52 @@ case "$cmd" in
     echo "Current task: $CURRENT_TASK"
     echo "Blockers: $BLOCKERS"
     echo
-    next_prompt_for_phase "$project" "$CURRENT_PHASE"
+    case "$brief_mode" in
+      --brief|brief)
+        next_brief_for_phase "$project" "$CURRENT_PHASE"
+        ;;
+      --phase-brief|phase|phase-brief)
+        next_prompt_for_phase "$project" "$CURRENT_PHASE"
+        ;;
+      --full|full)
+        next_full_prompt_for_phase "$project" "$CURRENT_PHASE"
+        ;;
+      *)
+        echo "Unknown next brief mode: $brief_mode" >&2
+        echo "Use --brief, --phase-brief, or --full." >&2
+        exit 1
+        ;;
+    esac
+    ;;
+  plan)
+    project="${2:-}"
+    plan_task_queue_impl "$project"
+    ;;
+  task)
+    project="${2:-}"
+    action="${3:-}"
+    task_id="${4:-}"
+    shift 4 || true
+    reason="$*"
+    case "$action" in
+      next)
+        task_next_impl "$project"
+        ;;
+      start)
+        task_update_status_impl "$project" "$task_id" "in_progress"
+        ;;
+      done)
+        task_update_status_impl "$project" "$task_id" "done"
+        ;;
+      block)
+        task_update_status_impl "$project" "$task_id" "blocked" "$reason"
+        ;;
+      *)
+        echo "Unknown task action: ${action:-<missing>}" >&2
+        echo "Use: bin/dev-flow task <project> <next|start|done|block> [task-id] [reason]" >&2
+        exit 1
+        ;;
+    esac
     ;;
   verify-phase)
     project="${2:-}"

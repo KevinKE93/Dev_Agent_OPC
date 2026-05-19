@@ -28,6 +28,8 @@ FIGMA_MISSING_SOURCE="$ROOT/__${RUN_ID}_figma_missing_source"
 FIGMA_BAD_EXPORT="$ROOT/__${RUN_ID}_figma_bad_export"
 API_PROJECT="$ROOT/__${RUN_ID}_api"
 AGENT_PROJECT="$ROOT/__${RUN_ID}_agent"
+AUTO_TASK_PROJECT="$ROOT/__${RUN_ID}_auto_task"
+PLAN_PROJECT="$ROOT/__${RUN_ID}_plan"
 ENV_PROJECT="$ROOT/__${RUN_ID}_env"
 BAD_ENV="$ROOT/__${RUN_ID}_bad_env"
 LEGACY_PROJECT="$ROOT/__${RUN_ID}_legacy"
@@ -62,12 +64,20 @@ API_AUTONOMY_OUT="/private/tmp/dev-flow-${RUN_ID}-api-autonomy.out"
 API_DELEGATE_OUT="/private/tmp/dev-flow-${RUN_ID}-api-delegate.out"
 API_DELEGATE_DISABLED_OUT="/private/tmp/dev-flow-${RUN_ID}-api-delegate-disabled.out"
 AGENT_OUT="/private/tmp/dev-flow-${RUN_ID}-agent.out"
+AUTO_TASK_NEXT_OUT="/private/tmp/dev-flow-${RUN_ID}-auto-task-next.out"
+AUTO_TASK_FULL_OUT="/private/tmp/dev-flow-${RUN_ID}-auto-task-full.out"
+PLAN_OUT="/private/tmp/dev-flow-${RUN_ID}-plan.out"
+PLAN_NEXT_OUT="/private/tmp/dev-flow-${RUN_ID}-plan-next.out"
+PLAN_FULL_OUT="/private/tmp/dev-flow-${RUN_ID}-plan-full.out"
+PLAN_AUTONOMY_OUT="/private/tmp/dev-flow-${RUN_ID}-plan-autonomy.out"
+PLAN_TASK_OUT="/private/tmp/dev-flow-${RUN_ID}-plan-task.out"
 ENV_OUT="/private/tmp/dev-flow-${RUN_ID}-env.out"
 BAD_ENV_OUT="/private/tmp/dev-flow-${RUN_ID}-bad-env.out"
 DOCTOR_OUT="/private/tmp/dev-flow-${RUN_ID}-doctor.out"
 BAD_VISUAL_OUT="/private/tmp/dev-flow-${RUN_ID}-bad-visual.out"
 TRACE_MISSING_HTML_OUT="/private/tmp/dev-flow-${RUN_ID}-trace-missing-html.out"
 NEXT_UI_OUT="/private/tmp/dev-flow-${RUN_ID}-next-ui.out"
+NEXT_UI_FULL_OUT="/private/tmp/dev-flow-${RUN_ID}-next-ui-full.out"
 
 cleanup_path() {
   local path
@@ -81,7 +91,7 @@ cleanup_path() {
 }
 
 cleanup() {
-  cleanup_path "$LAZY_PROJECT" "$EXISTING_UNINIT" "$UI_BLOCK" "$LIGHT_UI" "$SPEC_GAP" "$DELEGATED" "$INVALID" "$SVG_ONLY" "$SVG_LEAK" "$SVG_CUT_ALLOWED" "$SELF_RENDERED_PNG" "$IDENTITY_BAD_SOURCE" "$MISSING_COVERAGE" "$SCREENSHOT_SWAP" "$DRAFT_PATH" "$NO_CUTS" "$HTML_ONLY" "$HTML_MISSING_CSS" "$AI_MISSING_HTML" "$FIGMA_GOOD" "$FIGMA_SECTION_BOUNDARY" "$FIGMA_MISSING_SOURCE" "$FIGMA_BAD_EXPORT" "$API_PROJECT" "$AGENT_PROJECT" "$ENV_PROJECT" "$BAD_ENV" "$LEGACY_PROJECT" "$OLD_LAYOUT" "$BAD_VISUAL" "$ADAPTER_OUT" "$INSTALL_DEST" "$INSTALL_WORKSPACE" "$UI_BLOCK_OUT" "$LIGHT_UI_NEXT_OUT" "$LIGHT_UI_POLISH_OUT" "$LIGHT_UI_POLISH_NEXT_OUT" "$LIGHT_UI_POLISH_STOP_OUT" "$SPEC_GAP_OUT" "$INVALID_OUT" "$EXCEPTION_OUT" "$SVG_ONLY_OUT" "$SVG_LEAK_OUT" "$SVG_CUT_ALLOWED_OUT" "$SELF_RENDERED_PNG_OUT" "$IDENTITY_BAD_SOURCE_OUT" "$MISSING_COVERAGE_OUT" "$SCREENSHOT_SWAP_OUT" "$DRAFT_PATH_OUT" "$AI_MISSING_HTML_OUT" "$HTML_MISSING_CSS_OUT" "$FIGMA_MISSING_SOURCE_OUT" "$FIGMA_BAD_EXPORT_OUT" "$API_OUT" "$API_NEXT_OUT" "$API_AUTONOMY_OUT" "$API_DELEGATE_OUT" "$API_DELEGATE_DISABLED_OUT" "$AGENT_OUT" "$ENV_OUT" "$BAD_ENV_OUT" "$DOCTOR_OUT" "$BAD_VISUAL_OUT" "$TRACE_MISSING_HTML_OUT" "$NEXT_UI_OUT"
+  cleanup_path "$LAZY_PROJECT" "$EXISTING_UNINIT" "$UI_BLOCK" "$LIGHT_UI" "$SPEC_GAP" "$DELEGATED" "$INVALID" "$SVG_ONLY" "$SVG_LEAK" "$SVG_CUT_ALLOWED" "$SELF_RENDERED_PNG" "$IDENTITY_BAD_SOURCE" "$MISSING_COVERAGE" "$SCREENSHOT_SWAP" "$DRAFT_PATH" "$NO_CUTS" "$HTML_ONLY" "$HTML_MISSING_CSS" "$AI_MISSING_HTML" "$FIGMA_GOOD" "$FIGMA_SECTION_BOUNDARY" "$FIGMA_MISSING_SOURCE" "$FIGMA_BAD_EXPORT" "$API_PROJECT" "$AGENT_PROJECT" "$AUTO_TASK_PROJECT" "$PLAN_PROJECT" "$ENV_PROJECT" "$BAD_ENV" "$LEGACY_PROJECT" "$OLD_LAYOUT" "$BAD_VISUAL" "$ADAPTER_OUT" "$INSTALL_DEST" "$INSTALL_WORKSPACE" "$UI_BLOCK_OUT" "$LIGHT_UI_NEXT_OUT" "$LIGHT_UI_POLISH_OUT" "$LIGHT_UI_POLISH_NEXT_OUT" "$LIGHT_UI_POLISH_STOP_OUT" "$SPEC_GAP_OUT" "$INVALID_OUT" "$EXCEPTION_OUT" "$SVG_ONLY_OUT" "$SVG_LEAK_OUT" "$SVG_CUT_ALLOWED_OUT" "$SELF_RENDERED_PNG_OUT" "$IDENTITY_BAD_SOURCE_OUT" "$MISSING_COVERAGE_OUT" "$SCREENSHOT_SWAP_OUT" "$DRAFT_PATH_OUT" "$AI_MISSING_HTML_OUT" "$HTML_MISSING_CSS_OUT" "$FIGMA_MISSING_SOURCE_OUT" "$FIGMA_BAD_EXPORT_OUT" "$API_OUT" "$API_NEXT_OUT" "$API_AUTONOMY_OUT" "$API_DELEGATE_OUT" "$API_DELEGATE_DISABLED_OUT" "$AGENT_OUT" "$AUTO_TASK_NEXT_OUT" "$PLAN_OUT" "$PLAN_NEXT_OUT" "$PLAN_AUTONOMY_OUT" "$PLAN_TASK_OUT" "$ENV_OUT" "$BAD_ENV_OUT" "$DOCTOR_OUT" "$BAD_VISUAL_OUT" "$TRACE_MISSING_HTML_OUT" "$NEXT_UI_OUT"
 }
 trap cleanup EXIT
 
@@ -166,6 +176,7 @@ bin/dev-flow list >/dev/null
 bin/dev-flow manifest >/dev/null
 bin/dev-flow command dev >/dev/null
 bin/dev-flow command dev-agent >/dev/null
+bin/dev-flow command plan >/dev/null
 bin/dev-flow agent code-reviewer >/dev/null
 bin/dev-flow agent opc-code-reviewer >/dev/null
 bin/dev-flow agent technical-steward >/dev/null
@@ -173,7 +184,7 @@ bin/dev-flow agent opc-technical-steward >/dev/null
 bin/dev-flow command figma-design >/dev/null
 bin/dev-flow command figma-library >/dev/null
 bin/dev-flow command design >/dev/null
-for removed_command in pm agent plan test review; do
+for removed_command in pm agent test review; do
   if bin/dev-flow command "$removed_command" >/dev/null 2>&1; then
     echo "Expected helper command to be removed from public flow surface: $removed_command" >&2
     exit 1
@@ -222,7 +233,7 @@ if (geminiMissing.length) problems.push(`Gemini missing: ${geminiMissing.join(",
 if (claudeExtra.length) problems.push(`Claude extra: ${claudeExtra.join(", ")}`);
 if (geminiExtra.length) problems.push(`Gemini extra: ${geminiExtra.join(", ")}`);
 if (gemini.includes("planning")) problems.push("Gemini command planning.toml is stale; use plan.toml");
-for (const removed of ["pm", "agent", "plan", "test", "review"]) {
+for (const removed of ["pm", "agent", "test", "review"]) {
   if (canonical.includes(removed)) problems.push(`Removed helper command still exists: ${removed}`);
   if (claude.includes(removed)) problems.push(`Claude removed helper command still exists: ${removed}`);
   if (gemini.includes(removed)) problems.push(`Gemini removed helper command still exists: ${removed}`);
@@ -314,7 +325,7 @@ write_file "$API_PROJECT/.dev-agent/specs/SPEC.md" \
   "# Spec" "" "Create a small HTTP API." "Implementation will live under apps/api." "UI design is out of scope."
 bin/dev-flow phase "$(basename "$API_PROJECT")" build "Build API implementation without UI design" >"$API_OUT" 2>&1
 grep -q "Updated $(basename "$API_PROJECT") to phase: build" "$API_OUT"
-bin/dev-flow next "$(basename "$API_PROJECT")" >"$API_NEXT_OUT"
+bin/dev-flow next "$(basename "$API_PROJECT")" --full >"$API_NEXT_OUT"
 grep -q "Autonomy:" "$API_NEXT_OUT"
 grep -q "Continue: yes" "$API_NEXT_OUT"
 grep -q "Heartbeat: suggested" "$API_NEXT_OUT"
@@ -341,6 +352,71 @@ write_file "$AGENT_PROJECT/.dev-agent/product/PRD.md" \
 write_file "$AGENT_PROJECT/.dev-agent/specs/SPEC.md" \
   "# Spec" "" "Build an agent automation." "## Agent Runtime Contract" "Job: process the requested workflow." "Tools and permissions: read project files; ask before external writes." "Failure recovery and escalation: record blockers and ask the user when the tool or permission boundary is unclear."
 bin/dev-flow verify-phase "$(basename "$AGENT_PROJECT")" spec >"$AGENT_OUT" 2>&1
+
+bin/dev-flow init "$(basename "$AUTO_TASK_PROJECT")" --type docs >/dev/null
+grep -q 'AUTONOMY_TASK_MODE="task-list"' "$AUTO_TASK_PROJECT/.dev-agent/state/applicability.env"
+grep -q 'AUTONOMY_HEARTBEAT_ON_TASK_LIST="enabled"' "$AUTO_TASK_PROJECT/.dev-agent/state/applicability.env"
+grep -q 'AUTONOMY_BATCH_POLICY="safe-batch"' "$AUTO_TASK_PROJECT/.dev-agent/state/applicability.env"
+bin/dev-flow next "$(basename "$AUTO_TASK_PROJECT")" >"$AUTO_TASK_NEXT_OUT"
+test -f "$AUTO_TASK_PROJECT/.dev-agent/tasks/TASKS.md"
+test -f "$AUTO_TASK_PROJECT/.dev-agent/tasks/EXECUTION_PLAN.md"
+grep -q "TASK-idea-001" "$AUTO_TASK_PROJECT/.dev-agent/tasks/TASKS.md"
+grep -q "Brief level: L0 navigator" "$AUTO_TASK_NEXT_OUT"
+grep -q "Task plan:" "$AUTO_TASK_NEXT_OUT"
+grep -q "Plan Review: pass" "$AUTO_TASK_NEXT_OUT"
+grep -q "Source: generated from current phase outputs" "$AUTO_TASK_NEXT_OUT"
+grep -q "Batch policy: safe-batch" "$AUTO_TASK_NEXT_OUT"
+! grep -q "Primary skill files:" "$AUTO_TASK_NEXT_OUT"
+! grep -q "^Load:" "$AUTO_TASK_NEXT_OUT"
+bin/dev-flow next "$(basename "$AUTO_TASK_PROJECT")" --full >"$AUTO_TASK_FULL_OUT"
+grep -q "Brief level: L3 full" "$AUTO_TASK_FULL_OUT"
+grep -q "Primary skill files:" "$AUTO_TASK_FULL_OUT"
+grep -q "^Load:" "$AUTO_TASK_FULL_OUT"
+
+bin/dev-flow init "$(basename "$PLAN_PROJECT")" --type api >/dev/null
+bin/dev-flow phase "$(basename "$PLAN_PROJECT")" build "Implement queued API tasks" --force >/dev/null
+write_file "$PLAN_PROJECT/.dev-agent/tasks/TASKS.md" \
+  "# Task Queue: $(basename "$PLAN_PROJECT")" "" \
+  "## Task Queue" \
+  "| ID | Title | Source | Expected output | Acceptance | Proof command | Risk | Status | Notes |" \
+  "|---|---|---|---|---|---|---|---|---|" \
+  "| TASK-build-001 | Add API route | specs/SPEC.md | apps/api route exists | route returns JSON | npm test | normal | pending | clear |" \
+  "| TASK-build-002 | Add route test | specs/SPEC.md | test covers route | test fails before fix and passes after | npm test | normal | pending | clear |"
+bin/dev-flow plan "$(basename "$PLAN_PROJECT")" >"$PLAN_OUT"
+grep -q "Task plan:" "$PLAN_OUT"
+grep -q "Pending tasks: 2" "$PLAN_OUT"
+grep -q "Plan Review: pass" "$PLAN_OUT"
+grep -q "Batch policy: safe-batch" "$PLAN_OUT"
+grep -q "Heartbeat interval: 1m" "$PLAN_OUT"
+test -f "$PLAN_PROJECT/.dev-agent/tasks/EXECUTION_PLAN.md"
+grep -q "Safe Batch Policy" "$PLAN_PROJECT/.dev-agent/tasks/EXECUTION_PLAN.md"
+bin/dev-flow next "$(basename "$PLAN_PROJECT")" >"$PLAN_NEXT_OUT"
+grep -q "Brief level: L0 navigator" "$PLAN_NEXT_OUT"
+grep -q "Task plan:" "$PLAN_NEXT_OUT"
+grep -q "Pending tasks: 2" "$PLAN_NEXT_OUT"
+grep -q "Plan Review: pass" "$PLAN_NEXT_OUT"
+grep -q "Heartbeat: enabled" "$PLAN_NEXT_OUT"
+grep -q "Batch policy: safe-batch" "$PLAN_NEXT_OUT"
+grep -q "Next autonomous action: execute a safe batch of clear pending tasks" "$PLAN_NEXT_OUT"
+grep -q "Expand: bin/dev-flow next $(basename "$PLAN_PROJECT") --phase-brief | --full" "$PLAN_NEXT_OUT"
+! grep -q "Primary skill files:" "$PLAN_NEXT_OUT"
+bin/dev-flow next "$(basename "$PLAN_PROJECT")" --phase-brief >"$PLAN_FULL_OUT"
+grep -q "Brief level: L2 phase" "$PLAN_FULL_OUT"
+grep -q "Primary skill files:" "$PLAN_FULL_OUT"
+grep -q "^Load:" "$PLAN_FULL_OUT"
+! grep -q "Parallelizable work:" "$PLAN_FULL_OUT"
+bin/dev-flow autonomy "$(basename "$PLAN_PROJECT")" >"$PLAN_AUTONOMY_OUT"
+grep -q "Heartbeat: enabled" "$PLAN_AUTONOMY_OUT"
+grep -q "Plan Review: pass" "$PLAN_AUTONOMY_OUT"
+bin/dev-flow task "$(basename "$PLAN_PROJECT")" next >"$PLAN_TASK_OUT"
+grep -q "TASK-build-001" "$PLAN_TASK_OUT"
+bin/dev-flow task "$(basename "$PLAN_PROJECT")" start TASK-build-001 >/dev/null
+grep -q "| TASK-build-001 | Add API route | specs/SPEC.md | apps/api route exists | route returns JSON | npm test | normal | in_progress | clear |" "$PLAN_PROJECT/.dev-agent/tasks/TASKS.md"
+bin/dev-flow task "$(basename "$PLAN_PROJECT")" done TASK-build-001 >/dev/null
+grep -q "| TASK-build-001 | Add API route | specs/SPEC.md | apps/api route exists | route returns JSON | npm test | normal | done | clear |" "$PLAN_PROJECT/.dev-agent/tasks/TASKS.md"
+bin/dev-flow task "$(basename "$PLAN_PROJECT")" block TASK-build-002 "Need API path confirmation" >/dev/null
+grep -q "| TASK-build-002 | Add route test | specs/SPEC.md | test covers route | test fails before fix and passes after | npm test | normal | blocked | Need API path confirmation |" "$PLAN_PROJECT/.dev-agent/tasks/TASKS.md"
+grep -q 'BLOCKERS=Need\\ API\\ path\\ confirmation' "$PLAN_PROJECT/.dev-agent/state/state.env"
 
 bin/dev-flow init "$(basename "$SPEC_GAP")" --type ui >/dev/null
 write_file "$SPEC_GAP/.dev-agent/ideas/idea-brief.md" \
@@ -481,22 +557,31 @@ grep -q 'SHIP_FLOW="auto"' "$UI_BLOCK/.dev-agent/state/applicability.env"
 bin/dev-flow phase "$(basename "$UI_BLOCK")" design "Prepare design execution brief" --force >/dev/null
 bin/dev-flow next "$(basename "$UI_BLOCK")" >"$NEXT_UI_OUT"
 grep -q "Type: ui" "$NEXT_UI_OUT"
-grep -q "Execution navigator: follow this brief" "$NEXT_UI_OUT"
+grep -q "Brief level: L0 navigator" "$NEXT_UI_OUT"
 grep -q "Next command: Use local flow: design" "$NEXT_UI_OUT"
-grep -q "Load:" "$NEXT_UI_OUT"
-grep -q "dev-agent/commands/design.md" "$NEXT_UI_OUT"
-grep -q "dev-agent/skills/design-flow/SKILL.md" "$NEXT_UI_OUT"
-grep -q "product/PRD.md" "$NEXT_UI_OUT"
-grep -q "Required outputs:" "$NEXT_UI_OUT"
-grep -q "design/DESIGN.md" "$NEXT_UI_OUT"
-grep -q "Requirement source" "$NEXT_UI_OUT"
-grep -q "Gate before next phase:" "$NEXT_UI_OUT"
-grep -q "bin/dev-flow design-check $(basename "$UI_BLOCK")" "$NEXT_UI_OUT"
+grep -q "Task plan:" "$NEXT_UI_OUT"
 grep -q "Autonomy:" "$NEXT_UI_OUT"
 grep -q "Continue: no" "$NEXT_UI_OUT"
 grep -q "Reason: design references missing" "$NEXT_UI_OUT"
-grep -q "Parallelizable work:" "$NEXT_UI_OUT"
-grep -q "After pass:" "$NEXT_UI_OUT"
+! grep -q "^Load:" "$NEXT_UI_OUT"
+bin/dev-flow next "$(basename "$UI_BLOCK")" --full >"$NEXT_UI_FULL_OUT"
+grep -q "Brief level: L3 full" "$NEXT_UI_FULL_OUT"
+grep -q "Execution navigator: follow this brief" "$NEXT_UI_FULL_OUT"
+grep -q "Next command: Use local flow: design" "$NEXT_UI_FULL_OUT"
+grep -q "Load:" "$NEXT_UI_FULL_OUT"
+grep -q "dev-agent/commands/design.md" "$NEXT_UI_FULL_OUT"
+grep -q "dev-agent/skills/design-flow/SKILL.md" "$NEXT_UI_FULL_OUT"
+grep -q "product/PRD.md" "$NEXT_UI_FULL_OUT"
+grep -q "Required outputs:" "$NEXT_UI_FULL_OUT"
+grep -q "design/DESIGN.md" "$NEXT_UI_FULL_OUT"
+grep -q "Requirement source" "$NEXT_UI_FULL_OUT"
+grep -q "Gate before next phase:" "$NEXT_UI_FULL_OUT"
+grep -q "bin/dev-flow design-check $(basename "$UI_BLOCK")" "$NEXT_UI_FULL_OUT"
+grep -q "Autonomy:" "$NEXT_UI_FULL_OUT"
+grep -q "Continue: no" "$NEXT_UI_FULL_OUT"
+grep -q "Reason: design references missing" "$NEXT_UI_FULL_OUT"
+grep -q "Parallelizable work:" "$NEXT_UI_FULL_OUT"
+grep -q "After pass:" "$NEXT_UI_FULL_OUT"
 write_file "$UI_BLOCK/.dev-agent/ideas/idea-brief.md" \
   "# Idea Brief" \
   "" \
@@ -569,7 +654,7 @@ write_file "$LIGHT_UI/apps/web/index.html" \
 write_file "$LIGHT_UI/.dev-agent/reviews/VERIFICATION.md" \
   "# Verification" "" "## Result" "Static status page source exists." "Lightweight UI build does not require formal design assets."
 bin/dev-flow phase "$(basename "$LIGHT_UI")" build "Implement lightweight UI without formal assets" >/dev/null
-bin/dev-flow next "$(basename "$LIGHT_UI")" >"$LIGHT_UI_NEXT_OUT"
+bin/dev-flow next "$(basename "$LIGHT_UI")" --full >"$LIGHT_UI_NEXT_OUT"
 grep -q "Workflow is at the final applicable phase" "$LIGHT_UI_NEXT_OUT"
 grep -q "UI polish budget: 0/1 used" "$LIGHT_UI_NEXT_OUT"
 grep -q "Runtime visual pass: optional; record only one pass before moving P2/P3 issues to UI debt" "$LIGHT_UI_NEXT_OUT"
@@ -1039,11 +1124,11 @@ test -f "$ADAPTER_OUT/claude-code/.claude/commands/dev.md"
 test -f "$ADAPTER_OUT/claude-code/.claude/commands/dev-agent.md"
 test -f "$ADAPTER_OUT/claude-code/.claude/commands/api.md"
 test -f "$ADAPTER_OUT/claude-code/.claude/commands/debug.md"
+test -f "$ADAPTER_OUT/claude-code/.claude/commands/plan.md"
 test -f "$ADAPTER_OUT/claude-code/.claude/commands/security.md"
 test -f "$ADAPTER_OUT/claude-code/.claude/commands/ui.md"
 ! test -e "$ADAPTER_OUT/claude-code/.claude/commands/pm.md"
 ! test -e "$ADAPTER_OUT/claude-code/.claude/commands/agent.md"
-! test -e "$ADAPTER_OUT/claude-code/.claude/commands/plan.md"
 ! test -e "$ADAPTER_OUT/claude-code/.claude/commands/test.md"
 ! test -e "$ADAPTER_OUT/claude-code/.claude/commands/review.md"
 ! test -e "$ADAPTER_OUT/claude-code/.claude/commands/dev-flow.md"
@@ -1054,11 +1139,11 @@ test -f "$ADAPTER_OUT/gemini/dev-flow-quality/commands/dev.toml"
 test -f "$ADAPTER_OUT/gemini/dev-flow-quality/commands/dev-agent.toml"
 test -f "$ADAPTER_OUT/gemini/dev-flow-quality/commands/api.toml"
 test -f "$ADAPTER_OUT/gemini/dev-flow-quality/commands/debug.toml"
+test -f "$ADAPTER_OUT/gemini/dev-flow-quality/commands/plan.toml"
 test -f "$ADAPTER_OUT/gemini/dev-flow-quality/commands/security.toml"
 test -f "$ADAPTER_OUT/gemini/dev-flow-quality/commands/ui.toml"
 ! test -e "$ADAPTER_OUT/gemini/dev-flow-quality/commands/pm.toml"
 ! test -e "$ADAPTER_OUT/gemini/dev-flow-quality/commands/agent.toml"
-! test -e "$ADAPTER_OUT/gemini/dev-flow-quality/commands/plan.toml"
 ! test -e "$ADAPTER_OUT/gemini/dev-flow-quality/commands/test.toml"
 ! test -e "$ADAPTER_OUT/gemini/dev-flow-quality/commands/review.toml"
 ! test -e "$ADAPTER_OUT/gemini/dev-flow-quality/commands/planning.toml"

@@ -7,10 +7,12 @@ This reference answers three questions for each primary lifecycle flow:
 - What gate proves the flow is complete?
 
 Use `bin/dev-flow status <project-name>` and `bin/dev-flow next <project-name>`
-as the runtime source of truth. Native commands such as
+as the runtime source of truth. Default `next` output is an L0 navigator; expand
+to `--phase-brief` for command/skill/load/output details and to `--full` only
+for workflow maintenance or navigator debugging. Native commands such as
 `/dev agent flow <flow-name> <project-name>` select the workflow. The command
-loads the flow instructions, while `bin/dev-flow verify-phase`,
-`design-check`, `qa-check`, and `ship-check` enforce the actual gates.
+loads the flow instructions, while `bin/dev-flow verify-phase`, `design-check`,
+`qa-check`, and `ship-check` enforce the actual gates.
 
 QA and Ship are optional by default. Design applies when the project has
 customer-facing UI, visual direction, brand/KV, motion, or formal design
@@ -194,6 +196,9 @@ gate.
   readiness, host needs, permissions, and risk.
 - Uses lightweight micro-plans only when the slice is too large to hold in the
   current response or status.
+- Normalizes explicit TODO lists or phase outputs with `bin/dev-flow plan`
+  before autonomous execution; clear multi-task queues can run as safe
+  heartbeat batches.
 - Runs proof-first verification: tests, builds, lint, manual proof, or a
   recorded blocker when proof is not possible.
 - Keeps process files under `.dev-agent/` and source/development output in the
@@ -211,6 +216,8 @@ gate.
 - Spec is complete and design is complete or not applicable.
 - The user asks to implement, build, code, fix, or continue a slice.
 - `bin/dev-flow next <project-name>` reports `build` as the next phase.
+- `bin/dev-flow plan <project-name>` reports `Plan Review: pass` for clear
+  task queues before autonomy continues.
 - Direct native call: `/dev agent flow build <project-name>`.
 - Local command context: `dev-agent/commands/build.md` with
   `dev-agent/skills/incremental-implementation/SKILL.md`.

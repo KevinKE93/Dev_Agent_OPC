@@ -23,8 +23,9 @@ idea -> spec -> design -> build -> qa -> ship
 ```
 
 `qa` and `ship` are optional unless the user or project applicability requires
-them. Product, agent-contract, planning, testing, and review checks are folded
-into `spec`, `build`, `qa`, and `ship`.
+them. Product, agent-contract, testing, and review checks are folded into
+`spec`, `build`, `qa`, and `ship`; task-list planning is surfaced by `next` and
+`plan`.
 `technical-steward` is an optional quality role, not a seventh phase. Use it to
 challenge high-risk plans, implementation evidence, too-smooth QA, and release
 readiness before the main host advances.
@@ -34,6 +35,7 @@ readiness before the main host advances.
 | Refine a rough idea | `Use local flow: idea` | `/dev agent flow idea` | `idea-refine` |
 | Write PRD + buildable spec | `Use local flow: spec` | `/dev agent flow spec` | `spec-driven-development` with agent contract when needed |
 | Design the experience | `Use local flow: design` | `/dev agent flow design` | `design-flow` |
+| Review task execution | `Use local flow: plan` | `/dev agent flow plan` | `bin/dev-flow plan` task queue and autonomy review |
 | Implement a slice | `Use local flow: build` | `/dev agent flow build` | `incremental-implementation` with micro-plan and proof-first checks |
 | Optional QA | `Use local flow: qa` | `/dev agent flow qa` | acceptance, monkey, visual, and quality review when required |
 | Optional launch | `Use local flow: ship` | `/dev agent flow ship` | `shipping-and-launch` with technical stewardship when risk warrants it |
@@ -55,15 +57,20 @@ should start with:
 
 ```bash
 bin/dev-flow status <project-name>
-bin/dev-flow next <project-name>
+bin/dev-flow next <project-name> [--brief|--phase-brief|--full]
+bin/dev-flow plan <project-name>
+bin/dev-flow task <project-name> <next|start|done|block> [task-id] [reason]
 bin/dev-flow autonomy <project-name>
 bin/dev-flow delegate <project-name>
 ```
 
-`next` returns the current phase, command, skill files, minimal context, required
-outputs, blockers, gate, phase-record command, autonomy recommendation, and
-parallelizable subagent work when available. Load only that named context
-instead of reading the workflow pack broadly.
+`next` is layered to control context size. The default `--brief` output is an
+L0 navigator with the immediate task, output, acceptance, proof command, gate,
+plan review, and autonomy/heartbeat decision. Use `--phase-brief` when you need
+the command, skill, load list, required outputs, blockers, and subagent
+recommendations for a phase. Use `--full` for workflow-pack maintenance,
+migration, or debugging the navigator itself. Load only the context named by the
+selected brief layer instead of reading the workflow pack broadly.
 
 ## Project Lifecycle
 
@@ -72,7 +79,9 @@ Create one self-contained project folder before starting real work:
 ```bash
 bin/dev-flow init <project-name> [--type ui|agent|api|library|docs]
 bin/dev-flow status <project-name>
-bin/dev-flow next <project-name>
+bin/dev-flow next <project-name>          # default L0 navigator
+bin/dev-flow next <project-name> --phase-brief
+bin/dev-flow plan <project-name>
 bin/dev-flow autonomy <project-name>
 bin/dev-flow delegate <project-name>
 bin/dev-flow phase <project-name> spec "Write PRD and SPEC"
@@ -88,7 +97,7 @@ bin/dev-flow ship-check <project-name>    # only when shipping
 
 - `.dev-agent/state/state.env`: current phase, active task, blockers, last verification
 - `.dev-agent/state/schema.env`: project schema version and project type
-- `.dev-agent/state/applicability.env`: optional gates such as `UI_FLOW`, `UI_REFERENCES`, `UI_DESIGN_ASSETS`, `AUTOMATED_QA`, `VISUAL_QA`, `SHIP_FLOW`, `AUTONOMY_LOOP`, and `SUBAGENTS`
+- `.dev-agent/state/applicability.env`: optional gates such as `UI_FLOW`, `UI_REFERENCES`, `UI_DESIGN_ASSETS`, `AUTOMATED_QA`, `VISUAL_QA`, `SHIP_FLOW`, `AUTONOMY_LOOP`, `AUTONOMY_TASK_MODE`, `AUTONOMY_HEARTBEAT_ON_TASK_LIST`, and `SUBAGENTS`
 - `.dev-agent/context.md`: minimal context loading guidance
 - `.dev-agent/HOST_REQUIREMENTS.md`: host SDKs, CLIs, services, credentials, and permissions
 - `.dev-agent/state/autonomy.env`: lightweight counters and last-result state for autonomous continuation
@@ -105,7 +114,12 @@ intentionally record early state and will complete missing artifacts later.
 
 `bin/dev-flow autonomy <project-name>` is the standalone continuation decision.
 It tells a host whether to continue now, suggest a heartbeat interval, or stop
-for a blocker/approval. `bin/dev-flow delegate <project-name>` is the standalone
+for a blocker/approval. `bin/dev-flow plan <project-name>` normalizes explicit
+TODO lists or phase outputs into `.dev-agent/tasks/TASKS.md`, writes
+`.dev-agent/tasks/EXECUTION_PLAN.md`, and returns `Plan Review: pass`, `pause`,
+or `approval-required`. Multiple clear pending tasks enable 1-minute heartbeat
+batches; a batch may contain more than one task only when tasks are low-risk and
+share the same proof path. `bin/dev-flow delegate <project-name>` is the standalone
 subagent planner. It emits optional task packets for host clients that support
 parallel agents; the main host remains responsible for integration and gates.
 For UI build work, `bin/dev-flow ui-polish <project-name>` records the single
