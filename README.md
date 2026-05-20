@@ -131,7 +131,7 @@ bin/dev-flow install claude-code --scope user
 - **Idea 归因**：idea brief 记录用户明确需求、agent 推断、产品决策和待确认项，避免后续 spec 混淆来源。
 - **Spec 门禁**：UI 项目的 PRD 需覆盖 MVP、核心流程/IA、验收和非目标；SPEC 需覆盖技术栈、命令、数据/领域模型、测试、UI/design 适用性、隐私/安全和未决问题。
 - **设计实现方式**：正式设计交付以 `design-artifacts` 中的“正式高保真视觉源 + HTML/CSS companion”合同为准；product-designer 的输出只作为方向和要求，不作为开发资源。
-- **设计门禁**：customer-facing UI 在 build 前运行 `design-check`；没有参考时需用户委托视觉方向或提供参考；正式设计源必须来自 Image Gen/GPT Image、Figma、设计师上传、外部设计工具或设计系统导出，HTML/CSS 只能作为 companion handoff；logo、app icon、品牌 KV 和高质量位图素材必须有 Image Gen / GPT Image 来源。
+- **设计门禁**：customer-facing UI 在 build 前运行 `design-check`；没有参考时需用户委托视觉方向或提供参考；正式设计源必须来自 Image Gen/GPT Image 或 Figma。Image Gen/GPT Image 的非 icon 资产必须有同步 HTML/CSS companion；icon/logo/app icon 不需要 HTML；Figma handoff 可以不输出 HTML。
 - **环境边界**：宿主机 SDK、模拟器、MCP、凭证和系统服务记录在 `HOST_REQUIREMENTS.md`，不混入项目 runtime。
 - **分层 Brief**：`bin/dev-flow next` 默认输出 L0 navigator；`--phase-brief` 展开 command/skill/load/outputs；`--full` 用于流程维护和导航器排障。
 - **任务规划**：`bin/dev-flow next` 和 `bin/dev-flow plan` 会把 TODO 或阶段输出整理进 `TASKS.md` / `EXECUTION_PLAN.md`，先做 Plan Review 再执行。
@@ -255,7 +255,7 @@ Six-step capability index:
 - **Idea attribution**: idea briefs record user-stated needs, agent inferences, product decisions, and open confirmations so later specs do not blur source boundaries.
 - **Spec gate**: UI project PRDs must cover MVP, core flows/IA, acceptance, and non-goals; SPEC files must cover stack, commands, data/domain model, testing, UI/design applicability, privacy/security, and open questions.
 - **Design implementation format**: formal design handoff follows the formal high-fidelity visual source plus HTML/CSS companion contract in `design-artifacts`; product-designer output is direction and requirements only, not a development resource.
-- **Design gate**: customer-facing UI runs `design-check` before build; missing references require user input or delegated visual direction; formal sources must come from Image Gen/GPT Image, Figma, designer upload, external design tooling, or design-system export, while HTML/CSS is companion handoff only; logo, app icon, brand KV, and high-quality bitmap assets require Image Gen / GPT Image provenance.
+- **Design gate**: customer-facing UI runs `design-check` before build; missing references require user input or delegated visual direction; formal sources must come from Image Gen/GPT Image or Figma. Image Gen/GPT Image non-icon assets require synchronized HTML/CSS companions; icon/logo/app-icon assets do not. Figma handoff can skip HTML.
 - **Environment boundary**: host SDKs, simulators, MCP servers, credentials, and services are recorded in `HOST_REQUIREMENTS.md` instead of project runtime output.
 - **Task planning**: `next` and `plan` normalize TODO lists or phase outputs into `TASKS.md` / `EXECUTION_PLAN.md`, then require plan review before execution.
 - **Autonomy loop**: `AUTONOMY_LOOP` suggests heartbeat continuation by default; multiple clear pending tasks enable 1-minute safe-batch heartbeats, and the loop stops on blockers, high-risk approval, failed review, or verified final phases.

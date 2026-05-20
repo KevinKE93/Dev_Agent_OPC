@@ -146,10 +146,10 @@ gate.
   development resource without a formal visual source or an explicit
   no-formal-assets applicability decision.
 - Requires formal high-fidelity visual sources when formal design is required:
-  Image Gen/GPT Image boards, Figma frames, human-designer exports, external
-  design exports, or design-system board exports.
-- Uses high-fidelity HTML/CSS companion packages as build handoff, not
-  as standalone formal design source.
+  Image Gen/GPT Image boards or Figma frames.
+- Uses synchronized high-fidelity HTML/CSS companion packages as build handoff
+  for non-icon Image Gen/GPT Image assets, not as standalone formal design
+  source. Figma and icon assets do not require HTML.
 - Requires Image Gen / GPT Image provenance for final logo, app icon, brand/KV,
   and high-quality bitmap assets. Local SVG or canvas renders are drafts only.
 - Handles Figma handoff when Figma is used.
@@ -171,8 +171,7 @@ gate.
 - [product-designer](../agents/product-designer.md) is the specialist for
   reference interpretation, UX judgment, IA, visual system, states, design
   applicability, and missing resource decisions. Its output feeds Image
-  Gen/GPT Image, Figma, or human design; it does not become build input by
-  itself.
+  Gen/GPT Image or Figma; it does not become build input by itself.
 - Use Image Gen / GPT Image tooling for required identity and high-quality
   bitmap assets.
 - Use Figma-specific flows only when the project needs a Figma handoff,

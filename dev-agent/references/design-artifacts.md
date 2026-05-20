@@ -1,10 +1,9 @@
 # Design Artifacts
 
-Customer-facing UI must have approved formal visual assets and companion
-packages before high-fidelity UI build. The gate is provider-neutral but
-provenance is strict: only formal visual producers can qualify as the source of
-truth, and build-ready handoff must include HTML/CSS that a model or engineer
-can read without guessing.
+Customer-facing UI must have approved formal visual assets before
+high-fidelity UI build. For non-Figma work, the visual source must be generated
+through Image Gen/GPT Image and synchronized with a matching HTML/CSS companion
+so build does not invent layout. Figma handoff can skip the HTML companion.
 
 All relative paths in this contract, such as `design/approved/...`,
 `tasks/IMPLEMENTATION_TRACE.md`, and `reviews/visual-screenshots/...`, are
@@ -19,22 +18,23 @@ relative to `<project-name>/dev-agent/`. Implementation targets such as
   draft/sketch/prototype. Save under `dev-agent/design/drafts/` or `dev-agent/design/mocks/`.
 - Approved visual assets: implementation-ready raster/PDF boards and state
   images from formal visual producers. Save under `dev-agent/design/approved/`.
-- HTML/CSS companion packages: high-fidelity HTML files under
+- HTML/CSS companion packages: high-fidelity HTML files synchronized with the
+  approved Image Gen/GPT Image output under
   `design/approved/html/`, with CSS resources under the same folder and optional
   JS/Lottie resources when motion is part of acceptance. These are handoff
   companions, not the formal design source.
-- AI image HTML companions: when imagegen, GPT Image, or another AI image model
-  generates an approved visual asset, save the matching high-fidelity HTML/CSS
-  companion under `design/approved/html/` and record the mapping in
-  `design/DESIGN_IMAGE_DESCRIPTIONS.md`.
+- AI image HTML companions: when imagegen or GPT Image generates an approved
+  non-icon visual asset, save the matching high-fidelity HTML/CSS companion
+  under `design/approved/html/` and record the mapping in
+  `design/DESIGN_IMAGE_DESCRIPTIONS.md`. Do not self-author or fabricate an HTML
+  companion that is detached from the generated design image.
 - Figma handoff: when Figma is used, satisfy `dev-agent/references/figma-handoff.md`.
 - Verification assets: browser screenshots, simulator captures, Playwright/Chrome captures, and runtime output. Save under `dev-agent/reviews/visual-screenshots/` only when an exception or blocked flow needs evidence.
 - Delegated reference board: when the user delegates visual direction and no external reference is provided, save the generated reference direction in `dev-agent/design/REFERENCE_BOARD.md`.
 
 Product-designer outputs, drafts, and verification assets are forbidden as
 implementation targets. Use them only as inputs or requirements for Image
-Gen/GPT Image, Figma, human-designer upload, external design tooling, or a
-design-system export.
+Gen/GPT Image or Figma.
 
 ## Coverage Contract
 
@@ -54,21 +54,19 @@ Allowed `Source type` values and formal producers:
 | `imagegen` | AI image generation model raster output | `imagegen://...` |
 | `gpt-image` / `gpt-image-2` | GPT Image raster output | `gpt-image://...` or `gpt-image-2://...` |
 | `figma` / `figma-mcp` | Figma file/frame/component export | `figma://...` or Figma URL |
-| `designer-upload` / `uploaded-approved` | Human/designer uploaded PNG/JPG/WebP/HEIC/PDF export | `upload://...`, `designer-upload://...`, or `design/sources/uploads/...` |
-| `design-system` | Established design-system board export | `design-system://...`, `component-library://...`, `token://...`, or `design/sources/design-system/...` |
-| `external-design` | External design tool export with source evidence | `external-design://...`, `approved://...`, or `design/sources/approved/...` |
 
 Do not use `manual-design`, `local-approved`, browser captures, screenshots,
-canvas captures, runtime app output, self-rendered SVG exports, or prototype
-exports as formal source provenance. Do not use local HTML/CSS packages as
-formal source provenance; record them only as companion handoff paths in
-`Implementation notes`.
+canvas captures, runtime app output, uploaded exports, external-tool exports,
+design-system exports, self-rendered SVG exports, or prototype exports as formal
+source provenance. Do not use local HTML/CSS packages as formal source
+provenance; record them only as companion handoff paths in `Implementation
+notes` when required.
 
-Formal producers must provide high-fidelity design evidence for the requested
-scope: visual system, icons/logo when in scope, each required screen and state,
-component rules, responsive behavior, and source/export metadata. Product
-designer direction may specify these requirements, but it is not a development
-resource by itself.
+Image Gen/GPT Image or Figma must provide high-fidelity design evidence for the
+requested scope: visual system, icons/logo when in scope, each required screen
+and state, component rules, responsive behavior, and source/export metadata.
+Product designer direction may specify these requirements, but it is not a
+development resource by itself.
 
 Generated logo, app-icon, brand mark, brand/KV, and high-quality bitmap asset
 rows must use `imagegen`, `gpt-image`, or `gpt-image-2` provenance. Do not
@@ -76,18 +74,20 @@ create SVG, HTML, or canvas locally and render it to PNG for final identity
 assets. If the user supplies existing final brand assets, record them as
 user-provided inputs and do not claim they were generated by the workflow.
 
-Each Screen Coverage row must identify both a formal visual design asset and an
-HTML/CSS companion package. `Approved asset path` must be a raster/PDF board
-under `design/approved/`. `Implementation notes` must include
+Each Screen Coverage row must identify a formal visual design asset.
+`Approved asset path` must be a raster/PDF board under `design/approved/`.
+For Image Gen/GPT Image rows, every non-icon visual asset must also include a
+synchronized HTML/CSS companion package. `Implementation notes` must include
 `HTML: design/approved/html/<screen-state>.html` and, when not discoverable from
 the HTML file, `CSS: design/approved/html/<path>.css`. The HTML package must be
 non-empty, include real document structure, and include linked or inline CSS.
-Optional motion resources should be recorded as `JS:` or `Lottie:` paths under
-`design/approved/html/` or `design/cut-assets/`.
+Icon/logo/app-icon rows do not require HTML companions. Figma rows do not
+require HTML companions. Optional motion resources should be recorded as `JS:`
+or `Lottie:` paths under `design/approved/html/` or `design/cut-assets/`.
 
 When `Source type` is `imagegen`, `gpt-image`, or `gpt-image-2`,
-`design/DESIGN_IMAGE_DESCRIPTIONS.md` must map the approved image to the
-HTML/CSS companion package.
+non-icon rows must map the approved image to the HTML/CSS companion package in
+`design/DESIGN_IMAGE_DESCRIPTIONS.md`.
 
 ## Figma Handoff
 
@@ -99,12 +99,13 @@ When `Source type` is `figma` or `figma-mcp`, satisfy
 
 - Approved visual assets and companion packages must live under `<project-name>/dev-agent/design/approved/`.
 - Approved visual assets must be real non-empty raster image or PDF files.
-- HTML companion packages must be real non-empty `.html` files under
+- Required HTML companion packages must be real non-empty `.html` files under
   `design/approved/html/` with CSS. Use one package per screen/state when visual
-  differences matter.
-- AI-generated approved images must have HTML/CSS companions that encode layout
-  hierarchy, content, components, states, colors, spacing, typography,
-  interactions, motion, responsive behavior, and implementation notes.
+  differences matter. Figma and icon assets are exempt.
+- Non-icon AI-generated approved images must have synchronized HTML/CSS
+  companions that encode layout hierarchy, content, components, states, colors,
+  spacing, typography, interactions, motion, responsive behavior, and
+  implementation notes.
 - SVG, Mermaid, Markdown, and code-native files can be drafts or precise diagrams, but they do not satisfy the approved asset gate by themselves.
 - SVG/XML sketches must not be stored under `design/approved/`. SVG files may be stored under `design/cut-assets/` only as manifested element/runtime assets, not as screen layout references.
 - Browser, Playwright, Chrome, simulator, running-app screenshots, and local

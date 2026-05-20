@@ -498,7 +498,7 @@ ensure_project_dirs() {
 ensure_design_dirs() {
   local dir="$1"
   mkdir -p "$dir/design"/{references,drafts,mocks,screenshots,sources,approved,cut-assets}
-  mkdir -p "$dir/design/sources"/{imagegen,gpt-image,figma,uploads,approved,design-system,html}
+  mkdir -p "$dir/design/sources"/{imagegen,gpt-image,figma,html}
   mkdir -p "$dir/design/approved"/{screens,components,html}
   mkdir -p "$dir/design/cut-assets"/{icons,sprites,illustrations,backgrounds}
 }
@@ -770,7 +770,7 @@ phase_required_outputs() {
       echo "- $process_root/design/VISUAL_SYSTEM.md"
       echo "- $process_root/design/SCREEN_ACCEPTANCE.md with Requirement source for every screen"
       if design_assets_required "$project"; then
-        echo "- formal visual design assets and HTML/CSS companions required by dev-agent/references/design-artifacts.md"
+        echo "- formal visual design assets and required synchronized HTML/CSS companions per dev-agent/references/design-artifacts.md"
         echo "- Figma handoff required by dev-agent/references/figma-handoff.md when Figma is used"
       else
         echo "- formal visual assets are not required only when UI_FLOW is disabled or design is not applicable"
@@ -2152,7 +2152,7 @@ is_allowed_design_source_type() {
   local lower
   lower="$(printf '%s' "$raw" | tr '[:upper:]' '[:lower:]')"
   case "$lower" in
-    imagegen|gpt-image-2|gpt-image|figma|figma-mcp|designer-upload|uploaded-approved|design-system|external-design)
+    imagegen|gpt-image-2|gpt-image|figma|figma-mcp)
       return 0
       ;;
     *screenshot*|*screencap*|*capture*|*playwright*|*puppeteer*|*chrome*|*browser*|*simulator*|*runtime*|*render*|*rasteriz*|*html*|*canvas*|*svg*|*draft*|*prototype*|*wireframe*|*sketch*|*manual*|*local*|*草图*|*原型*|*截图*|*渲染*)
@@ -2183,15 +2183,6 @@ is_valid_formal_design_source_ref() {
     gpt-image) [[ "$lower_ref" == gpt-image://* ]] ;;
     gpt-image-2) [[ "$lower_ref" == gpt-image-2://* ]] ;;
     figma|figma-mcp) is_valid_figma_source_ref "$source_ref" ;;
-    designer-upload|uploaded-approved)
-      [[ "$lower_ref" == upload://* || "$lower_ref" == designer-upload://* || "$lower_ref" == design/sources/uploads/* || "$lower_ref" == ./design/sources/uploads/* ]]
-      ;;
-    design-system)
-      [[ "$lower_ref" == design-system://* || "$lower_ref" == component-library://* || "$lower_ref" == token://* || "$lower_ref" == design/sources/design-system/* || "$lower_ref" == ./design/sources/design-system/* ]]
-      ;;
-    external-design)
-      [[ "$lower_ref" == external-design://* || "$lower_ref" == approved://* || "$lower_ref" == design/sources/approved/* || "$lower_ref" == ./design/sources/approved/* ]]
-      ;;
     *) return 1 ;;
   esac
 }
@@ -2245,6 +2236,32 @@ is_identity_asset_row() {
       return 1
       ;;
   esac
+}
+
+is_icon_asset_row() {
+  local raw="$*"
+  local lower
+  lower="$(printf '%s' "$raw" | tr '[:upper:]' '[:lower:]')"
+  case "$lower" in
+    *icon*|*app\ icon*|*app-icon*|*adaptive\ icon*|*adaptive-icon*|*splash\ icon*|*splash-icon*|*launcher\ icon*|*launcher-icon*|*logo*|*brand\ mark*|*brand-mark*|*图标*|*应用图标*|*启动图标*|*标识*)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+html_companion_required_for_design_row() {
+  local source_type="$1"
+  shift || true
+  if is_figma_design_source_type "$source_type"; then
+    return 1
+  fi
+  if is_icon_asset_row "$@"; then
+    return 1
+  fi
+  return 0
 }
 
 html_description_path_from_notes() {
@@ -2532,6 +2549,7 @@ check_design_artifact_contract() {
   local line in_coverage rows failures
   local screen_cell state_cell source_type_cell source_ref_cell asset_cell resolution_cell status_cell notes_cell
   local screen source_type source_ref asset_path asset_full_path resolution status notes html_path html_full_path
+  local html_required
   path="$(design_artifact_ledger_path "$dir")"
   [[ -f "$path" ]] || return 1
   failures=0
@@ -2563,14 +2581,14 @@ check_design_artifact_contract() {
     [[ -n "$screen" ]] || continue
     rows=$((rows + 1))
     if is_html_design_source_type "$source_type"; then
-      echo "HTML/CSS companion cannot be the formal design source for screen: $screen (use imagegen, gpt-image, gpt-image-2, figma, figma-mcp, designer-upload, uploaded-approved, design-system, or external-design; put the HTML/CSS package in Implementation notes as a companion)." >&2
+      echo "HTML/CSS companion cannot be the formal design source for screen: $screen (use imagegen, gpt-image, gpt-image-2, figma, or figma-mcp; put the HTML/CSS package in Implementation notes as a companion when required)." >&2
       failures=$((failures + 1))
     elif ! is_allowed_design_source_type "$source_type"; then
-      echo "Invalid formal design source for screen: $screen (Source type must be a formal producer: imagegen, gpt-image, gpt-image-2, figma, figma-mcp, designer-upload, uploaded-approved, design-system, or external-design. Manual/local/rendered/screenshot/HTML-only sources are forbidden)." >&2
+      echo "Invalid formal design source for screen: $screen (Source type must be imagegen, gpt-image, gpt-image-2, figma, or figma-mcp. Manual/local/rendered/uploaded/external/design-system/screenshot/HTML-only sources are forbidden for build-ready UI handoff)." >&2
       failures=$((failures + 1))
     fi
     if ! is_html_design_source_type "$source_type" && ! is_valid_formal_design_source_ref "$source_type" "$source_ref"; then
-      echo "Invalid design source reference for screen: $screen (record a formal producer reference such as imagegen://, gpt-image-2://, figma:// or Figma URL, upload://, designer-upload://, design-system://, external-design://, or design/sources/approved/. Do not use SVG renders, HTML packages, screenshots, browser captures, simulator captures, local app output, or prototype paths as development-ready design sources)." >&2
+      echo "Invalid design source reference for screen: $screen (record an Image Gen/GPT Image reference such as imagegen:// or gpt-image-2://, or a Figma reference such as figma:// or a Figma URL. Do not use SVG renders, HTML packages, screenshots, browser captures, simulator captures, local app output, uploads, design-system exports, external exports, or prototype paths as development-ready design sources)." >&2
       failures=$((failures + 1))
     fi
     if is_identity_asset_row "$screen" "$source_ref" "$asset_path" "$resolution" "$notes" && ! is_ai_generated_design_source_type "$source_type"; then
@@ -2593,11 +2611,13 @@ check_design_artifact_contract() {
       echo "Invalid approved design asset for screen: $screen (Approved asset path must be a real raster/PDF visual design asset under design/approved/. HTML/CSS packages belong in Implementation notes as companions, not as the formal approved asset)." >&2
       failures=$((failures + 1))
     fi
+    html_required="false"
+    if html_companion_required_for_design_row "$source_type" "$screen" "$source_ref" "$asset_path" "$resolution" "$notes"; then
+      html_required="true"
+    fi
     html_path="$(html_description_path_from_notes "$notes" || true)"
-    if [[ -z "$html_path" ]]; then
-      echo "Missing HTML/CSS design package for screen: $screen (Implementation notes must include a path such as 'HTML: design/approved/html/${screen}.html' and its CSS resources)." >&2
-      failures=$((failures + 1))
-    else
+    html_full_path=""
+    if [[ -n "$html_path" ]]; then
       case "$html_path" in
         /*) html_full_path="$html_path" ;;
         *) html_full_path="$dir/$html_path" ;;
@@ -2605,10 +2625,13 @@ check_design_artifact_contract() {
       if ! validate_design_package_resources "$dir" "$screen" "$html_path" "$html_full_path" "$notes"; then
         failures=$((failures + 1))
       fi
+    elif [[ "$html_required" == "true" ]]; then
+      echo "Missing HTML/CSS design package for screen: $screen (non-Figma, non-icon design assets must include a synchronized path such as 'HTML: design/approved/html/${screen}.html' and its CSS resources; do not invent HTML detached from the Image Gen/GPT Image output)." >&2
+      failures=$((failures + 1))
     fi
-    if is_ai_generated_design_source_type "$source_type"; then
+    if is_ai_generated_design_source_type "$source_type" && [[ "$html_required" == "true" ]]; then
       if [[ -z "$html_path" ]]; then
-        echo "Missing AI design HTML description for screen: $screen (Implementation notes must include a path such as 'HTML: design/approved/html/${screen}.html')." >&2
+        echo "Missing AI design HTML description for screen: $screen (non-icon Image Gen/GPT Image rows must include a synchronized HTML companion path such as 'HTML: design/approved/html/${screen}.html')." >&2
         failures=$((failures + 1))
       else
         if ! is_project_html_description_path "$dir" "$html_path" "$html_full_path"; then
@@ -2752,6 +2775,7 @@ check_implementation_trace_coverage() {
   local screen_cell state_cell target_cell asset_cell design_source_cell html_cell cut_cell test_cell status_cell
   local target_path asset_path design_source html_companion cut_assets test_evidence status
   local asset_full_path html_full_path expected_source_type expected_source_ref expected_html
+  local expected_html_required
   missing=0
   required=0
   [[ -f "$path" ]] || return 1
@@ -2811,10 +2835,14 @@ check_implementation_trace_coverage() {
         echo "Missing implementation trace Figma source for screen: $screen (Design source must be a figma://... reference or Figma URL)." >&2
         missing=$((missing + 1))
       fi
-      if [[ -z "$expected_html" || "$html_companion" != *"$expected_html"* ]]; then
-        echo "Missing implementation trace HTML companion for screen: $screen (HTML companion must reference ${expected_html:-the HTML path from design/DESIGN_ARTIFACTS.md})." >&2
+      expected_html_required="false"
+      if html_companion_required_for_design_row "$expected_source_type" "$screen" "$expected_source_ref" "$asset_path"; then
+        expected_html_required="true"
+      fi
+      if [[ "$expected_html_required" == "true" && ( -z "$expected_html" || "$html_companion" != *"$expected_html"* ) ]]; then
+        echo "Missing implementation trace HTML companion for screen: $screen (HTML companion must reference ${expected_html:-the synchronized HTML path from design/DESIGN_ARTIFACTS.md})." >&2
         missing=$((missing + 1))
-      else
+      elif [[ -n "$expected_html" && "$html_companion" == *"$expected_html"* ]]; then
         case "$expected_html" in
           /*) html_full_path="$expected_html" ;;
           *) html_full_path="$dir/$expected_html" ;;
@@ -2910,7 +2938,7 @@ asset_check_impl() {
     failures=$((failures + 1))
   fi
   if [[ "$design_assets" -eq 0 ]]; then
-    echo "Missing approved visual design assets: save 1-N formal layout/state raster/PDF assets under design/approved/ before high-fidelity UI build. HTML/CSS packages are required companions, not standalone formal sources." >&2
+    echo "Missing approved visual design assets: save 1-N Image Gen/GPT Image or Figma raster/PDF assets under design/approved/ before high-fidelity UI build. Required HTML/CSS packages are synchronized companions, not standalone formal sources." >&2
     failures=$((failures + 1))
   fi
   if [[ "$final_design_assets" -eq 0 ]]; then
@@ -3190,7 +3218,7 @@ design_assets_disabled_conflict() {
 check_design_asset_applicability_contract() {
   local project="$1"
   if design_assets_disabled_conflict "$project"; then
-    echo "Invalid design applicability: UI_DESIGN_ASSETS cannot be disabled while UI_FLOW is active. If the task is truly no-UI/no-UX/code-only, set UI_FLOW=\"disabled\" and document that in SPEC.md; otherwise produce formal visual design assets through Image Gen/GPT Image, Figma, human design export, external design tooling, or design-system export." >&2
+    echo "Invalid design applicability: UI_DESIGN_ASSETS cannot be disabled while UI_FLOW is active. If the task is truly no-UI/no-UX/code-only, set UI_FLOW=\"disabled\" and document that in SPEC.md; otherwise produce formal visual design assets through Image Gen/GPT Image or Figma." >&2
     return 1
   fi
 }

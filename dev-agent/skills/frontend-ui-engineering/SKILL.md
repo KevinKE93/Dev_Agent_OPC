@@ -50,8 +50,9 @@ confirmed, stop and return to design instead of implementing around a guess.
   HTML/CSS companion packages as handoff, not as standalone formal
   source.
 - Product-designer prose is design judgment only. Route it into Image Gen/GPT
-  Image, Figma, human export, external design tooling, or a design-system export
-  before UI build.
+  Image or Figma before UI build. Image Gen/GPT Image non-icon assets require a
+  synchronized HTML/CSS companion; icon/logo/app-icon assets do not. Figma can
+  skip HTML.
 - If a needed visual source, runtime asset, or acceptance decision is missing,
   return to design instead of guessing.
 

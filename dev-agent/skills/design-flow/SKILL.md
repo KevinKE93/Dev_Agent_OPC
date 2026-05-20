@@ -26,13 +26,13 @@ when the spec or project applicability clearly marks UI/design as not needed.
   evidence only. They cannot be the build target.
 - Product-designer output is design judgment only. It can define UX, IA,
   screen/state, visual-system, and blocker requirements for Image Gen/GPT
-  Image, Figma, or human design, but it is not a development resource by itself.
+  Image or Figma, but it is not a development resource by itself.
 - Require a formal high-fidelity visual source before high-fidelity build:
-  Image Gen/GPT Image raster boards, Figma frames, human-designer exports,
-  external design-tool exports, or design-system board exports.
-- Use high-fidelity HTML/CSS companion packages as implementation-readable
-  handoff for those formal visual sources. Use JS or Lottie assets when motion must be
-  reproduced.
+  Image Gen/GPT Image raster boards or Figma frames.
+- For Image Gen/GPT Image sources, use synchronized high-fidelity HTML/CSS
+  companion packages as implementation-readable handoff for every non-icon
+  visual asset. Icon/logo/app-icon assets do not require HTML. Figma handoff can
+  skip HTML. Use JS or Lottie assets when motion must be reproduced.
 - Generate new logo, app-icon, brand/KV, and high-quality bitmap assets only
   through the `imagegen` skill or an explicit Codex CLI image-generation path.
   Do not author SVG/HTML/canvas locally and render PNG for final identity assets.
@@ -120,10 +120,11 @@ Use `dev-agent/templates/project/` for file templates. Use
      after spec/build gates.
    - If UI/UX design applies, formal visual assets are required for build.
      Do not set `UI_DESIGN_ASSETS=disabled` to bypass missing Image Gen/GPT
-     Image, Figma, human export, external design, or design-system outputs.
+     Image or Figma outputs.
    - If resources are insufficient, list the missing resources and route them
      to generation: visual-system and brand/KV direction, required screen
-     images, HTML/CSS companion packages, CSS/JS or Lottie motion files when needed, and
+     images, synchronized HTML/CSS companion packages for non-icon Image
+     Gen/GPT Image outputs, CSS/JS or Lottie motion files when needed, and
      logo/app-icon sizes when product identity is in scope.
    - For logo, app-icon, brand/KV, and high-quality bitmap asset generation,
      load `imagegen` or use the Codex CLI image-generation path explicitly. Save
@@ -137,16 +138,15 @@ Use `dev-agent/templates/project/` for file templates. Use
 
 9. **Produce design packages**
     - For each accepted screen and important state that needs high-fidelity
-      design, create or collect a formal visual source first: generated raster
-      board, Figma export, human-designer export, external design export, or
-      design-system board export.
-    - For each formal visual source, create or collect a separate HTML file
-      under `dev-agent/design/approved/html/` with CSS resources that encode
-      the visual system and responsive layout. Add JS or Lottie files only when
-      motion is part of acceptance.
-    - Use generated, uploaded, Figma, external, or design-system visuals as the
-      source of truth, and keep the HTML/CSS companion package as the
-      implementation-readable companion handoff.
+      design, create a formal visual source first through Image Gen/GPT Image,
+      or use a Figma export when Figma is the formal source.
+    - For each non-icon Image Gen/GPT Image visual source, create a synchronized
+      separate HTML file under `dev-agent/design/approved/html/` with CSS
+      resources that encode the visual system and responsive layout. Add JS or
+      Lottie files only when motion is part of acceptance.
+    - Use generated or Figma visuals as the source of truth, and keep required
+      HTML/CSS companion packages as implementation-readable synchronized
+      handoff.
     - When identity assets are required, provide logo or app-icon variants sized
       for the target platform from Image Gen/GPT Image outputs. Local SVG
       renders are drafts only and must not be treated as final PNG assets.

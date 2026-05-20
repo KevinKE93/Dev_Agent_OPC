@@ -153,10 +153,12 @@ set `UI_FLOW="disabled"` and proceed through spec/build gates. If UI/UX design
 applies, run the formal contract. Satisfy `dev-agent/references/design-artifacts.md`
 as the formal visual source plus HTML/CSS companion contract, and run
 `bin/dev-flow design-check <project-name>`. Product-designer output is direction
-only; Image Gen/GPT Image, Figma, human-design exports, external design tools,
-or design-system exports must provide high-fidelity design sources before UI
-build. Briefs, product-designer prose, local prototypes, and screenshots are not
-development resources by themselves. When Figma is used, satisfy
+only; Image Gen/GPT Image or Figma must provide high-fidelity design sources
+before UI build. For Image Gen/GPT Image sources, every non-icon visual asset
+must include a synchronized HTML/CSS companion; icon/logo/app-icon assets do not
+need HTML. Briefs, product-designer prose, local prototypes, uploads, external
+exports, design-system exports, and screenshots are not development resources by
+themselves. When Figma is used, satisfy
 `dev-agent/references/figma-handoff.md` and run
 `bin/dev-flow figma-check <project-name>`.
 

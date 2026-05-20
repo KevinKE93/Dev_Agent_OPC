@@ -5,8 +5,9 @@ reusable components, or a more reliable visual QA baseline.
 
 ## Recommended Flow
 
-1. Explore visual direction with references, imagegen, GPT Image, designer input,
-   uploaded-approved files, or established design-system exports.
+1. Explore visual direction with references, imagegen, GPT Image, or designer
+   input. Draft uploads and design-system notes can inform the direction, but
+   they do not satisfy the build-ready source gate.
 2. Formalize selected screens in Figma when layout, component reuse, or future
    iteration matters.
 3. Export final Figma frames or component boards as PNG or PDF into
