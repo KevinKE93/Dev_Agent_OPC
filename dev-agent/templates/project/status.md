@@ -15,8 +15,8 @@
 - [ ] Ship package ready, when requested
 
 ## Task Planning
-- Task queue: `.dev-agent/tasks/TASKS.md`
-- Execution plan: `.dev-agent/tasks/EXECUTION_PLAN.md`
+- Task queue: `dev-agent/tasks/TASKS.md`
+- Execution plan: `dev-agent/tasks/EXECUTION_PLAN.md`
 - Review before execute: required
 - Heartbeat batch policy: safe-batch
 

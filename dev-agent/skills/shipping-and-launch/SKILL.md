@@ -306,7 +306,7 @@ Before deploying:
 - [ ] Rollback plan documented
 - [ ] Monitoring dashboards set up
 - [ ] Team notified of deployment
-- [ ] `<project-name>/.dev-agent/ship/LAUNCH.md` records the go/no-go decision, rollback plan, owners, and follow-up notes
+- [ ] `<project-name>/dev-agent/ship/LAUNCH.md` records the go/no-go decision, rollback plan, owners, and follow-up notes
 - [ ] `bin/dev-flow ship-check <project-name>` passes
 
 After deploying:

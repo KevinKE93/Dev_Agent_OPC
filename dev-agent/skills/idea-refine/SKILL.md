@@ -29,7 +29,7 @@ bin/dev-flow init <project-name> --type <ui|agent|api|library|docs>
 
 ## Output
 
-The final output is a markdown one-pager saved to `<project-name>/.dev-agent/ideas/idea-brief.md`, containing:
+The final output is a markdown one-pager saved to `<project-name>/dev-agent/ideas/idea-brief.md`, containing:
 - Problem Statement
 - Recommended Direction
 - Requirement Attribution
@@ -148,7 +148,7 @@ Produce a concrete artifact — a markdown one-pager that moves work forward:
 Keep attribution lightweight. Do not turn the idea brief into a full PRD; use the table to prevent future spec work from blending explicit user input, agent guesses, and platform constraints into one untraceable blob.
 
 When operating inside a dev-flow project, save this as the canonical
-`<project-name>/.dev-agent/ideas/idea-brief.md`. If no project exists yet, ask before
+`<project-name>/dev-agent/ideas/idea-brief.md`. If no project exists yet, ask before
 creating one or present the artifact for confirmation.
 
 ### Anti-patterns to Avoid
@@ -189,5 +189,5 @@ After completing an ideation session:
 - [ ] Requirement attribution distinguishes user-stated needs, agent inferences, decisions, and open confirmations
 - [ ] A "Not Doing" list makes trade-offs explicit
 - [ ] The output is a concrete artifact (markdown one-pager), not just conversation
-- [ ] In dev-flow projects, the artifact is saved as `<project-name>/.dev-agent/ideas/idea-brief.md`
+- [ ] In dev-flow projects, the artifact is saved as `<project-name>/dev-agent/ideas/idea-brief.md`
 - [ ] The user confirmed the final direction before any implementation work

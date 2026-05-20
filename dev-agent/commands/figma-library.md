@@ -5,7 +5,7 @@ description: Build or update a Figma component library for a project before UI i
 Use this only when the project needs reusable tokens, component variants, or a
 durable design system. For one-off screens, prefer `figma-design`.
 
-1. Read `<project-name>/.dev-agent/design/VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`,
+1. Read `<project-name>/dev-agent/design/VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`,
    `DESIGN_ARTIFACTS.md`, `FIGMA_HANDOFF.md`, existing code components, styling
    tokens, and required design contract inputs.
 2. If Figma tools are available, invoke the Figma plugin skills

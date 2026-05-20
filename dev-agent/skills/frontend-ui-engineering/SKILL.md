@@ -24,10 +24,10 @@ QA. The output should feel intentionally designed, not template-generated.
 Do not start customer-facing UI implementation until these exist and pass for
 the current scope:
 
-- `<project-name>/.dev-agent/design/DESIGN.md`
-- `<project-name>/.dev-agent/design/VISUAL_SYSTEM.md`
-- `<project-name>/.dev-agent/design/SCREEN_ACCEPTANCE.md`
-- `<project-name>/.dev-agent/tasks/IMPLEMENTATION_TRACE.md`
+- `<project-name>/dev-agent/design/DESIGN.md`
+- `<project-name>/dev-agent/design/VISUAL_SYSTEM.md`
+- `<project-name>/dev-agent/design/SCREEN_ACCEPTANCE.md`
+- `<project-name>/dev-agent/tasks/IMPLEMENTATION_TRACE.md`
 - `bin/dev-flow design-check <project-name>`
 
 Also read these when applicable:
@@ -146,7 +146,7 @@ Use `references/accessibility-checklist.md` for detail. Minimum bar:
 ## QA Gate
 
 QA is optional unless `AUTOMATED_QA` or `VISUAL_QA` is required by
-`.dev-agent/state/applicability.env` or the user asks for it. After implementing the
+`dev-agent/state/applicability.env` or the user asks for it. After implementing the
 overall requested customer-facing UI scope:
 
 1. Confirm every screen/state in the batch is implemented or marked blocked in

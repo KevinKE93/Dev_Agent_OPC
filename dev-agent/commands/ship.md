@@ -4,7 +4,7 @@ description: Optionally prepare launch evidence, go/no-go decision, and rollback
 
 Invoke the `shipping-and-launch` skill.
 
-Prepare release evidence under `<project-name>/.dev-agent/ship/`:
+Prepare release evidence under `<project-name>/dev-agent/ship/`:
 
 1. Run `bin/dev-flow env-check <project-name>`, then final lint, test, build, smoke, and packaging checks from project-local source paths.
 2. Review code quality, security, test coverage, accessibility, infrastructure, and docs.

@@ -8,17 +8,17 @@ can read without guessing.
 
 All relative paths in this contract, such as `design/approved/...`,
 `tasks/IMPLEMENTATION_TRACE.md`, and `reviews/visual-screenshots/...`, are
-relative to `<project-name>/.dev-agent/`. Implementation targets such as
+relative to `<project-name>/dev-agent/`. Implementation targets such as
 `apps/web/index.html` remain relative to the project root.
 
 ## Asset Classes
 
-- References: external screenshots, apps, websites, Figma links, and competitor notes. Save under `.dev-agent/design/references/`, `.dev-agent/design/screenshots/`, or `.dev-agent/design/reference-links.md`.
+- References: external screenshots, apps, websites, Figma links, and competitor notes. Save under `dev-agent/design/references/`, `dev-agent/design/screenshots/`, or `dev-agent/design/reference-links.md`.
 - Drafts: sketches, SVG/Mermaid/Markdown wireframes, low-fidelity prototypes,
   rough local HTML/CSS mockups, screenshots, and files named
-  draft/sketch/prototype. Save under `.dev-agent/design/drafts/` or `.dev-agent/design/mocks/`.
+  draft/sketch/prototype. Save under `dev-agent/design/drafts/` or `dev-agent/design/mocks/`.
 - Approved visual assets: implementation-ready raster/PDF boards and state
-  images from formal visual producers. Save under `.dev-agent/design/approved/`.
+  images from formal visual producers. Save under `dev-agent/design/approved/`.
 - HTML/CSS companion packages: high-fidelity HTML files under
   `design/approved/html/`, with CSS resources under the same folder and optional
   JS/Lottie resources when motion is part of acceptance. These are handoff
@@ -28,8 +28,8 @@ relative to `<project-name>/.dev-agent/`. Implementation targets such as
   companion under `design/approved/html/` and record the mapping in
   `design/DESIGN_IMAGE_DESCRIPTIONS.md`.
 - Figma handoff: when Figma is used, satisfy `dev-agent/references/figma-handoff.md`.
-- Verification assets: browser screenshots, simulator captures, Playwright/Chrome captures, and runtime output. Save under `.dev-agent/reviews/visual-screenshots/` only when an exception or blocked flow needs evidence.
-- Delegated reference board: when the user delegates visual direction and no external reference is provided, save the generated reference direction in `.dev-agent/design/REFERENCE_BOARD.md`.
+- Verification assets: browser screenshots, simulator captures, Playwright/Chrome captures, and runtime output. Save under `dev-agent/reviews/visual-screenshots/` only when an exception or blocked flow needs evidence.
+- Delegated reference board: when the user delegates visual direction and no external reference is provided, save the generated reference direction in `dev-agent/design/REFERENCE_BOARD.md`.
 
 Product-designer outputs, drafts, and verification assets are forbidden as
 implementation targets. Use them only as inputs or requirements for Image
@@ -97,7 +97,7 @@ When `Source type` is `figma` or `figma-mcp`, satisfy
 
 ## Output Rules
 
-- Approved visual assets and companion packages must live under `<project-name>/.dev-agent/design/approved/`.
+- Approved visual assets and companion packages must live under `<project-name>/dev-agent/design/approved/`.
 - Approved visual assets must be real non-empty raster image or PDF files.
 - HTML companion packages must be real non-empty `.html` files under
   `design/approved/html/` with CSS. Use one package per screen/state when visual

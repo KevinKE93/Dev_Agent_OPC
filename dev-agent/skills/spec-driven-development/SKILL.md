@@ -12,15 +12,15 @@ Write a structured specification before writing any code. The spec is the shared
 This skill owns the lean product/spec merge. Capture product intent, MVP scope,
 stories, acceptance criteria, useful metrics, technical constraints, and any
 AI-agent runtime contract in one pass. Do not create separate PM or agent
-phases. The required outputs are `.dev-agent/product/PRD.md` and
-`.dev-agent/specs/SPEC.md`.
+phases. The required outputs are `dev-agent/product/PRD.md` and
+`dev-agent/specs/SPEC.md`.
 
 Keep the split crisp: `PRD.md` owns users, scope, flows, product rules,
 acceptance, metrics, and non-goals. `SPEC.md` owns architecture, data,
 interfaces, commands, tests, privacy/security boundaries, risks, and open
 technical decisions.
 
-In Dev Agent projects, this skill owns `<project-name>/.dev-agent/specs/SPEC.md`.
+In Dev Agent projects, this skill owns `<project-name>/dev-agent/specs/SPEC.md`.
 Do not create implementation artifacts from this skill; hand off to
 `design-flow` for customer-facing UI and then `incremental-implementation`.
 
@@ -36,8 +36,8 @@ Do not create implementation artifacts from this skill; hand off to
 
 ## Lifecycle Boundary
 
-Spec work has one gate here: produce and validate `.dev-agent/product/PRD.md`
-and `.dev-agent/specs/SPEC.md`. The broader Dev Agent lifecycle continues
+Spec work has one gate here: produce and validate `dev-agent/product/PRD.md`
+and `dev-agent/specs/SPEC.md`. The broader Dev Agent lifecycle continues
 through design, build, optional QA, and optional ship.
 
 ```
@@ -93,9 +93,9 @@ Don't silently fill in ambiguous requirements. The spec's entire purpose is to s
    <project-name>/src/       → Simple source root when a monorepo is unnecessary
    <project-name>/apps/      → Runnable app packages when the stack needs them
    <project-name>/packages/  → Shared packages when the project needs them
-   <project-name>/.dev-agent/ → Dev Agent process artifacts
-   <project-name>/.dev-agent/specs/     → Product and technical specs
-   <project-name>/.dev-agent/tasks/     → Plans and task lists
+   <project-name>/dev-agent/ → Dev Agent process artifacts
+   <project-name>/dev-agent/specs/     → Product and technical specs
+   <project-name>/dev-agent/tasks/     → Plans and task lists
    apps/web/src/           → Application source code
    apps/web/src/components → React components
    apps/web/src/lib        → Shared utilities
@@ -129,7 +129,7 @@ Also decide design applicability. If the work touches UI, visual direction,
 brand/KV, screen states, or motion, mark design as required and hand off to
 `design-flow`. If the work has no user-facing UI or design is already complete
 and build-ready, record why design can be skipped or considered complete. When
-the decision changes lifecycle behavior, update `.dev-agent/state/applicability.env`
+the decision changes lifecycle behavior, update `dev-agent/state/applicability.env`
 instead of leaving build to guess.
 
 **Minimum PRD template:**
@@ -223,7 +223,7 @@ This lets you loop, retry, and problem-solve toward a clear goal rather than gue
 
 For user-facing products, run `design-flow` before build. The design package
 should define information architecture, interaction model, platform/HCI
-requirements, and visual direction under `<project-name>/.dev-agent/design/`.
+requirements, and visual direction under `<project-name>/dev-agent/design/`.
 
 Skip this phase only for non-UI work or tiny changes with no user-facing behavior.
 
@@ -275,5 +275,5 @@ Before proceeding to implementation, confirm:
 - [ ] The human has reviewed and approved the spec, or workspace instructions explicitly delegate defaults and no human review gate is open
 - [ ] Success criteria are specific and testable
 - [ ] Boundaries (Always/Ask First/Never) are defined
-- [ ] The spec is saved under `<project-name>/.dev-agent/specs/`
+- [ ] The spec is saved under `<project-name>/dev-agent/specs/`
 - [ ] Project-specific app or source directories are under `<project-name>/`, not beside it

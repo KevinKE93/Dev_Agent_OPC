@@ -6,7 +6,7 @@ Use this before autonomous execution when the request has multiple tasks or the
 current phase has outputs but no task queue yet.
 
 1. Run `bin/dev-flow plan <project-name>`.
-2. Review `.dev-agent/tasks/TASKS.md` and `.dev-agent/tasks/EXECUTION_PLAN.md`.
+2. Review `dev-agent/tasks/TASKS.md` and `dev-agent/tasks/EXECUTION_PLAN.md`.
 3. Continue only when `Plan Review: pass`.
 4. If the review pauses or requires approval, ask the user with the blocker.
 5. When multiple clear pending tasks exist, use 1-minute heartbeat batches; each

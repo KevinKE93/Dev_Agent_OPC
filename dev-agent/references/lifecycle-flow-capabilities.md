@@ -63,7 +63,7 @@ gate.
 **Completion gate**
 
 - Required artifact:
-  `<project-name>/.dev-agent/ideas/idea-brief.md`.
+  `<project-name>/dev-agent/ideas/idea-brief.md`.
 - The brief must capture the problem, recommended direction, attribution,
   assumptions, MVP scope, non-goals, and open questions.
 - Gate command:
@@ -118,8 +118,8 @@ gate.
 **Completion gate**
 
 - Required artifacts:
-  `<project-name>/.dev-agent/product/PRD.md` and
-  `<project-name>/.dev-agent/specs/SPEC.md`.
+  `<project-name>/dev-agent/product/PRD.md` and
+  `<project-name>/dev-agent/specs/SPEC.md`.
 - For UI projects, PRD must cover MVP scope, core flows or IA, acceptance, and
   non-goals. SPEC must cover stack, commands, data/domain model, testing,
   UI/design applicability, privacy/security, and open questions.
@@ -181,7 +181,7 @@ gate.
 **Completion gate**
 
 - Required artifacts when design applies:
-  `<project-name>/.dev-agent/design/DESIGN.md`,
+  `<project-name>/dev-agent/design/DESIGN.md`,
   `VISUAL_SYSTEM.md`, and `SCREEN_ACCEPTANCE.md`.
 - Each screen in `SCREEN_ACCEPTANCE.md` must include `Requirement source:`.
 - If references are required, reference assets or links must exist. If visual
@@ -209,8 +209,8 @@ gate.
   heartbeat batches.
 - Runs proof-first verification: tests, builds, lint, manual proof, or a
   recorded blocker when proof is not possible.
-- Keeps process files under `.dev-agent/` and source/development output in the
-  project root.
+- Keeps process files under visible `dev-agent/` and source/development output
+  in the project root.
 - For UI work, maps implemented screens and states to
   `IMPLEMENTATION_TRACE.md`.
 - Records a one-pass runtime UI polish budget with `bin/dev-flow ui-polish`
@@ -253,8 +253,8 @@ gate.
 - Source or development output exists under the project root, such as `src/`,
   `app/`, `apps/`, `packages/`, `server/`, or stack manifest files.
 - Required evidence:
-  `<project-name>/.dev-agent/reviews/VERIFICATION.md` or
-  `<project-name>/.dev-agent/reviews/BLOCKED_BUILD.md`.
+  `<project-name>/dev-agent/reviews/VERIFICATION.md` or
+  `<project-name>/dev-agent/reviews/BLOCKED_BUILD.md`.
 - For UI projects, `tasks/IMPLEMENTATION_TRACE.md` maps required screens,
   states, design inputs, and proof evidence.
 - Host-dependent slices update `HOST_REQUIREMENTS.md` and run
@@ -383,7 +383,7 @@ gate.
 **Completion gate**
 
 - Required artifact:
-  `<project-name>/.dev-agent/ship/LAUNCH.md`.
+  `<project-name>/dev-agent/ship/LAUNCH.md`.
 - `LAUNCH.md` must include release evidence, known risks, monitoring notes,
   rollback steps, and a GO or NO-GO decision.
 - `bin/dev-flow ship-check <project-name>` verifies every applicable prior

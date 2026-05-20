@@ -64,12 +64,13 @@ Aliases:
 
 Applicability:
   Product, agent-contract, testing, and review checks are folded into spec, build, qa, and ship. Task planning is surfaced by next and plan.
-  Optional gates are controlled by <project-name>/.dev-agent/state/applicability.env.
+  Optional gates are controlled by <project-name>/dev-agent/state/applicability.env.
   Set AGENT_CONTRACT, UI_FLOW, UI_REFERENCES, UI_DESIGN_ASSETS, UI_FIGMA_HANDOFF, AUTOMATED_QA, VISUAL_QA, SHIP_FLOW, AUTONOMY_LOOP, AUTONOMY_TASK_MODE, AUTONOMY_HEARTBEAT_ON_TASK_LIST, AUTONOMY_BATCH_POLICY, or SUBAGENTS to auto, required, delegated, suggest, enabled, or disabled as supported.
-  Project type is recorded in <project-name>/.dev-agent/state/schema.env.
+  Project type is recorded in <project-name>/dev-agent/state/schema.env.
 EOF
 }
 
+PROCESS_DIR="dev-agent"
 NEW_CONTROL_DIR=".dev-agent"
 LEGACY_CONTROL_DIR=".dev-flow"
 
@@ -134,7 +135,42 @@ project_display_root() {
 project_has_new_layout() {
   local dir
   dir="$(project_path "${1:-}")"
-  [[ -d "$dir/$NEW_CONTROL_DIR" ]]
+  [[ -d "$dir/$PROCESS_DIR" && -d "$dir/$NEW_CONTROL_DIR/bin" ]]
+}
+
+project_has_runtime_pack_dir_from_dir() {
+  local dir="$1"
+  [[ -f "$dir/$PROCESS_DIR/dev-agent.manifest.json" ]] && return 0
+  [[ -d "$dir/$PROCESS_DIR/commands" && -d "$dir/$PROCESS_DIR/skills" && -d "$dir/$PROCESS_DIR/templates" ]]
+}
+
+project_has_visible_process_root_from_dir() {
+  local dir="$1"
+  local rel
+  [[ -d "$dir/$PROCESS_DIR/state" || -f "$dir/$PROCESS_DIR/context.md" || -f "$dir/$PROCESS_DIR/HOST_REQUIREMENTS.md" ]] && return 0
+  for rel in ideas product specs agent design tasks reviews ship; do
+    [[ -d "$dir/$PROCESS_DIR/$rel" ]] && return 0
+  done
+  return 1
+}
+
+project_has_hidden_process_root_from_dir() {
+  local dir="$1"
+  local rel
+  [[ -d "$dir/$NEW_CONTROL_DIR/state" || -f "$dir/$NEW_CONTROL_DIR/context.md" || -f "$dir/$NEW_CONTROL_DIR/HOST_REQUIREMENTS.md" ]] && return 0
+  for rel in ideas product specs agent design tasks reviews ship; do
+    [[ -d "$dir/$NEW_CONTROL_DIR/$rel" ]] && return 0
+  done
+  return 1
+}
+
+project_default_process_root_from_dir() {
+  local dir="$1"
+  if project_has_runtime_pack_dir_from_dir "$dir"; then
+    echo "$dir/$NEW_CONTROL_DIR"
+    return
+  fi
+  echo "$dir/$PROCESS_DIR"
 }
 
 project_has_legacy_process_dirs_from_dir() {
@@ -176,7 +212,11 @@ project_control_path_from_dir() {
 project_process_root() {
   local dir
   dir="$(project_path "${1:-}")"
-  if [[ -d "$dir/$NEW_CONTROL_DIR" ]]; then
+  if project_has_visible_process_root_from_dir "$dir"; then
+    echo "$dir/$PROCESS_DIR"
+    return
+  fi
+  if project_has_hidden_process_root_from_dir "$dir"; then
     echo "$dir/$NEW_CONTROL_DIR"
     return
   fi
@@ -184,14 +224,16 @@ project_process_root() {
     echo "$dir"
     return
   fi
-  echo "$dir/$NEW_CONTROL_DIR"
+  project_default_process_root_from_dir "$dir"
 }
 
 ensure_control_for_uninitialized_project() {
   local project="$1"
   local dir project_type
   dir="$(project_path "$project")"
-  [[ -d "$dir/$NEW_CONTROL_DIR" || -d "$dir/$LEGACY_CONTROL_DIR" ]] && return 0
+  project_has_visible_process_root_from_dir "$dir" && return 0
+  project_has_hidden_process_root_from_dir "$dir" && return 0
+  [[ -d "$dir/$LEGACY_CONTROL_DIR" ]] && return 0
   project_has_legacy_process_dirs_from_dir "$dir" && return 0
   project_type="${DEV_FLOW_DEFAULT_PROJECT_TYPE:-ui}"
   if ! dev_flow_valid_project_type "$project_type"; then
@@ -203,7 +245,11 @@ ensure_control_for_uninitialized_project() {
 
 project_process_root_from_dir() {
   local dir="$1"
-  if [[ -d "$dir/$NEW_CONTROL_DIR" ]]; then
+  if project_has_visible_process_root_from_dir "$dir"; then
+    echo "$dir/$PROCESS_DIR"
+    return
+  fi
+  if project_has_hidden_process_root_from_dir "$dir"; then
     echo "$dir/$NEW_CONTROL_DIR"
     return
   fi
@@ -211,12 +257,13 @@ project_process_root_from_dir() {
     echo "$dir"
     return
   fi
-  echo "$dir/$NEW_CONTROL_DIR"
+  project_default_process_root_from_dir "$dir"
 }
 
 source_root_for_process_dir() {
   local dir="$1"
   case "$dir" in
+    */"$PROCESS_DIR") dirname "$dir" ;;
     */"$NEW_CONTROL_DIR") dirname "$dir" ;;
     *) echo "$dir" ;;
   esac
@@ -241,8 +288,20 @@ project_control_display_root() {
 
 project_process_display_root() {
   local project="$1"
-  if [[ "$(project_process_root "$project")" == "$(project_path "$project")/$NEW_CONTROL_DIR" ]]; then
+  local process_root project_root workspace display_root
+  project_root="$(project_path "$project")"
+  process_root="$(project_process_root "$project")"
+  workspace="$(project_workspace_root "$project")"
+  case "$project_root" in
+    "$workspace"/*) display_root="${project_root#"$workspace"/}" ;;
+    *) display_root="$project_root" ;;
+  esac
+  if [[ "$process_root" == "$project_root/$NEW_CONTROL_DIR" ]]; then
     project_control_display_root "$project"
+    return
+  fi
+  if [[ "$process_root" == "$project_root/$PROCESS_DIR" ]]; then
+    echo "$display_root/$PROCESS_DIR"
     return
   fi
   project_display_root "$project"
@@ -261,46 +320,50 @@ project_check_path() {
 }
 
 state_path() {
-  local dir control
+  local dir control process_root
   dir="$(project_path "${1:-}")"
   control="$(project_control_path "${1:-}")"
-  if [[ "$control" == "$dir/$NEW_CONTROL_DIR" ]]; then
-    echo "$control/state/state.env"
-  else
+  process_root="$(project_process_root "${1:-}")"
+  if [[ "$control" == "$dir/$LEGACY_CONTROL_DIR" && "$process_root" == "$dir" ]]; then
     echo "$control/state.env"
+  else
+    echo "$process_root/state/state.env"
   fi
 }
 
 schema_path() {
-  local dir control
+  local dir control process_root
   dir="$(project_path "${1:-}")"
   control="$(project_control_path "${1:-}")"
-  if [[ "$control" == "$dir/$NEW_CONTROL_DIR" ]]; then
-    echo "$control/state/schema.env"
-  else
+  process_root="$(project_process_root "${1:-}")"
+  if [[ "$control" == "$dir/$LEGACY_CONTROL_DIR" && "$process_root" == "$dir" ]]; then
     echo "$control/schema.env"
+  else
+    echo "$process_root/state/schema.env"
   fi
 }
 
 applicability_path() {
-  local dir control
+  local dir control process_root
   dir="$(project_path "${1:-}")"
   control="$(project_control_path "${1:-}")"
-  if [[ "$control" == "$dir/$NEW_CONTROL_DIR" ]]; then
-    echo "$control/state/applicability.env"
-  else
+  process_root="$(project_process_root "${1:-}")"
+  if [[ "$control" == "$dir/$LEGACY_CONTROL_DIR" && "$process_root" == "$dir" ]]; then
     echo "$control/applicability.env"
+  else
+    echo "$process_root/state/applicability.env"
   fi
 }
 
 autonomy_path() {
-  local dir control
+  local dir control process_root
   dir="$(project_path "${1:-}")"
   control="$(project_control_path "${1:-}")"
-  if [[ "$control" == "$dir/$NEW_CONTROL_DIR" ]]; then
-    echo "$control/state/autonomy.env"
-  else
+  process_root="$(project_process_root "${1:-}")"
+  if [[ "$control" == "$dir/$LEGACY_CONTROL_DIR" && "$process_root" == "$dir" ]]; then
     echo "$control/autonomy.env"
+  else
+    echo "$process_root/state/autonomy.env"
   fi
 }
 
@@ -427,7 +490,9 @@ write_if_missing() {
 
 ensure_project_dirs() {
   local dir="$1"
-  mkdir -p "$dir/$NEW_CONTROL_DIR"/{bin,state}
+  local process_root
+  process_root="$(project_default_process_root_from_dir "$dir")"
+  mkdir -p "$process_root/state" "$dir/$NEW_CONTROL_DIR/bin"
 }
 
 ensure_design_dirs() {
@@ -455,18 +520,20 @@ write_project_templates() {
   local dir="$1"
   local project="$2"
   local project_type="$3"
-  local control_rel
+  local control_rel process_rel process_root
   local app_template
   app_template="$(dev_flow_applicability_template_for_type "$project_type")"
   [[ -n "$app_template" ]] || { echo "Unsupported project type: $project_type" >&2; exit 1; }
   if [[ -d "$dir/$NEW_CONTROL_DIR" || ! -d "$dir/$LEGACY_CONTROL_DIR" ]]; then
     control_rel="$NEW_CONTROL_DIR"
-    write_project_template "$dir" "$control_rel/state/schema.env" "schema.env" "$project" "$project_type"
-    write_project_template "$dir" "$control_rel/state/state.env" "state.env" "$project" "$project_type"
-    write_project_template "$dir" "$control_rel/state/applicability.env" "$app_template" "$project" "$project_type"
-    write_project_template "$dir" "$control_rel/context.md" "context.md" "$project" "$project_type"
-    write_project_template "$dir" "$control_rel/HOST_REQUIREMENTS.md" "host-requirements.md" "$project" "$project_type"
-    write_project_template "$dir" "$control_rel/state/autonomy.env" "autonomy.env" "$project" "$project_type"
+    process_root="$(project_default_process_root_from_dir "$dir")"
+    process_rel="${process_root#"$dir"/}"
+    write_project_template "$dir" "$process_rel/state/schema.env" "schema.env" "$project" "$project_type"
+    write_project_template "$dir" "$process_rel/state/state.env" "state.env" "$project" "$project_type"
+    write_project_template "$dir" "$process_rel/state/applicability.env" "$app_template" "$project" "$project_type"
+    write_project_template "$dir" "$process_rel/context.md" "context.md" "$project" "$project_type"
+    write_project_template "$dir" "$process_rel/HOST_REQUIREMENTS.md" "host-requirements.md" "$project" "$project_type"
+    write_project_template "$dir" "$process_rel/state/autonomy.env" "autonomy.env" "$project" "$project_type"
     write_project_template "$dir" "$control_rel/bin/check" "check.sh" "$project" "$project_type"
     chmod +x "$dir/$control_rel/bin/check"
   else
@@ -1343,13 +1410,19 @@ autonomy_heartbeat_label_loaded() {
 autonomy_next_action_for_phase() {
   local project="${1:-}"
   local phase="${2:-}"
+  local process_root
+  if [[ -n "$project" ]]; then
+    process_root="$(project_process_display_root "$project")"
+  else
+    process_root="dev-agent"
+  fi
   if [[ -n "$project" ]] && task_list_has_clear_multi_pending "$project"; then
     echo "execute a safe batch of clear pending tasks, update TASKS.md statuses, run proof commands, then keep heartbeat only while review remains pass"
     return 0
   fi
   case "$phase" in
     idea)
-      echo "refine .dev-agent/ideas/idea-brief.md, capture assumptions, then run verify-phase idea"
+      echo "refine $process_root/ideas/idea-brief.md, capture assumptions, then run verify-phase idea"
       ;;
     spec)
       echo "complete PRD and SPEC.md coverage, then run verify-phase spec"
@@ -1359,7 +1432,7 @@ autonomy_next_action_for_phase() {
       ;;
     build)
       if ui_polish_applies_loaded "$project" "$phase" && ui_polish_budget_exhausted_loaded; then
-        echo "advance to the next task; record P2/P3 UI debt in .dev-agent/reviews/UI_DEBT.md and only block on P0/P1"
+        echo "advance to the next task; record P2/P3 UI debt in $process_root/reviews/UI_DEBT.md and only block on P0/P1"
       else
         echo "implement the next build slice, update verification evidence, then run verify-phase build and check"
       fi
@@ -3553,21 +3626,22 @@ env_required_is_yes() {
 
 env_check_impl() {
   local project="$1"
-  local control path failures rows line capability scope required_by verify_cmd required permission status notes in_requirements
+  local process_root path failures rows line capability scope required_by verify_cmd required permission status notes in_requirements display_root
   require_project "$project"
-  control="$(project_control_path "$project")"
-  path="$control/HOST_REQUIREMENTS.md"
+  process_root="$(project_process_root "$project")"
+  display_root="$(project_process_display_root "$project")"
+  path="$process_root/HOST_REQUIREMENTS.md"
   failures=0
   rows=0
 
   if [[ ! -f "$path" ]]; then
-    echo "Missing host environment contract: $(project_control_display_root "$project")/HOST_REQUIREMENTS.md" >&2
+    echo "Missing host environment contract: $display_root/HOST_REQUIREMENTS.md" >&2
     echo "Run: bin/dev-flow migrate $project" >&2
     return 1
   fi
 
   if ! grep -Eq '^##[[:space:]]+Requirements' "$path"; then
-    echo "Missing Requirements section in $(project_control_display_root "$project")/HOST_REQUIREMENTS.md" >&2
+    echo "Missing Requirements section in $display_root/HOST_REQUIREMENTS.md" >&2
     failures=$((failures + 1))
   fi
 
@@ -3621,7 +3695,7 @@ env_check_impl() {
   done < "$path"
 
   if [[ "$rows" -eq 0 ]]; then
-    echo "No host requirements table rows found in $(project_control_display_root "$project")/HOST_REQUIREMENTS.md" >&2
+    echo "No host requirements table rows found in $display_root/HOST_REQUIREMENTS.md" >&2
     failures=$((failures + 1))
   fi
 
@@ -3669,10 +3743,11 @@ ship_check_impl() {
 
 doctor_check_impl() {
   local project="$1"
-  local dir control check_file failures schema_file tracked_runtime
+  local dir control process_dir check_file failures schema_file tracked_runtime
   require_project "$project"
   dir="$(project_path "$project")"
   control="$(project_control_path "$project")"
+  process_dir="$(project_process_root "$project")"
   check_file="$(project_check_path "$project")"
   schema_file="$(schema_path "$project")"
   failures=0
@@ -3691,7 +3766,7 @@ doctor_check_impl() {
     fi
   fi
   local dir_name
-  local expected_dirs=("$control")
+  local expected_dirs=("$control" "$process_dir")
   if [[ "$control" == "$dir/$NEW_CONTROL_DIR" ]]; then
     expected_dirs+=("$control/bin")
   else
@@ -3702,6 +3777,7 @@ doctor_check_impl() {
       case "$dir_name" in
         "$control") echo "Missing template directory: $(project_control_display_root "$project")" >&2 ;;
         "$control/bin") echo "Missing template directory: $(project_control_display_root "$project")/bin" >&2 ;;
+        "$process_dir") echo "Missing template directory: $(project_process_display_root "$project")" >&2 ;;
         "$dir/bin") echo "Missing template directory: bin" >&2 ;;
       esac
       failures=$((failures + 1))
@@ -3717,7 +3793,7 @@ doctor_check_impl() {
       state/state.env) file_path="$(state_path "$project")" ;;
       state/applicability.env) file_path="$(applicability_path "$project")" ;;
       bin/check) file_path="$check_file" ;;
-      *) file_path="$control/$file_name" ;;
+      *) file_path="$process_dir/$file_name" ;;
     esac
     if [[ ! -f "$file_path" ]]; then
       echo "Missing template file: ${file_path#"$dir"/}" >&2
@@ -3756,21 +3832,32 @@ migrate_path_if_present() {
   mv "$from" "$to"
 }
 
-migrate_legacy_layout_to_control_root() {
+migrate_legacy_layout_to_visible_process_root() {
   local root="$1"
-  mkdir -p "$root/$NEW_CONTROL_DIR/state" "$root/$NEW_CONTROL_DIR/bin"
-  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/state.env" "$NEW_CONTROL_DIR/state/state.env"
-  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/schema.env" "$NEW_CONTROL_DIR/state/schema.env"
-  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/applicability.env" "$NEW_CONTROL_DIR/state/applicability.env"
-  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/autonomy.env" "$NEW_CONTROL_DIR/state/autonomy.env"
-  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/context.md" "$NEW_CONTROL_DIR/context.md"
-  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/HOST_REQUIREMENTS.md" "$NEW_CONTROL_DIR/HOST_REQUIREMENTS.md"
+  local process_root process_rel
+  process_root="$(project_default_process_root_from_dir "$root")"
+  process_rel="${process_root#"$root"/}"
+  mkdir -p "$process_root/state" "$root/$NEW_CONTROL_DIR/bin"
+  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/state.env" "$process_rel/state/state.env"
+  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/schema.env" "$process_rel/state/schema.env"
+  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/applicability.env" "$process_rel/state/applicability.env"
+  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/autonomy.env" "$process_rel/state/autonomy.env"
+  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/context.md" "$process_rel/context.md"
+  migrate_path_if_present "$root" "$LEGACY_CONTROL_DIR/HOST_REQUIREMENTS.md" "$process_rel/HOST_REQUIREMENTS.md"
+  migrate_path_if_present "$root" "$NEW_CONTROL_DIR/state/state.env" "$process_rel/state/state.env"
+  migrate_path_if_present "$root" "$NEW_CONTROL_DIR/state/schema.env" "$process_rel/state/schema.env"
+  migrate_path_if_present "$root" "$NEW_CONTROL_DIR/state/applicability.env" "$process_rel/state/applicability.env"
+  migrate_path_if_present "$root" "$NEW_CONTROL_DIR/state/autonomy.env" "$process_rel/state/autonomy.env"
+  migrate_path_if_present "$root" "$NEW_CONTROL_DIR/context.md" "$process_rel/context.md"
+  migrate_path_if_present "$root" "$NEW_CONTROL_DIR/HOST_REQUIREMENTS.md" "$process_rel/HOST_REQUIREMENTS.md"
   migrate_path_if_present "$root" "bin/check" "$NEW_CONTROL_DIR/bin/check"
   local rel
   for rel in ideas product specs agent design tasks reviews ship; do
-    migrate_path_if_present "$root" "$rel" "$NEW_CONTROL_DIR/$rel"
+    migrate_path_if_present "$root" "$rel" "$process_rel/$rel"
+    migrate_path_if_present "$root" "$NEW_CONTROL_DIR/$rel" "$process_rel/$rel"
   done
   rmdir "$root/bin" "$root/$LEGACY_CONTROL_DIR" 2>/dev/null || true
+  rmdir "$root/$NEW_CONTROL_DIR/state" "$root/$NEW_CONTROL_DIR" 2>/dev/null || true
 }
 
 migrate_project_impl() {
@@ -3779,7 +3866,7 @@ migrate_project_impl() {
   local dir process_dir
   require_project "$project"
   dir="$(project_path "$project")"
-  migrate_legacy_layout_to_control_root "$dir"
+  migrate_legacy_layout_to_visible_process_root "$dir"
   ensure_project_dirs "$dir"
   write_project_templates "$dir" "$project" "$project_type"
   write_project_schema_file "$project" "$project_type"
@@ -4731,7 +4818,7 @@ Install the generated folders into the target agent surface. There are two layer
 
 Agent personas are included under each adapter's `agents/` directory when the platform supports persona/sub-agent files. Shared references are embedded into each packaged skill so standalone skill installation keeps reference files available.
 
-The `runtime/` folder is a self-contained workflow-pack checkout surface. Copy or clone it when a platform user needs the same machine-checkable gates used by this repository. It intentionally excludes project runtime folders, checked-in `dist/`, local host adapter installs, and host-level SDKs. Host SDKs and permissions belong in each project's `.dev-agent/HOST_REQUIREMENTS.md` contract, not inside the project runtime folder.
+The `runtime/` folder is a self-contained workflow-pack checkout surface. Copy or clone it when a platform user needs the same machine-checkable gates used by this repository. It intentionally excludes project runtime folders, checked-in `dist/`, local host adapter installs, and host-level SDKs. Host SDKs and permissions belong in each project's `dev-agent/HOST_REQUIREMENTS.md` contract, not inside the project runtime folder.
 
 The helper can also install directly:
 

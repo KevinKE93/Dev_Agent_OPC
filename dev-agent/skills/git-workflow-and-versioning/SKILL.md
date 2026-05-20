@@ -9,7 +9,7 @@ description: Structures git workflow practices. Use when making any code change.
 
 Git is your safety net. Treat commits as save points, branches as sandboxes, and history as documentation. With AI agents generating code at high speed, disciplined version control is the mechanism that keeps changes manageable, reviewable, and reversible.
 
-If the current workspace is not a git repository or commits are not authorized, use the same discipline through explicit checkpoints in `<project-name>/.dev-agent/tasks/status.md`: one logical change per checkpoint, changed files listed, verification evidence recorded, and rollback notes included when relevant.
+If the current workspace is not a git repository or commits are not authorized, use the same discipline through explicit checkpoints in `<project-name>/dev-agent/tasks/status.md`: one logical change per checkpoint, changed files listed, verification evidence recorded, and rollback notes included when relevant.
 
 ## When to Use
 

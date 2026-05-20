@@ -126,7 +126,7 @@ bin/dev-flow install claude-code --scope user
 | [QA](dev-agent/references/lifecycle-flow-capabilities.md#qa-flow) | 按需执行验收、monkey/exploratory、视觉对比和质量风险检查。 | 查看触发方式、产物、结束 gate 和可用角色 |
 | [Ship](dev-agent/references/lifecycle-flow-capabilities.md#ship-flow) | 按需准备发布证据、回滚方案、监控风险和 GO/NO-GO 决策。 | 查看触发方式、产物、结束 gate 和可用角色 |
 
-- **目录边界**：`.dev-agent/` 存放 spec、design、tasks、reviews 等过程文件；项目根目录存放真实代码、配置和开发产物。
+- **目录边界**：`dev-agent/` 存放 spec、design、tasks、reviews 等可查看过程文件；项目根目录存放真实代码、配置和开发产物；`.dev-agent/bin/check` 仅保留隐藏 gate wrapper。
 - **精简职责**：产品/PRD 与 agent contract 归入 Spec；轻量计划和 proof-first 归入 Build；测试与 review 归入 QA/Ship。
 - **Idea 归因**：idea brief 记录用户明确需求、agent 推断、产品决策和待确认项，避免后续 spec 混淆来源。
 - **Spec 门禁**：UI 项目的 PRD 需覆盖 MVP、核心流程/IA、验收和非目标；SPEC 需覆盖技术栈、命令、数据/领域模型、测试、UI/design 适用性、隐私/安全和未决问题。
@@ -143,6 +143,7 @@ bin/dev-flow install claude-code --scope user
 
 ### 发布日志
 
+- `v0.12`：恢复可见的 `dev-agent/` 过程目录，仅保留 `.dev-agent/bin/check` 为隐藏 gate wrapper；`migrate` 会把旧 `.dev-flow` 和隐藏 `.dev-agent` 过程文件迁移到可见目录。
 - `v0.11`：新增 Acceptance QA 方法，把模拟用户验收和 monkey 稳定性测试收进 QA 流程，并输出 `ACCEPTANCE_QA.html` 作为可打开的验收证据。
 - `v0.10`：新增 `technical-steward` 技术质量负责人角色，用于高风险方案、证据不足、QA 过顺和发布前的独立技术质量把关；补充 6 大流程能力索引文档。
 - `v0.9`：新增 HTML/CSS 设计稿实现方式作为正式设计交付标准，提升 UI 还原度、验收效率和代码生成效率；优化未初始化项目的目录创建，避免在项目根目录生成空的过程文件夹。
@@ -249,7 +250,7 @@ Six-step capability index:
 | [QA](dev-agent/references/lifecycle-flow-capabilities.md#qa-flow) | Run optional acceptance, monkey/exploratory, visual comparison, and quality-risk checks. | View triggers, outputs, completion gates, and available roles |
 | [Ship](dev-agent/references/lifecycle-flow-capabilities.md#ship-flow) | Prepare optional release evidence, rollback, monitoring risk, and GO/NO-GO decision. | View triggers, outputs, completion gates, and available roles |
 
-- **Directory boundary**: `.dev-agent/` stores process files such as specs, design, tasks, and reviews; the project root stores real code, config, and development output.
+- **Directory boundary**: `dev-agent/` stores visible process files such as specs, design, tasks, and reviews; the project root stores real code, config, and development output; `.dev-agent/bin/check` is the only hidden gate wrapper.
 - **Lean responsibilities**: product/PRD and agent contracts live in Spec; micro-planning and proof-first checks live in Build; testing and review live in QA/Ship.
 - **Idea attribution**: idea briefs record user-stated needs, agent inferences, product decisions, and open confirmations so later specs do not blur source boundaries.
 - **Spec gate**: UI project PRDs must cover MVP, core flows/IA, acceptance, and non-goals; SPEC files must cover stack, commands, data/domain model, testing, UI/design applicability, privacy/security, and open questions.
@@ -265,6 +266,7 @@ Six-step capability index:
 
 ### Release Notes
 
+- `v0.12`: Restores the visible `dev-agent/` process directory and keeps only `.dev-agent/bin/check` as the hidden gate wrapper; `migrate` moves old `.dev-flow` and hidden `.dev-agent` process files into the visible directory.
 - `v0.11`: Adds Acceptance QA as a QA method, pairing simulated user-flow acceptance with monkey stability testing and a directly openable `ACCEPTANCE_QA.html` evidence report.
 - `v0.10`: Adds the `technical-steward` role for independent technical quality sign-off on high-risk plans, thin evidence, too-smooth QA, and release readiness; adds the six-step flow capability index.
 - `v0.9`: Adds formal visual source plus HTML/CSS companion handoff rules to improve UI fidelity, review efficiency, and code-generation efficiency; fixes directory creation for uninitialized projects so empty process folders are not created at the project root.

@@ -6,7 +6,7 @@ Project-specific verification belongs here. Keep commands runnable from this pro
 - [ ] Required workflow folders exist only after their phase needs them
 - [ ] Schema and status ledgers exist
 - [ ] Context loading guidance exists
-- [ ] Host SDKs, CLIs, services, credentials, and permissions are recorded in `.dev-agent/HOST_REQUIREMENTS.md` when known
+- [ ] Host SDKs, CLIs, services, credentials, and permissions are recorded in `dev-agent/HOST_REQUIREMENTS.md` when known
 - [ ] Shared host SDKs are not downloaded into the `{{PROJECT}}/` runtime folder
 - [ ] `bin/dev-flow env-check {{PROJECT}}` passes before the current build slice or ship scope uses host capabilities
 - [ ] Reference intake exists for customer-facing UI work

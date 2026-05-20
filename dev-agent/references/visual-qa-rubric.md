@@ -4,13 +4,13 @@ Use this after implementing customer-facing UI and before delivery.
 
 ## Evidence
 
-- Run critical functional flows from `SCREEN_ACCEPTANCE.md` and save results in `<project-name>/.dev-agent/reviews/FUNCTIONAL_TEST.md`.
-- Run monkey or exploratory stress checks and save results in `<project-name>/.dev-agent/reviews/MONKEY_TEST.md`.
-- Summarize the automated QA lanes in `<project-name>/.dev-agent/reviews/ACCEPTANCE_QA.html` when Acceptance QA runs.
+- Run critical functional flows from `SCREEN_ACCEPTANCE.md` and save results in `<project-name>/dev-agent/reviews/FUNCTIONAL_TEST.md`.
+- Run monkey or exploratory stress checks and save results in `<project-name>/dev-agent/reviews/MONKEY_TEST.md`.
+- Summarize the automated QA lanes in `<project-name>/dev-agent/reviews/ACCEPTANCE_QA.html` when Acceptance QA runs.
 - Compare the implemented UI against formal visual assets, HTML/CSS companion packages, cut assets, references, and design requirements.
-- Save findings, a per-screen fidelity matrix covering every `SCREEN_ACCEPTANCE.md` screen, and `Overall score: N/100` in `<project-name>/.dev-agent/reviews/VISUAL_COMPARISON.md`.
+- Save findings, a per-screen fidelity matrix covering every `SCREEN_ACCEPTANCE.md` screen, and `Overall score: N/100` in `<project-name>/dev-agent/reviews/VISUAL_COMPARISON.md`.
 - Every matrix row must include screen, approved visual asset path, companion path when required, runtime surface, fidelity score, decision, and notes.
-- Capture screenshots under `<project-name>/.dev-agent/reviews/acceptance-screenshots/` or `visual-screenshots/` only when an exception occurs or a flow cannot be completed.
+- Capture screenshots under `<project-name>/dev-agent/reviews/acceptance-screenshots/` or `visual-screenshots/` only when an exception occurs or a flow cannot be completed.
 
 ## Review Axes
 

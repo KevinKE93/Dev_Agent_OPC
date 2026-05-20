@@ -106,11 +106,11 @@ are available.
 For UI build work, runtime visual inspection has a default one-pass budget.
 Record that pass with `bin/dev-flow ui-polish <project-name>`. After the budget
 is used, only P0/P1 defects block the current task; P2/P3 polish belongs in
-`.dev-agent/reviews/UI_DEBT.md`, and Autonomy should advance instead of looping on details.
+`dev-agent/reviews/UI_DEBT.md`, and Autonomy should advance instead of looping on details.
 
 Host SDKs, CLIs, simulators, MCP servers, credentials, and system services are
 host-machine capabilities, not project runtime files. Record them in
-`<project-name>/.dev-agent/HOST_REQUIREMENTS.md`. Run `env-check` only before
+`<project-name>/dev-agent/HOST_REQUIREMENTS.md`. Run `env-check` only before
 the current build slice or ship scope uses that host capability.
 
 ## UI Design And Build
@@ -119,7 +119,7 @@ For customer-facing apps, ask whether the user has reference images, screenshots
 Figma exports, apps, websites, or competitor products. If references exist, use
 them. If no reference is present and the user has not delegated visual direction,
 ask for examples before UI build. If visual direction is delegated, create
-`<project-name>/.dev-agent/design/REFERENCE_BOARD.md` and run
+`<project-name>/dev-agent/design/REFERENCE_BOARD.md` and run
 `bin/dev-flow design-check <project-name> --allow-no-reference`.
 
 Do not require sketches or prototypes. If the task/spec is no-UI/no-UX/code-only,
@@ -145,10 +145,10 @@ missing, return to design/spec instead of guessing.
 ## QA And Ship
 
 QA is optional by default. Enable it by setting `AUTOMATED_QA="required"` or
-`VISUAL_QA="required"` in `<project-name>/.dev-agent/state/applicability.env`, or
-run it when the user asks. Automated QA records `.dev-agent/reviews/FUNCTIONAL_TEST.md`,
-`.dev-agent/reviews/MONKEY_TEST.md`, and `.dev-agent/reviews/ACCEPTANCE_QA.html`;
-visual QA records `.dev-agent/reviews/VISUAL_COMPARISON.md` with `Overall score:
+`VISUAL_QA="required"` in `<project-name>/dev-agent/state/applicability.env`, or
+run it when the user asks. Automated QA records `dev-agent/reviews/FUNCTIONAL_TEST.md`,
+`dev-agent/reviews/MONKEY_TEST.md`, and `dev-agent/reviews/ACCEPTANCE_QA.html`;
+visual QA records `dev-agent/reviews/VISUAL_COMPARISON.md` with `Overall score:
 N/100`. Runtime screenshots are required only for exceptions, blocked flows, or
 explicit user requests.
 
@@ -171,20 +171,20 @@ rollback, and go/no-go decisions.
 
 Keep every project self-contained under `<project-name>/`. Project-specific
 source code and runtime apps belong in the project root. Process-management
-artifacts belong under `<project-name>/.dev-agent/`, not as root-level project
-folders.
-`init` creates only the `.dev-agent/` control layer; lifecycle folders below are
-created inside `.dev-agent/` when `next`, `phase`, or a gate needs that phase.
+artifacts belong under visible `<project-name>/dev-agent/`, not as scattered
+root-level project folders. `init` creates that visible process layer plus the
+hidden `<project-name>/.dev-agent/bin/check` gate wrapper; lifecycle folders are
+created inside `dev-agent/` when `next`, `phase`, or a gate needs that phase.
 
-- State: `.dev-agent/state/state.env`, `.dev-agent/state/schema.env`, `.dev-agent/state/applicability.env`, `.dev-agent/state/autonomy.env`
-- Context/host: `.dev-agent/context.md`, `.dev-agent/HOST_REQUIREMENTS.md`, `.dev-agent/bin/check`
-- Ideas: `.dev-agent/ideas/idea-brief.md`
-- Product/spec: `.dev-agent/product/PRD.md`, `.dev-agent/specs/SPEC.md`
-- Optional agent notes: `.dev-agent/agent/` for legacy/imported material; canonical agent runtime contract belongs in `.dev-agent/specs/SPEC.md`
-- Design: `.dev-agent/design/DESIGN.md`, `VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`, `DESIGN_ARTIFACTS.md`, `DESIGN_IMAGE_DESCRIPTIONS.md`, `FIGMA_HANDOFF.md`, `.dev-agent/design/approved/`, `.dev-agent/design/cut-assets/`
-- Build planning/evidence: `.dev-agent/tasks/status.md`, `.dev-agent/tasks/TASKS.md`, `.dev-agent/tasks/EXECUTION_PLAN.md`, `.dev-agent/tasks/quality-gates.md`, `.dev-agent/tasks/IMPLEMENTATION_TRACE.md`, `.dev-agent/tasks/AUTONOMY.md`, `.dev-agent/tasks/DELEGATION.md`, `.dev-agent/tasks/subagents/TEMPLATE.md`, `.dev-agent/reviews/VERIFICATION.md`, `.dev-agent/reviews/BLOCKED_BUILD.md`, `.dev-agent/reviews/UI_DEBT.md`
-- Optional QA: `.dev-agent/reviews/FUNCTIONAL_TEST.md`, `.dev-agent/reviews/MONKEY_TEST.md`, `.dev-agent/reviews/ACCEPTANCE_QA.html`, `.dev-agent/reviews/VISUAL_COMPARISON.md`, `.dev-agent/reviews/acceptance-screenshots/`, `.dev-agent/reviews/visual-screenshots/`
-- Optional ship: `.dev-agent/ship/LAUNCH.md`
+- State: `dev-agent/state/state.env`, `dev-agent/state/schema.env`, `dev-agent/state/applicability.env`, `dev-agent/state/autonomy.env`
+- Context/host: `dev-agent/context.md`, `dev-agent/HOST_REQUIREMENTS.md`, `.dev-agent/bin/check`
+- Ideas: `dev-agent/ideas/idea-brief.md`
+- Product/spec: `dev-agent/product/PRD.md`, `dev-agent/specs/SPEC.md`
+- Optional agent notes: `dev-agent/agent/` for legacy/imported material; canonical agent runtime contract belongs in `dev-agent/specs/SPEC.md`
+- Design: `dev-agent/design/DESIGN.md`, `VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`, `DESIGN_ARTIFACTS.md`, `DESIGN_IMAGE_DESCRIPTIONS.md`, `FIGMA_HANDOFF.md`, `dev-agent/design/approved/`, `dev-agent/design/cut-assets/`
+- Build planning/evidence: `dev-agent/tasks/status.md`, `dev-agent/tasks/TASKS.md`, `dev-agent/tasks/EXECUTION_PLAN.md`, `dev-agent/tasks/quality-gates.md`, `dev-agent/tasks/IMPLEMENTATION_TRACE.md`, `dev-agent/tasks/AUTONOMY.md`, `dev-agent/tasks/DELEGATION.md`, `dev-agent/tasks/subagents/TEMPLATE.md`, `dev-agent/reviews/VERIFICATION.md`, `dev-agent/reviews/BLOCKED_BUILD.md`, `dev-agent/reviews/UI_DEBT.md`
+- Optional QA: `dev-agent/reviews/FUNCTIONAL_TEST.md`, `dev-agent/reviews/MONKEY_TEST.md`, `dev-agent/reviews/ACCEPTANCE_QA.html`, `dev-agent/reviews/VISUAL_COMPARISON.md`, `dev-agent/reviews/acceptance-screenshots/`, `dev-agent/reviews/visual-screenshots/`
+- Optional ship: `dev-agent/ship/LAUNCH.md`
 - Source roots: project-root `src/`, `app/`, `apps/`, `packages/`, or another project-local source directory
 
 Only require human review for requirement confirmation, customer-facing visual
@@ -195,7 +195,7 @@ automatically when the current spec, design, and build gate are clear.
 
 For task automation, `bin/dev-flow next <project-name>` and `bin/dev-flow plan
 <project-name>` normalize explicit TODO lists or phase outputs into
-`.dev-agent/tasks/TASKS.md` and `.dev-agent/tasks/EXECUTION_PLAN.md`. When
+`dev-agent/tasks/TASKS.md` and `dev-agent/tasks/EXECUTION_PLAN.md`. When
 multiple pending tasks have clear outputs, acceptance, proof commands, and
 low-risk status, hosts may schedule 1-minute heartbeat batches. A batch can
 execute more than one task only when tasks share a safe proof path. Pause the
