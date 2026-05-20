@@ -663,7 +663,7 @@ phase_load_list() {
           echo "- required design contract inputs from dev-agent/references/design-artifacts.md"
           echo "- dev-agent/references/figma-handoff.md when Figma is used"
         else
-          echo "- $process_root/design/ acceptance docs"
+          echo "- $process_root/design/ requirement notes for non-UI/code-only context"
         fi
       fi
       ;;
@@ -706,7 +706,7 @@ phase_required_outputs() {
         echo "- formal visual design assets and HTML/CSS companions required by dev-agent/references/design-artifacts.md"
         echo "- Figma handoff required by dev-agent/references/figma-handoff.md when Figma is used"
       else
-        echo "- $process_root/design/DESIGN_ARTIFACTS.md only when formal assets are required or already present"
+        echo "- formal visual assets are not required only when UI_FLOW is disabled or design is not applicable"
       fi
       ;;
     build)
@@ -775,6 +775,7 @@ phase_blockers() {
       echo "- no reference assets/links and UI_REFERENCES is not delegated"
       echo "- delegated visual direction without design/REFERENCE_BOARD.md"
       echo "- unresolved UX, state, or visual-system choices that would force build to guess"
+      echo "- UI_DESIGN_ASSETS=disabled while UI_FLOW remains active"
       if design_assets_required "$project"; then
         echo "- required formal design artifact contract is incomplete"
         echo "- Figma handoff contract is incomplete when Figma is used"
@@ -2815,6 +2816,7 @@ asset_check_impl() {
     echo "Asset check skipped for $project: UI_DESIGN_ASSETS=$UI_DESIGN_ASSETS, VISUAL_QA=$VISUAL_QA, UI_FIGMA_HANDOFF=$UI_FIGMA_HANDOFF."
     return 0
   fi
+  check_design_asset_applicability_contract "$project" || failures=$((failures + 1))
   design_assets="$(count_approved_design_artifacts "$dir")"
   html_packages="$(count_approved_html_design_packages "$dir")"
   final_design_assets="$(count_final_design_artifacts "$dir")"
@@ -3081,6 +3083,9 @@ design_assets_required() {
   local project="$1"
   local dir
   load_project_applicability "$project"
+  if design_flow_active_for_assets "$project"; then
+    return 0
+  fi
   setting_disabled "$UI_DESIGN_ASSETS" && return 1
   setting_enabled "$UI_DESIGN_ASSETS" && return 0
   setting_enabled "$VISUAL_QA" && return 0
@@ -3091,6 +3096,30 @@ design_assets_required() {
   [[ "$(count_design_artifact_rows "$dir")" -gt 0 ]] && return 0
   [[ "$(count_figma_design_artifact_rows "$dir")" -gt 0 ]] && return 0
   return 1
+}
+
+design_flow_active_for_assets() {
+  local project="$1"
+  load_project_applicability "$project"
+  setting_disabled "$UI_FLOW" && return 1
+  setting_enabled "$UI_FLOW" && return 0
+  [[ "$PROJECT_TYPE" == "ui" ]] && return 0
+  has_phase_artifact "$project" design
+}
+
+design_assets_disabled_conflict() {
+  local project="$1"
+  load_project_applicability "$project"
+  design_flow_active_for_assets "$project" || return 1
+  setting_disabled "$UI_DESIGN_ASSETS"
+}
+
+check_design_asset_applicability_contract() {
+  local project="$1"
+  if design_assets_disabled_conflict "$project"; then
+    echo "Invalid design applicability: UI_DESIGN_ASSETS cannot be disabled while UI_FLOW is active. If the task is truly no-UI/no-UX/code-only, set UI_FLOW=\"disabled\" and document that in SPEC.md; otherwise produce formal visual design assets through Image Gen/GPT Image, Figma, human design export, external design tooling, or design-system export." >&2
+    return 1
+  fi
 }
 
 ship_required() {
@@ -3345,7 +3374,9 @@ verify_phase_impl() {
         echo "Missing delegated reference board: create design/REFERENCE_BOARD.md before using delegated visual direction." >&2
         failures=$((failures + 1))
       fi
-      if design_assets_required "$project"; then
+      if ! check_design_asset_applicability_contract "$project"; then
+        failures=$((failures + 1))
+      elif design_assets_required "$project"; then
         asset_check_impl "$project" >/dev/null || failures=$((failures + 1))
       fi
       if setting_enabled "$UI_FIGMA_HANDOFF" || [[ "$(count_figma_design_artifact_rows "$dir")" -gt 0 ]]; then
@@ -4598,7 +4629,9 @@ case "$cmd" in
       echo "Missing delegated reference board: create design/REFERENCE_BOARD.md before using delegated visual direction." >&2
       failures=$((failures + 1))
     fi
-    if design_assets_required "$project"; then
+    if ! check_design_asset_applicability_contract "$project"; then
+      failures=$((failures + 1))
+    elif design_assets_required "$project"; then
       asset_check_impl "$project" >/dev/null || failures=$((failures + 1))
     fi
     if setting_enabled "$UI_FIGMA_HANDOFF" || [[ "$(count_figma_design_artifact_rows "$dir")" -gt 0 ]]; then
@@ -4620,7 +4653,7 @@ case "$cmd" in
     if design_assets_required "$project"; then
       echo "Design check passed for $project with $design_assets approved visual asset(s) and $html_packages approved HTML/CSS design package(s), covering every SCREEN_ACCEPTANCE screen."
     else
-      echo "Design check passed for $project with lightweight design acceptance; formal approved assets are not required for this scope."
+      echo "Design check passed for $project with non-UI/code-only design acceptance; formal approved assets are not required because UI_FLOW is disabled or design is not applicable."
     fi
     ;;
   qa-check|visual-check)

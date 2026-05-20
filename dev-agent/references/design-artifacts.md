@@ -130,4 +130,4 @@ responsive density, spacing, typography, colors, component states, icon style,
 and motion direction. Do not implement from a draft or screenshot and then
 treat the runtime screenshot as the design source. Do not implement directly
 from product-designer prose; route that prose into a formal visual producer or
-explicitly mark the task as lightweight/no-formal-assets in applicability.
+mark the task as no-UI/no-UX/code-only with `UI_FLOW=disabled`.

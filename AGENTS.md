@@ -122,15 +122,17 @@ ask for examples before UI build. If visual direction is delegated, create
 `<project-name>/.dev-agent/design/REFERENCE_BOARD.md` and run
 `bin/dev-flow design-check <project-name> --allow-no-reference`.
 
-Do not require sketches or prototypes. The design phase should produce the
-minimum build-ready handoff: `DESIGN.md`, `VISUAL_SYSTEM.md`,
-`SCREEN_ACCEPTANCE.md`, and `DESIGN_ARTIFACTS.md` when formal visual assets are
-needed. Satisfy `dev-agent/references/design-artifacts.md` as the current
-formal visual source plus HTML/CSS companion contract, and run
+Do not require sketches or prototypes. If the task/spec is no-UI/no-UX/code-only,
+set `UI_FLOW="disabled"` and proceed through spec/build gates. If UI/UX design
+applies, the design phase must produce the minimum build-ready handoff:
+`DESIGN.md`, `VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`, `DESIGN_ARTIFACTS.md`,
+formal visual sources, and HTML/CSS companions. Satisfy `dev-agent/references/design-artifacts.md`
+as the current formal visual source plus HTML/CSS companion contract, and run
 `bin/dev-flow design-check <project-name>`. Product-designer output is direction
 only; Image Gen/GPT Image, Figma, human-design exports, external design tools,
-or design-system exports must provide high-fidelity design sources when formal
-design is required. When Figma is used, satisfy
+or design-system exports must provide high-fidelity design sources before UI
+build. Briefs, product-designer prose, local prototypes, and screenshots are not
+development resources by themselves. When Figma is used, satisfy
 `dev-agent/references/figma-handoff.md` and run
 `bin/dev-flow figma-check <project-name>`.
 

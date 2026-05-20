@@ -147,13 +147,15 @@ exists and the user has not delegated visual direction, ask for examples before
 UI build. If the user delegates visual direction, create `.dev-agent/design/REFERENCE_BOARD.md`
 and use `bin/dev-flow design-check <project-name> --allow-no-reference`.
 
-Do not require sketches or prototypes. The design flow produces only what the
-current build needs. Satisfy `dev-agent/references/design-artifacts.md` as the
-formal visual source plus HTML/CSS companion contract, and run
+Do not require sketches or prototypes. If the task/spec is no-UI/no-UX/code-only,
+set `UI_FLOW="disabled"` and proceed through spec/build gates. If UI/UX design
+applies, run the formal contract. Satisfy `dev-agent/references/design-artifacts.md`
+as the formal visual source plus HTML/CSS companion contract, and run
 `bin/dev-flow design-check <project-name>`. Product-designer output is direction
 only; Image Gen/GPT Image, Figma, human-design exports, external design tools,
-or design-system exports must provide high-fidelity design sources when formal
-design is required. When Figma is used, satisfy
+or design-system exports must provide high-fidelity design sources before UI
+build. Briefs, product-designer prose, local prototypes, and screenshots are not
+development resources by themselves. When Figma is used, satisfy
 `dev-agent/references/figma-handoff.md` and run
 `bin/dev-flow figma-check <project-name>`.
 
@@ -200,7 +202,7 @@ reference for release verification and destructive data reset decisions.
 |---|---|
 | Idea | `.dev-agent/ideas/idea-brief.md` |
 | Spec | `.dev-agent/product/PRD.md`, `.dev-agent/specs/SPEC.md` |
-| Design, when UI applies | `.dev-agent/design/DESIGN.md`, `VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`, `DESIGN_ARTIFACTS.md`, design contract inputs when required |
+| Design, when UI applies | `.dev-agent/design/DESIGN.md`, `VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`, `DESIGN_ARTIFACTS.md`, formal visual sources, and HTML/CSS companion packages |
 | Build | source under the project root, `.dev-agent/reviews/VERIFICATION.md` or `.dev-agent/reviews/BLOCKED_BUILD.md`, UI implementation trace when UI applies, optional autonomy/delegation logs, `.dev-agent/reviews/UI_DEBT.md` when polish remains |
 | QA, when required | `.dev-agent/reviews/FUNCTIONAL_TEST.md`, `MONKEY_TEST.md`, `ACCEPTANCE_QA.html`, `VISUAL_COMPARISON.md` as applicable |
 | Ship, when requested | `.dev-agent/ship/LAUNCH.md` with risk, rollback, and GO/NO-GO |

@@ -44,11 +44,14 @@ confirmed, stop and return to design instead of implementing around a guess.
 
 ## Design Contract Boundary
 
-- Implement from `DESIGN.md`, `VISUAL_SYSTEM.md`, and `SCREEN_ACCEPTANCE.md`.
-  Product-designer prose is not a development resource by itself.
+- `DESIGN.md`, `VISUAL_SYSTEM.md`, and `SCREEN_ACCEPTANCE.md` describe
+  requirements and acceptance; they are not standalone UI design sources.
 - Use formal visual assets only through the design artifact contract. Treat
   HTML/CSS companion packages as handoff, not as standalone formal
   source.
+- Product-designer prose is design judgment only. Route it into Image Gen/GPT
+  Image, Figma, human export, external design tooling, or a design-system export
+  before UI build.
 - If a needed visual source, runtime asset, or acceptance decision is missing,
   return to design instead of guessing.
 
@@ -191,7 +194,8 @@ Use `references/visual-qa-rubric.md` for detailed scoring.
 
 - `bin/dev-flow design-check <project-name>` passed before UI implementation.
 - `tasks/IMPLEMENTATION_TRACE.md` maps screens to implementation targets and
-  test evidence; formal asset fields may be `none` when not required.
+  test evidence; formal asset fields may be `none` only when `UI_FLOW=disabled`
+  because the task is no-UI/no-UX/code-only.
 - Required design artifact and Figma handoff contracts are satisfied.
 - Required responsive states and accessibility states are implemented.
 - Runtime has no known console/build errors.

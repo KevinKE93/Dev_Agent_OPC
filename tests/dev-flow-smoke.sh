@@ -8,6 +8,7 @@ EXISTING_UNINIT="$ROOT/__${RUN_ID}_existing_uninit"
 UI_BLOCK="$ROOT/__${RUN_ID}_ui_block"
 LIGHT_UI="$ROOT/__${RUN_ID}_light_ui"
 UI_DESIGN_DISABLED="$ROOT/__${RUN_ID}_ui_design_disabled"
+BRIEF_DESIGN_BYPASS="$ROOT/__${RUN_ID}_brief_design_bypass"
 SPEC_GAP="$ROOT/__${RUN_ID}_spec_gap"
 DELEGATED="$ROOT/__${RUN_ID}_delegated"
 INVALID="$ROOT/__${RUN_ID}_invalid"
@@ -45,6 +46,7 @@ LIGHT_UI_POLISH_OUT="/private/tmp/dev-flow-${RUN_ID}-light-ui-polish.out"
 LIGHT_UI_POLISH_NEXT_OUT="/private/tmp/dev-flow-${RUN_ID}-light-ui-polish-next.out"
 LIGHT_UI_POLISH_STOP_OUT="/private/tmp/dev-flow-${RUN_ID}-light-ui-polish-stop.out"
 UI_DESIGN_DISABLED_OUT="/private/tmp/dev-flow-${RUN_ID}-ui-design-disabled.out"
+BRIEF_DESIGN_BYPASS_OUT="/private/tmp/dev-flow-${RUN_ID}-brief-design-bypass.out"
 SPEC_GAP_OUT="/private/tmp/dev-flow-${RUN_ID}-spec-gap.out"
 INVALID_OUT="/private/tmp/dev-flow-${RUN_ID}-invalid.out"
 EXCEPTION_OUT="/private/tmp/dev-flow-${RUN_ID}-exception.out"
@@ -94,7 +96,7 @@ cleanup_path() {
 }
 
 cleanup() {
-  cleanup_path "$LAZY_PROJECT" "$EXISTING_UNINIT" "$UI_BLOCK" "$LIGHT_UI" "$UI_DESIGN_DISABLED" "$SPEC_GAP" "$DELEGATED" "$INVALID" "$SVG_ONLY" "$SVG_LEAK" "$SVG_CUT_ALLOWED" "$SELF_RENDERED_PNG" "$IDENTITY_BAD_SOURCE" "$MISSING_COVERAGE" "$SCREENSHOT_SWAP" "$DRAFT_PATH" "$NO_CUTS" "$HTML_ONLY" "$HTML_MISSING_CSS" "$AI_MISSING_HTML" "$FIGMA_GOOD" "$FIGMA_SECTION_BOUNDARY" "$FIGMA_MISSING_SOURCE" "$FIGMA_BAD_EXPORT" "$API_PROJECT" "$AGENT_PROJECT" "$AUTO_TASK_PROJECT" "$PLAN_PROJECT" "$ENV_PROJECT" "$BAD_ENV" "$LEGACY_PROJECT" "$OLD_LAYOUT" "$BAD_VISUAL" "$ADAPTER_OUT" "$INSTALL_DEST" "$INSTALL_WORKSPACE" "$UI_BLOCK_OUT" "$LIGHT_UI_NEXT_OUT" "$LIGHT_UI_POLISH_OUT" "$LIGHT_UI_POLISH_NEXT_OUT" "$LIGHT_UI_POLISH_STOP_OUT" "$UI_DESIGN_DISABLED_OUT" "$SPEC_GAP_OUT" "$INVALID_OUT" "$EXCEPTION_OUT" "$SVG_ONLY_OUT" "$SVG_LEAK_OUT" "$SVG_CUT_ALLOWED_OUT" "$SELF_RENDERED_PNG_OUT" "$IDENTITY_BAD_SOURCE_OUT" "$MISSING_COVERAGE_OUT" "$SCREENSHOT_SWAP_OUT" "$DRAFT_PATH_OUT" "$AI_MISSING_HTML_OUT" "$HTML_MISSING_CSS_OUT" "$HTML_ONLY_OUT" "$FIGMA_MISSING_SOURCE_OUT" "$FIGMA_BAD_EXPORT_OUT" "$API_OUT" "$API_NEXT_OUT" "$API_AUTONOMY_OUT" "$API_DELEGATE_OUT" "$API_DELEGATE_DISABLED_OUT" "$AGENT_OUT" "$AUTO_TASK_NEXT_OUT" "$PLAN_OUT" "$PLAN_NEXT_OUT" "$PLAN_AUTONOMY_OUT" "$PLAN_TASK_OUT" "$ENV_OUT" "$BAD_ENV_OUT" "$DOCTOR_OUT" "$BAD_VISUAL_OUT" "$TRACE_MISSING_HTML_OUT" "$NEXT_UI_OUT"
+  cleanup_path "$LAZY_PROJECT" "$EXISTING_UNINIT" "$UI_BLOCK" "$LIGHT_UI" "$UI_DESIGN_DISABLED" "$BRIEF_DESIGN_BYPASS" "$SPEC_GAP" "$DELEGATED" "$INVALID" "$SVG_ONLY" "$SVG_LEAK" "$SVG_CUT_ALLOWED" "$SELF_RENDERED_PNG" "$IDENTITY_BAD_SOURCE" "$MISSING_COVERAGE" "$SCREENSHOT_SWAP" "$DRAFT_PATH" "$NO_CUTS" "$HTML_ONLY" "$HTML_MISSING_CSS" "$AI_MISSING_HTML" "$FIGMA_GOOD" "$FIGMA_SECTION_BOUNDARY" "$FIGMA_MISSING_SOURCE" "$FIGMA_BAD_EXPORT" "$API_PROJECT" "$AGENT_PROJECT" "$AUTO_TASK_PROJECT" "$PLAN_PROJECT" "$ENV_PROJECT" "$BAD_ENV" "$LEGACY_PROJECT" "$OLD_LAYOUT" "$BAD_VISUAL" "$ADAPTER_OUT" "$INSTALL_DEST" "$INSTALL_WORKSPACE" "$UI_BLOCK_OUT" "$LIGHT_UI_NEXT_OUT" "$LIGHT_UI_POLISH_OUT" "$LIGHT_UI_POLISH_NEXT_OUT" "$LIGHT_UI_POLISH_STOP_OUT" "$UI_DESIGN_DISABLED_OUT" "$BRIEF_DESIGN_BYPASS_OUT" "$SPEC_GAP_OUT" "$INVALID_OUT" "$EXCEPTION_OUT" "$SVG_ONLY_OUT" "$SVG_LEAK_OUT" "$SVG_CUT_ALLOWED_OUT" "$SELF_RENDERED_PNG_OUT" "$IDENTITY_BAD_SOURCE_OUT" "$MISSING_COVERAGE_OUT" "$SCREENSHOT_SWAP_OUT" "$DRAFT_PATH_OUT" "$AI_MISSING_HTML_OUT" "$HTML_MISSING_CSS_OUT" "$HTML_ONLY_OUT" "$FIGMA_MISSING_SOURCE_OUT" "$FIGMA_BAD_EXPORT_OUT" "$API_OUT" "$API_NEXT_OUT" "$API_AUTONOMY_OUT" "$API_DELEGATE_OUT" "$API_DELEGATE_DISABLED_OUT" "$AGENT_OUT" "$AUTO_TASK_NEXT_OUT" "$PLAN_OUT" "$PLAN_NEXT_OUT" "$PLAN_AUTONOMY_OUT" "$PLAN_TASK_OUT" "$ENV_OUT" "$BAD_ENV_OUT" "$DOCTOR_OUT" "$BAD_VISUAL_OUT" "$TRACE_MISSING_HTML_OUT" "$NEXT_UI_OUT"
 }
 trap cleanup EXIT
 
@@ -657,42 +659,94 @@ write_file "$UI_DESIGN_DISABLED/.dev-agent/reviews/VERIFICATION.md" \
 bin/dev-flow phase "$(basename "$UI_DESIGN_DISABLED")" build "Code-only refactor without design" >"$UI_DESIGN_DISABLED_OUT" 2>&1
 grep -q "Updated $(basename "$UI_DESIGN_DISABLED") to phase: build" "$UI_DESIGN_DISABLED_OUT"
 
+bin/dev-flow init "$(basename "$BRIEF_DESIGN_BYPASS")" --type ui >/dev/null
+printf '%s\n' \
+  'UI_REFERENCES="delegated"' \
+  'UI_DESIGN_ASSETS="disabled"' \
+  'UI_MOCKUPS="disabled"' \
+  >> "$BRIEF_DESIGN_BYPASS/.dev-agent/state/applicability.env"
+write_file "$BRIEF_DESIGN_BYPASS/brief/prototype/status.html" \
+  "<!doctype html>" \
+  "<html><body><main><h1>Status Prototype</h1><button>Refresh</button></main></body></html>"
+write_file "$BRIEF_DESIGN_BYPASS/.dev-agent/ideas/idea-brief.md" \
+  "# Idea Brief" "" "Build a customer-facing status page from a brief." "The prototype is input evidence only." "The workflow must not treat brief docs as formal design resources."
+write_file "$BRIEF_DESIGN_BYPASS/.dev-agent/product/PRD.md" \
+  "# PRD" "" \
+  "## Objective" "Build a customer-facing status page." \
+  "## MVP Scope" "Status page with one primary action." \
+  "## Core Flows" "Open page, read status, use primary action." \
+  "## Acceptance Criteria" "The page has a clear visual hierarchy and responsive states." \
+  "## Non-Goals" "No build from brief-only design notes."
+write_file "$BRIEF_DESIGN_BYPASS/.dev-agent/specs/SPEC.md" \
+  "# Spec" "" \
+  "## Tech Stack" "Static HTML under apps/web." \
+  "## Commands" "Static source inspection for the fixture." \
+  "## Data Model" "Status state includes default and empty states." \
+  "## Testing Strategy" "Design gate must reject brief-only resources." \
+  "## UI / Design Applicability" "UI_FLOW is required because this creates customer-facing UI; brief prototypes are not formal design sources." \
+  "## Privacy / Security" "No user data in this fixture." \
+  "## Open Questions" "Which formal visual source should drive build?"
+write_file "$BRIEF_DESIGN_BYPASS/.dev-agent/design/DESIGN.md" \
+  "# Design" "" "## UX Problem" "Users need a clear status page." "## Recommended Direction" "Use the brief prototype as rough input only." "## Alternatives Considered" "- Build from brief prototype: rejected." "## Information Architecture" "One status page." "## Interaction Model" "Read status and refresh." "## Visual System" "Brief-level notes only." "## Design Artifacts" "No formal assets are present." "## Build Implications" "Must route to Image Gen/GPT Image or Figma before UI build."
+write_file "$BRIEF_DESIGN_BYPASS/.dev-agent/design/VISUAL_SYSTEM.md" \
+  "# Visual System" "" "## Reference Influence" "Brief prototype only." "## Palette" "TBD until formal design." "## Typography" "TBD until formal design." "## Spacing and Layout" "TBD until formal design." "## Components and Motion" "TBD until formal design." "## Forbidden Patterns" "Do not build from brief docs or local prototypes."
+write_file "$BRIEF_DESIGN_BYPASS/.dev-agent/design/SCREEN_ACCEPTANCE.md" \
+  "# Screen Acceptance" "" "## Status" "- Requirement source: specs/SPEC.md and brief/prototype/status.html." "- Required content: title, status copy, primary action." "- Required states: default, empty, loading, error." "- Breakpoints: 320, 768, 1440." "- Design assets / visual source: brief/prototype/status.html only." "- Visual acceptance: must follow a formal design source, not this brief." "- Accessibility acceptance: primary action keyboard reachable."
+write_file "$BRIEF_DESIGN_BYPASS/.dev-agent/design/DESIGN_ARTIFACTS.md" \
+  "# Design Artifacts" "" "## Applicability Decision" "UI_DESIGN_ASSETS=disabled for a first native skeleton." "" "## Screen Coverage" "| Screen | State | Source type | Source reference | Approved asset path | Resolution / export | Status | Implementation notes |" "|---|---|---|---|---|---|---|---|" "| Status | Default | local prototype companion | brief/prototype/status.html | n/a | n/a | reference-only | Brief evidence only |"
+write_file "$BRIEF_DESIGN_BYPASS/.dev-agent/design/REFERENCE_BOARD.md" \
+  "# Reference Board" "" "## Delegated Direction" "Formal design still required before UI build." "## Patterns" "- Brief prototype is input evidence only."
+if bin/dev-flow design-check "$(basename "$BRIEF_DESIGN_BYPASS")" --allow-no-reference >"$BRIEF_DESIGN_BYPASS_OUT" 2>&1; then
+  cat "$BRIEF_DESIGN_BYPASS_OUT" >&2
+  echo "Expected UI design-check to reject disabled design assets when brief/prototype is used as the design source." >&2
+  exit 1
+fi
+grep -q "UI_DESIGN_ASSETS cannot be disabled while UI_FLOW is active" "$BRIEF_DESIGN_BYPASS_OUT"
+
 bin/dev-flow init "$(basename "$LIGHT_UI")" >/dev/null
 write_file "$LIGHT_UI/.dev-agent/ideas/idea-brief.md" \
-  "# Idea Brief" "" "Build a simple customer-facing status page." "Use delegated visual direction." "Formal design boards are not required for this fixture."
+  "# Idea Brief" "" "Build a simple customer-facing status page." "Use delegated visual direction." "Formal design boards are required for this fixture."
 write_file "$LIGHT_UI/.dev-agent/product/PRD.md" \
   "# PRD" "" \
   "## Objective" "Build a compact status page." \
   "## MVP Scope" "One page with an empty state." \
   "## Core Flows" "Open status page, read status, use one action." \
   "## Acceptance Criteria" "The page renders clear status content and an accessible primary action." \
-  "## Non-Goals" "No visual QA or formal asset handoff is required."
+  "## Non-Goals" "No broad visual QA loop is required for this fixture."
 write_file "$LIGHT_UI/.dev-agent/specs/SPEC.md" \
   "# Spec" "" \
   "## Tech Stack" "Static HTML under apps/web." \
   "## Commands" "Static source inspection for the fixture." \
   "## Data Model" "Status page state includes title, badge, empty state, and primary action." \
-  "## Testing Strategy" "Verify source exists and build gate passes without formal assets." \
-  "## UI / Design Applicability" "UI_FLOW is required for a simple customer-facing page; formal design packages are not required for this lightweight fixture." \
+  "## Testing Strategy" "Verify source exists and build gate passes with formal design assets." \
+  "## UI / Design Applicability" "UI_FLOW is required for a customer-facing page; formal design packages are required before build." \
   "## Privacy / Security" "No user data or secrets in this fixture." \
   "## Open Questions" "None for the fixture."
 write_file "$LIGHT_UI/.dev-agent/design/DESIGN.md" \
-  "# Design" "" "## UX Problem" "Users need a clear status page." "## Recommended Direction" "Use a simple one-page layout." "## Alternatives Considered" "- Full dashboard: too much." "## Information Architecture" "Status page only." "## Interaction Model" "Read status and use one action." "## Visual System" "Neutral product surface." "## Design Artifacts" "No formal assets required for this lightweight scope." "## Build Implications" "Build from acceptance and visual system."
+  "# Design" "" "## UX Problem" "Users need a clear status page." "## Recommended Direction" "Use an approved generated status board as the visual target." "## Alternatives Considered" "- Brief-only layout: insufficient for UI build." "## Information Architecture" "Status page only." "## Interaction Model" "Read status and use one action." "## Visual System" "Neutral product surface." "## Design Artifacts" "Approved generated status board plus HTML companion." "## Build Implications" "Build from the approved asset and companion package."
 write_file "$LIGHT_UI/.dev-agent/design/VISUAL_SYSTEM.md" \
   "# Visual System" "" "## Reference Influence" "Delegated visual direction." "## Palette" "Neutral surfaces with one action color." "## Typography" "Readable product scale." "## Spacing and Layout" "Simple responsive stack." "## Components and Motion" "Button and status badge states." "## Forbidden Patterns" "No generic gradients."
 write_file "$LIGHT_UI/.dev-agent/design/SCREEN_ACCEPTANCE.md" \
-  "# Screen Acceptance" "" "## Status" "- Requirement source: specs/SPEC.md." "- Required content: title, status badge, empty-state copy, primary action." "- Required states: default, empty, loading, error." "- Breakpoints: 320, 768, 1440." "- Design assets / visual source: none; implement from DESIGN.md and VISUAL_SYSTEM.md." "- Visual acceptance: clear hierarchy and responsive spacing." "- Accessibility acceptance: primary action keyboard reachable."
+  "# Screen Acceptance" "" "## Status" "- Requirement source: specs/SPEC.md." "- Required content: title, status badge, empty-state copy, primary action." "- Required states: default, empty, loading, error." "- Breakpoints: 320, 768, 1440." "- Required design assets: design/approved/status-default.png." "- Visual acceptance: follows the approved status board hierarchy and responsive spacing." "- Accessibility acceptance: primary action keyboard reachable."
+write_file "$LIGHT_UI/.dev-agent/design/DESIGN_ARTIFACTS.md" \
+  "# Design Artifacts" "" "## Required Coverage" "- Status board." "" "## Screen Coverage" "| Screen | State | Source type | Source reference | Approved asset path | Resolution / export | Status | Implementation notes |" "|---|---|---|---|---|---|---|---|" "| Status | Default | gpt-image-2 | gpt-image-2://smoke/status-default | design/approved/status-default.png | 1440x900 png | approved | Use as visual target. HTML: design/approved/html/status-default.html |"
+write_file "$LIGHT_UI/.dev-agent/design/DESIGN_IMAGE_DESCRIPTIONS.md" \
+  "# Design Image HTML Descriptions" "" "## Description Coverage" "| Screen | State | Source image | HTML description | Status | Notes |" "|---|---|---|---|---|---|" "| Status | Default | design/approved/status-default.png | design/approved/html/status-default.html | approved | Semantic companion for generated image |"
 write_file "$LIGHT_UI/.dev-agent/design/REFERENCE_BOARD.md" \
   "# Reference Board" "" "## Delegated Direction" "Use a quiet product utility style." "## Patterns" "- Compact hierarchy." "- One obvious action."
+write_file "$LIGHT_UI/.dev-agent/design/cut-assets/ASSET_MANIFEST.md" \
+  "# Cut Assets" "" "## Decision" "- CUT_ASSETS_REQUIRED: no" "- Rationale: fixture uses CSS and platform text only."
+write_valid_png "$LIGHT_UI/.dev-agent/design/approved/status-default.png"
+write_html_description "$LIGHT_UI/.dev-agent/design/approved/html/status-default.html" "Status Default"
 bin/dev-flow design-check "$(basename "$LIGHT_UI")" --allow-no-reference >/dev/null
 write_file "$LIGHT_UI/.dev-agent/tasks/IMPLEMENTATION_TRACE.md" \
-  "# Implementation Trace" "" "## Screen Trace" "| Screen | State | Implementation target | Approved asset | Design source | HTML companion | Cut assets | Test evidence | Status |" "|---|---|---|---|---|---|---|---|---|" "| Status | Default | apps/web/index.html | none | none | none | none | reviews/VERIFICATION.md | implemented |"
+  "# Implementation Trace" "" "## Screen Trace" "| Screen | State | Implementation target | Approved asset | Design source | HTML companion | Cut assets | Test evidence | Status |" "|---|---|---|---|---|---|---|---|---|" "| Status | Default | apps/web/index.html | design/approved/status-default.png | gpt-image-2://smoke/status-default | design/approved/html/status-default.html | none | reviews/VERIFICATION.md | implemented |"
 write_file "$LIGHT_UI/apps/web/index.html" \
   "<!doctype html>" \
   "<html lang=\"en\"><head><meta charset=\"utf-8\"><title>Status</title></head><body><main><h1>Status</h1><button>Refresh</button></main></body></html>"
 write_file "$LIGHT_UI/.dev-agent/reviews/VERIFICATION.md" \
-  "# Verification" "" "## Result" "Static status page source exists." "Lightweight UI build does not require formal design assets."
-bin/dev-flow phase "$(basename "$LIGHT_UI")" build "Implement lightweight UI without formal assets" >/dev/null
+  "# Verification" "" "## Result" "Static status page source exists." "Formal design source and HTML companion are mapped in implementation trace."
+bin/dev-flow phase "$(basename "$LIGHT_UI")" build "Implement UI from formal design assets" >/dev/null
 bin/dev-flow next "$(basename "$LIGHT_UI")" --full >"$LIGHT_UI_NEXT_OUT"
 grep -q "Workflow is at the final applicable phase" "$LIGHT_UI_NEXT_OUT"
 grep -q "UI polish budget: 0/1 used" "$LIGHT_UI_NEXT_OUT"
@@ -709,7 +763,7 @@ bin/dev-flow phase "$(basename "$LIGHT_UI")" build "Polish UI screenshot details
 bin/dev-flow next "$(basename "$LIGHT_UI")" >"$LIGHT_UI_POLISH_STOP_OUT"
 grep -q "Continue: no" "$LIGHT_UI_POLISH_STOP_OUT"
 grep -q "Reason: polish loop requires explicit user approval" "$LIGHT_UI_POLISH_STOP_OUT"
-bin/dev-flow phase "$(basename "$LIGHT_UI")" build "Implement lightweight UI without formal assets" >/dev/null
+bin/dev-flow phase "$(basename "$LIGHT_UI")" build "Implement UI from formal design assets" >/dev/null
 bin/dev-flow verify-phase "$(basename "$LIGHT_UI")" build >/dev/null
 bin/dev-flow next "$(basename "$LIGHT_UI")" >"$LIGHT_UI_NEXT_OUT"
 grep -q "Workflow is at the final applicable phase" "$LIGHT_UI_NEXT_OUT"

@@ -111,17 +111,16 @@ Use `dev-agent/templates/project/` for file templates. Use
    - Include empty, loading, error, success, disabled, selected, long-content,
      and narrow-screen states when applicable.
 
-8. **Decide whether formal design assets are needed**
+8. **Decide whether UI/UX design is needed**
    - Decide whether user-provided resources are build-ready: they need enough
      HTML/CSS, visual-system, state, asset, and motion detail for a model or
      engineer to reproduce the UI without guessing.
    - If the spec/applicability says no UI/UX design is needed, keep
      `UI_FLOW=disabled` and do not invent a design phase. Build may proceed
      after spec/build gates.
-   - If UI applies but the task is lightweight and no formal visual source is
-     required, record the rationale in `SCREEN_ACCEPTANCE.md` and
-     applicability; build may use `DESIGN.md`, `VISUAL_SYSTEM.md`, and
-     `SCREEN_ACCEPTANCE.md`.
+   - If UI/UX design applies, formal visual assets are required for build.
+     Do not set `UI_DESIGN_ASSETS=disabled` to bypass missing Image Gen/GPT
+     Image, Figma, human export, external design, or design-system outputs.
    - If resources are insufficient, list the missing resources and route them
      to generation: visual-system and brand/KV direction, required screen
      images, HTML/CSS companion packages, CSS/JS or Lottie motion files when needed, and
@@ -131,8 +130,8 @@ Use `dev-agent/templates/project/` for file templates. Use
      the resulting raster assets and record `imagegen://`, `gpt-image://`, or
      `gpt-image-2://` provenance.
    - Do not create sketches or prototypes just to satisfy process.
-   - Satisfy `dev-agent/references/design-artifacts.md` when formal assets,
-     AI-image design, runtime cut assets, or visual QA are in scope.
+   - Satisfy `dev-agent/references/design-artifacts.md` whenever UI/UX design
+     is in scope.
    - When Figma is used, satisfy `dev-agent/references/figma-handoff.md` and
      run `bin/dev-flow figma-check <project-name>`.
 
