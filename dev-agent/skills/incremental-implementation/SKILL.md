@@ -64,6 +64,32 @@ Use the project-local workspace layout for all implementation work:
   example `<project-name>` or `<project-name>/apps/mobile`
 - Do not create project-specific source directories outside the project folder
 
+## Build Structure Discipline
+
+Before a UI-heavy or multi-file slice, name the source structure you will use.
+Record it in the working response or `dev-agent/tasks/IMPLEMENTATION_TRACE.md`
+when it affects future maintenance.
+
+- **Feature-Based:** keep code grouped by business capability such as `auth/`,
+  `dashboard/`, `settings/`, or the stack's closest equivalent. Do not route a
+  whole product through one page file, one generic component file, or one dump
+  folder.
+- **Container/Presentational:** containers own data fetching, state, effects,
+  permissions, and business decisions; presentational views receive props and
+  focus on rendering and local UI interactions.
+- **Atomic Components:** stable primitives such as `Button`, `InputField`,
+  `Card`, dialog shells, and empty states belong in shared UI modules once they
+  are reused or clearly cross-feature. Avoid premature abstractions for one
+  feature-only component.
+- **Domain Logic Boundary:** reusable rules, API clients, stores, hooks, and
+  adapters belong in feature-local `services/`, `hooks/`, `stores/`, or a
+  stack-native equivalent instead of being embedded in large view files.
+
+For existing monoliths, split only the touched feature path first. A file that
+combines route wiring, data fetching, business rules, view state, presentation,
+and styling is a red flag: record the exception or split the current slice
+before adding more behavior there.
+
 ## Slicing Strategies
 
 ### Vertical Slices (Preferred)

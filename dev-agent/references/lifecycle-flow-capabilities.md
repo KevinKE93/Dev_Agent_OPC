@@ -236,6 +236,9 @@ gate.
   technical readiness when the build changes architecture, data/state,
   permissions, cross-module integration, UI/backend coupling, or agent runtime
   behavior, or when verification evidence is thin.
+- Main host records source structure for complex slices: feature module,
+  container/presentational boundary, shared primitives, state/service/hooks,
+  proof path, and any monolith exception.
 - [test-engineer](../agents/test-engineer.md) supports proof-first tests,
   coverage strategy, and bug reproduction tests.
 - [code-reviewer](../agents/code-reviewer.md) reviews correctness,
@@ -255,7 +258,7 @@ gate.
   `<project-name>/dev-agent/reviews/VERIFICATION.md` or
   `<project-name>/dev-agent/reviews/BLOCKED_BUILD.md`.
 - For UI projects, `tasks/IMPLEMENTATION_TRACE.md` maps required screens,
-  states, design inputs, and proof evidence.
+  states, design inputs, source structure, and proof evidence.
 - Host-dependent slices update `HOST_REQUIREMENTS.md` and run
   `bin/dev-flow env-check <project-name>` only when the current slice needs the
   host capability.

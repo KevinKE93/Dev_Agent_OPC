@@ -674,6 +674,7 @@ phase_skill_files() {
     build)
       echo "- dev-agent/skills/incremental-implementation/SKILL.md"
       echo "- embedded proof-first build checklist"
+      echo "- source structure discipline for feature modules and UI/component boundaries"
       if phase_is_applicable "$project" design; then
         echo "- dev-agent/skills/frontend-ui-engineering/SKILL.md"
       fi
@@ -722,6 +723,7 @@ phase_load_list() {
     build)
       echo "- $process_root/specs/SPEC.md"
       echo "- $process_root/tasks/PLAN.md when present; otherwise derive a short build slice from SPEC/design"
+      echo "- $process_root/tasks/IMPLEMENTATION_TRACE.md source structure note when present"
       echo "- $process_root/HOST_REQUIREMENTS.md when the slice needs host SDKs/CLIs/services"
       echo "- assigned task and nearby source/tests under $project_root/"
       if phase_is_applicable "$project" design; then
@@ -758,6 +760,7 @@ phase_required_outputs() {
     spec)
       echo "- $process_root/product/PRD.md"
       echo "- $process_root/specs/SPEC.md"
+      echo "- $process_root/specs/SPEC.md source architecture and module boundary notes when code changes apply"
       load_project_applicability "$project"
       if [[ "$PROJECT_TYPE" == "ui" ]]; then
         echo "- $process_root/product/PRD.md covers MVP scope, core flows/IA, acceptance criteria, and non-goals"
@@ -778,6 +781,7 @@ phase_required_outputs() {
       ;;
     build)
       echo "- implemented source under the project root (for example src/, app/, apps/, packages/, or stack manifest files)"
+      echo "- source structure note with feature/module boundary, container/presentational split, shared primitives, and proof path"
       echo "- tests or executable proof for the slice"
       echo "- $process_root/HOST_REQUIREMENTS.md updated and env-check passed when the slice used host capabilities"
       echo "- $process_root/reviews/VERIFICATION.md or command evidence for the slice"
@@ -850,6 +854,7 @@ phase_blockers() {
       ;;
     build)
       echo "- unclear task acceptance criteria"
+      echo "- unclear module boundary or unrecorded monolith exception for a UI-heavy or multi-file slice"
       echo "- missing local verification command"
       echo "- required host capability for the current slice is missing or blocked"
       if phase_is_applicable "$project" design; then
@@ -1090,7 +1095,7 @@ write_execution_plan_snapshot() {
     echo "- Pending tasks: $pending"
     echo "- In progress tasks: $in_progress"
     echo "- Blocked tasks: $blocked"
-    echo "- Safe Batch Policy: execute a batch of clear, low-risk tasks per heartbeat; stop before ambiguity, high-risk work, or failed proof."
+    echo "- Safe Batch Policy: execute clear, low-risk tasks per heartbeat; batch together only when tasks share a module boundary or proof path."
     echo "- Next task: ${next_task:-none}"
   } >> "$plan_path"
 }
@@ -1122,6 +1127,7 @@ task_plan_summary_for_phase() {
   echo "- Plan Review: $review"
   echo "- Review reason: $(task_review_reason "$project")"
   echo "- Batch policy: $AUTONOMY_BATCH_POLICY"
+  echo "- Batch grouping: prefer same module boundary or proof path"
   echo "- Heartbeat interval: $HEARTBEAT_INTERVAL"
   echo "- Next task: ${next_task:-none}"
 }
@@ -1146,6 +1152,7 @@ task_plan_compact_for_phase() {
   echo "- Plan Review: $review"
   echo "- Review reason: $(task_review_reason "$project")"
   echo "- Batch policy: $AUTONOMY_BATCH_POLICY"
+  echo "- Batch grouping: prefer same module boundary or proof path"
   echo "- Next task: ${next_task:-none}"
 }
 

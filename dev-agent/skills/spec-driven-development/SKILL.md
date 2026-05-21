@@ -88,6 +88,9 @@ Don't silently fill in ambiguous requirements. The spec's entire purpose is to s
    ```
 
 3. **Project Structure** — Where source code lives, where tests go, where docs belong.
+   Include source architecture boundaries for non-trivial code: feature modules,
+   shared UI primitives, containers, presentational views, services, hooks, and
+   stores. Keep this at the module level; implementation details belong in build.
    ```
    <project-name>/           → Project root for code and stack manifests
    <project-name>/src/       → Simple source root when a monorepo is unnecessary
@@ -174,6 +177,10 @@ instead of leaving build to guess.
 
 ## Project Structure
 [Directory layout with descriptions]
+
+## Source Architecture
+[Feature modules, shared primitives, container/presentational boundaries, and
+state/service/hook ownership when code changes are non-trivial.]
 
 ## Code Style
 [Example snippet + key conventions]
@@ -270,6 +277,7 @@ Before proceeding to implementation, confirm:
 - [ ] UI/customer-facing PRDs cover core flows or IA, acceptance criteria, and non-goals
 - [ ] `specs/SPEC.md` covers all core technical areas
 - [ ] UI/customer-facing specs cover stack, commands, data/domain model, testing, privacy/security, and open questions
+- [ ] Non-trivial code specs name feature modules, shared primitives, and state/service boundaries
 - [ ] Specs decide whether UI/design applies and whether design assets/packages are required or already build-ready
 - [ ] External references were converted into structured decisions and unsafe reference patterns were flagged
 - [ ] The human has reviewed and approved the spec, or workspace instructions explicitly delegate defaults and no human review gate is open

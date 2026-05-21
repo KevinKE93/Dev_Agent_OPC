@@ -141,7 +141,9 @@ themselves. When Figma is used, satisfy
 Before UI build, run `bin/dev-flow design-check <project-name>`. During build,
 think first: confirm the current requirement and spec are clear, choose the
 simplest source architecture, check whether design resources are sufficient for
-the requested fidelity, and only then code. If a needed asset or decision is
+the requested fidelity, and only then code. For UI-heavy or multi-file slices,
+name the feature module, container/presentational split, shared primitives, and
+state/service boundary before implementation. If a needed asset or decision is
 missing, return to design/spec instead of guessing.
 
 ## QA And Ship
@@ -200,14 +202,17 @@ For task automation, `bin/dev-flow next <project-name>` and `bin/dev-flow plan
 `dev-agent/tasks/TASKS.md` and `dev-agent/tasks/EXECUTION_PLAN.md`. When
 multiple pending tasks have clear outputs, acceptance, proof commands, and
 low-risk status, hosts may schedule 1-minute heartbeat batches. A batch can
-execute more than one task only when tasks share a safe proof path. Pause the
-heartbeat and surface the blocker when plan review fails, approval is required,
-proof fails, or task acceptance is unclear.
+execute more than one task only when tasks share a safe proof path or the same
+module boundary. Pause the heartbeat and surface the blocker when plan review
+fails, approval is required, proof fails, or task acceptance is unclear.
 
 Create development output in the project root using the simplest layout that fits
 the stack, for example `src/`, `app/`, `apps/`, `packages/`, `server/`, or stack
 manifest files. When running commands, use the project-local path, for example
 `cd <project-name>` or `cd <project-name>/apps/mobile`.
+Prefer feature-based source folders, container views for data/state/business
+logic, presentational views for rendering, and shared atomic primitives only
+when reuse is real.
 
 Do not create root-level `skills/`, `agents/`, or checked-in `dist/` directories.
 Skills and personas belong under `dev-agent/`; generated adapter packages belong

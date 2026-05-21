@@ -132,10 +132,11 @@ bin/dev-flow install claude-code --scope user
 - **Spec 门禁**：UI 项目的 PRD 需覆盖 MVP、核心流程/IA、验收和非目标；SPEC 需覆盖技术栈、命令、数据/领域模型、测试、UI/design 适用性、隐私/安全和未决问题。
 - **设计实现方式**：正式设计交付以 `design-artifacts` 中的“正式高保真视觉源 + HTML/CSS companion”合同为准；product-designer 的输出只作为方向和要求，不作为开发资源。
 - **设计门禁**：customer-facing UI 在 build 前运行 `design-check`；没有参考时需用户委托视觉方向或提供参考；正式设计源必须来自 Image Gen/GPT Image 或 Figma。Image Gen/GPT Image 的非 icon 资产必须有同步 HTML/CSS companion；icon/logo/app icon 不需要 HTML；Figma handoff 可以不输出 HTML。
+- **Build 结构纪律**：复杂实现按业务模块拆分，区分 container 与 presentational，复用稳定原子组件，并把状态、服务、hooks 边界记录到 implementation trace。
 - **环境边界**：宿主机 SDK、模拟器、MCP、凭证和系统服务记录在 `HOST_REQUIREMENTS.md`，不混入项目 runtime。
 - **分层 Brief**：`bin/dev-flow next` 默认输出 L0 navigator；`--phase-brief` 展开 command/skill/load/outputs；`--full` 用于流程维护和导航器排障。
 - **任务规划**：`bin/dev-flow next` 和 `bin/dev-flow plan` 会把 TODO 或阶段输出整理进 `TASKS.md` / `EXECUTION_PLAN.md`，先做 Plan Review 再执行。
-- **自主循环**：`AUTONOMY_LOOP` 默认给出 heartbeat 建议；多项清晰任务会启用 1 分钟安全批次 heartbeat，遇到 blocker、高风险审批或最终阶段已验证时停止。
+- **自主循环**：`AUTONOMY_LOOP` 默认给出 heartbeat 建议；多项清晰任务会启用 1 分钟安全批次 heartbeat，同模块或同 proof path 可合批，遇到 blocker、高风险审批或最终阶段已验证时停止。
 - **Subagent 并行**：`SUBAGENTS` 默认给出可并行任务包；host 支持时可把 explorer、worker、verifier 等侧线任务交给子 agent。
 - **技术质量制衡**：`technical-steward` 作为独立技术质量负责人，在高风险方案、证据不足、QA 过顺或发布前挑战架构、实现和验收证据，不新增第 7 阶段。
 - **UI 打磨预算**：runtime visual pass 默认一次；P0/P1 阻塞当前任务，P2/P3 记录到 `UI_DEBT.md` 后继续推进。
@@ -165,7 +166,7 @@ Dev Agent OPC is a lean delivery workflow for AI coding agents. It moves rough i
 - **Lean lifecycle**: Spec folds in product/PRD scope, Build handles lightweight task slicing, and PDCA is no longer a default branch.
 - **Escalate instead of forcing**: unclear requirements, weak design inputs, missing host permissions, unavailable SDKs, and high-risk decisions route back to the owning flow or the user.
 - **Cleaner design path**: Design does not require sketches or prototypes. Ask for references first; if none exist, evaluate direction from the spec or ask for delegated visual direction.
-- **Build first**: Build starts by checking requirement clarity, architecture, design readiness, and environment needs, then codes the smallest slice.
+- **Build first**: Build starts by checking requirement clarity, architecture, design readiness, environment needs, and source structure, then codes the smallest slice.
 - **Optional QA**: acceptance, monkey, and visual QA run when the project or user requires them.
 
 ### Usage
@@ -256,9 +257,10 @@ Six-step capability index:
 - **Spec gate**: UI project PRDs must cover MVP, core flows/IA, acceptance, and non-goals; SPEC files must cover stack, commands, data/domain model, testing, UI/design applicability, privacy/security, and open questions.
 - **Design implementation format**: formal design handoff follows the formal high-fidelity visual source plus HTML/CSS companion contract in `design-artifacts`; product-designer output is direction and requirements only, not a development resource.
 - **Design gate**: customer-facing UI runs `design-check` before build; missing references require user input or delegated visual direction; formal sources must come from Image Gen/GPT Image or Figma. Image Gen/GPT Image non-icon assets require synchronized HTML/CSS companions; icon/logo/app-icon assets do not. Figma handoff can skip HTML.
+- **Build structure discipline**: complex implementation is split by feature module, container/presentational boundaries, stable atomic primitives, and state/service/hook ownership recorded in the implementation trace.
 - **Environment boundary**: host SDKs, simulators, MCP servers, credentials, and services are recorded in `HOST_REQUIREMENTS.md` instead of project runtime output.
 - **Task planning**: `next` and `plan` normalize TODO lists or phase outputs into `TASKS.md` / `EXECUTION_PLAN.md`, then require plan review before execution.
-- **Autonomy loop**: `AUTONOMY_LOOP` suggests heartbeat continuation by default; multiple clear pending tasks enable 1-minute safe-batch heartbeats, and the loop stops on blockers, high-risk approval, failed review, or verified final phases.
+- **Autonomy loop**: `AUTONOMY_LOOP` suggests heartbeat continuation by default; multiple clear pending tasks enable 1-minute safe-batch heartbeats, batching by module or proof path, and the loop stops on blockers, high-risk approval, failed review, or verified final phases.
 - **Subagent parallelism**: `SUBAGENTS` suggests optional task packets so host clients can delegate explorer, worker, and verifier work when supported.
 - **Technical quality challenge**: `technical-steward` acts as an independent quality steward for high-risk plans, thin evidence, too-smooth QA, or release readiness; it challenges architecture, implementation, and evidence without adding a seventh phase.
 - **UI polish budget**: runtime visual passes default to one; P0/P1 blocks the task, while P2/P3 goes to `UI_DEBT.md` and work advances.

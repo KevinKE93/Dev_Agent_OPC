@@ -120,7 +120,7 @@ TODO lists or phase outputs into `dev-agent/tasks/TASKS.md`, writes
 `dev-agent/tasks/EXECUTION_PLAN.md`, and returns `Plan Review: pass`, `pause`,
 or `approval-required`. Multiple clear pending tasks enable 1-minute heartbeat
 batches; a batch may contain more than one task only when tasks are low-risk and
-share the same proof path. `bin/dev-flow delegate <project-name>` is the standalone
+share the same module boundary or proof path. `bin/dev-flow delegate <project-name>` is the standalone
 subagent planner. It emits optional task packets for host clients that support
 parallel agents; the main host remains responsible for integration and gates.
 For UI build work, `bin/dev-flow ui-polish <project-name>` records the single
@@ -165,7 +165,9 @@ themselves. When Figma is used, satisfy
 Before UI build, run `bin/dev-flow design-check <project-name>`. During build,
 think before coding: confirm the spec is clear, choose the simplest source
 architecture, check design readiness, record host needs, and route blockers back
-to spec/design/debug/security instead of coding around missing decisions.
+to spec/design/debug/security instead of coding around missing decisions. For
+UI-heavy or multi-file slices, record the feature module, container/presentational
+split, shared primitives, state/service boundary, and proof path before coding.
 Runtime visual inspection is a one-pass budget by default. Use it to catch P0/P1
 issues, then record remaining P2/P3 details in `dev-agent/reviews/UI_DEBT.md` and advance
 to the next implementation task.

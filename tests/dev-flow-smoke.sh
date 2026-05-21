@@ -270,6 +270,14 @@ grep -q 'Satisfy `dev-agent/references/design-artifacts.md`' dev-agent/templates
 grep -q 'satisfy `dev-agent/references/figma-handoff.md`' dev-agent/commands/design.md
 grep -q 'satisfy `dev-agent/references/figma-handoff.md`' dev-agent/skills/design-flow/SKILL.md
 grep -q 'dev-agent/references/figma-handoff.md' dev-agent/templates/project/figma-handoff.md
+grep -q 'Feature-Based' dev-agent/skills/incremental-implementation/SKILL.md
+grep -q 'Container/Presentational' dev-agent/skills/incremental-implementation/SKILL.md
+grep -q 'Atomic Components' dev-agent/skills/incremental-implementation/SKILL.md
+grep -q 'module boundary' dev-agent/commands/build.md
+grep -q 'module boundary' dev-agent/.claude/commands/build.md
+grep -q 'module boundary' dev-agent/.gemini/commands/build.toml
+grep -q 'Source Structure' dev-agent/templates/project/implementation-trace.md
+grep -q 'Source Structure' dev-agent/templates/project/quality-gates.md
 if rg -n 'Valid Source type values|Allowed `Source type`|manual-design|local-approved|SVG/XML sketches|SVG files may|Browser, Playwright|browser/simulator/runtime screenshots|semantic HTML companion|HTML companions|imagegen/GPT Image high-fidelity|formal producers|designer-upload|uploaded-approved|external-design|Figma frames created from those captures|Source type` set to `figma`|Keep SVG|SVG files under' AGENTS.md DEV_FLOW.md README.md dev-agent/commands dev-agent/.claude/commands dev-agent/.gemini/commands dev-agent/skills dev-agent/agents dev-agent/templates/project >/dev/null; then
   rg -n 'Valid Source type values|Allowed `Source type`|manual-design|local-approved|SVG/XML sketches|SVG files may|Browser, Playwright|browser/simulator/runtime screenshots|semantic HTML companion|HTML companions|imagegen/GPT Image high-fidelity|formal producers|designer-upload|uploaded-approved|external-design|Figma frames created from those captures|Source type` set to `figma`|Keep SVG|SVG files under' AGENTS.md DEV_FLOW.md README.md dev-agent/commands dev-agent/.claude/commands dev-agent/.gemini/commands dev-agent/skills dev-agent/agents dev-agent/templates/project >&2
   echo "Design contract drift: non-authoritative files must point to references and gates instead of restating hard source rules." >&2
@@ -411,6 +419,8 @@ bin/dev-flow next "$(basename "$PLAN_PROJECT")" --phase-brief >"$PLAN_FULL_OUT"
 grep -q "Brief level: L2 phase" "$PLAN_FULL_OUT"
 grep -q "Primary skill files:" "$PLAN_FULL_OUT"
 grep -q "^Load:" "$PLAN_FULL_OUT"
+grep -q "source structure note" "$PLAN_FULL_OUT"
+grep -q "module boundary" "$PLAN_FULL_OUT"
 ! grep -q "Parallelizable work:" "$PLAN_FULL_OUT"
 bin/dev-flow autonomy "$(basename "$PLAN_PROJECT")" >"$PLAN_AUTONOMY_OUT"
 grep -q "Heartbeat: enabled" "$PLAN_AUTONOMY_OUT"

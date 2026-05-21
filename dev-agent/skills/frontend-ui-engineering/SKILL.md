@@ -61,6 +61,8 @@ confirmed, stop and return to design instead of implementing around a guess.
 1. **Create a screen checklist**
    - Map each current `SCREEN_ACCEPTANCE.md` screen/state to implementation
     files, design contract inputs, and test evidence.
+   - Record the source structure: feature module, container target,
+     presentational target(s), shared primitives, and state/service/hooks.
    - Keep `tasks/IMPLEMENTATION_TRACE.md` current as work progresses.
 
 2. **Translate design into primitives**
@@ -78,6 +80,8 @@ confirmed, stop and return to design instead of implementing around a guess.
 3. **Use local patterns**
    - Reuse existing components, tokens, icons, forms, data-fetching patterns,
      test helpers, and accessibility utilities.
+   - Keep feature modules local, split container logic from presentational
+     rendering, and extract shared primitives only when reuse is real.
    - Add abstraction only when it removes current duplication or matches an
      established local pattern.
    - Prefer composition and focused components over large configurable objects.
@@ -197,6 +201,7 @@ Use `references/visual-qa-rubric.md` for detailed scoring.
 - `tasks/IMPLEMENTATION_TRACE.md` maps screens to implementation targets and
   test evidence; formal asset fields may be `none` only when `UI_FLOW=disabled`
   because the task is no-UI/no-UX/code-only.
+- Source structure is recorded for UI-heavy or multi-file slices.
 - Required design artifact and Figma handoff contracts are satisfied.
 - Required responsive states and accessibility states are implemented.
 - Runtime has no known console/build errors.

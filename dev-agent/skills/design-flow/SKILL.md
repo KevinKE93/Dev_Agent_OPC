@@ -88,6 +88,8 @@ Use `dev-agent/templates/project/` for file templates. Use
 5. **Specify product structure**
    - Define information architecture, screen hierarchy, navigation, primary and
      secondary actions, permissions, confirmations, undo, and state model.
+   - Identify reusable component candidates and screen states for build
+     mapping, without treating product-designer prose as implementation assets.
    - For assistant products, separate deterministic decision logic from
      conversational expression unless the user approves the LLM as decision
      owner.
@@ -156,7 +158,8 @@ Use `dev-agent/templates/project/` for file templates. Use
       `FIGMA_HANDOFF.md`, and `ASSET_MANIFEST.md` only when the referenced
       contracts require them.
     - Keep `dev-agent/tasks/IMPLEMENTATION_TRACE.md` aligned with the screens and states
-      that build will implement.
+      that build will implement, including source-structure notes when the UI
+      needs reusable components or multiple feature modules.
 
 11. **Gate before build**
     - Update the spec if design changes product scope.
@@ -170,6 +173,7 @@ Use `dev-agent/templates/project/` for file templates. Use
 - Every `SCREEN_ACCEPTANCE.md` section names its upstream requirement source.
 - Formal design artifacts satisfy `dev-agent/references/design-artifacts.md`.
 - Required screen/state HTML/CSS packages exist and are mapped before build.
+- Reusable component candidates and screen-state mappings are visible to build.
 - Figma handoff satisfies `dev-agent/references/figma-handoff.md` when used.
 - Interaction alternatives, recommendation, platform rules, accessibility, key
   screens, and states are explicit.

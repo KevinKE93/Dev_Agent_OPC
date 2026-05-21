@@ -14,6 +14,7 @@ Project-specific verification belongs here. Keep commands runnable from this pro
 - [ ] `dev-agent/references/figma-handoff.md` is satisfied when Figma is used
 - [ ] `bin/dev-flow design-check {{PROJECT}}` passes before UI implementation, when UI applies
 - [ ] `tasks/IMPLEMENTATION_TRACE.md` maps required UI screens to implementation targets and evidence, when UI applies
+- [ ] Source Structure is recorded for UI-heavy or multi-file build slices
 
 ## Add When The Project Has Code
 - [ ] Lint
@@ -24,6 +25,7 @@ Project-specific verification belongs here. Keep commands runnable from this pro
 - [ ] Production/formal verification is read-only or rejection-only; write-path smoke ran only in test/staging and has cleanup evidence
 - [ ] `bin/dev-flow ui-polish {{PROJECT}}` recorded if a runtime visual pass was used
 - [ ] P2/P3 UI polish is recorded in `reviews/UI_DEBT.md` and does not block the current build task
+- [ ] Feature modules, containers, presentational views, shared primitives, and state/service boundaries are split or exceptions are recorded
 - [ ] Functional flow test, when `AUTOMATED_QA` is required
 - [ ] Monkey or exploratory stress test, when `AUTOMATED_QA` is required
 - [ ] Visual comparison score is at least 90/100 against required design contract inputs, when `VISUAL_QA` is required
