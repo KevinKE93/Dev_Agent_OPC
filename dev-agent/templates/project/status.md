@@ -17,6 +17,7 @@
 ## Task Planning
 - Task queue: `dev-agent/tasks/TASKS.md`
 - Execution plan: `dev-agent/tasks/EXECUTION_PLAN.md`
+- Technical plan before build: `dev-agent/tasks/TECHNICAL_PLAN.md`
 - Review before execute: required
 - Heartbeat batch policy: safe-batch
 

@@ -27,8 +27,8 @@ them. Product, agent-contract, testing, and review checks are folded into
 `spec`, `build`, `qa`, and `ship`; task-list planning is surfaced by `next` and
 `plan`.
 `technical-steward` is an optional quality role, not a seventh phase. Use it to
-challenge high-risk plans, implementation evidence, too-smooth QA, and release
-readiness before the main host advances.
+challenge `SPEC.md`, `tasks/TECHNICAL_PLAN.md`, implementation evidence,
+too-smooth QA, and release readiness before the main host advances.
 
 | Intent | Prompt alias | Native action | Loads |
 |---|---|---|---|
@@ -163,11 +163,12 @@ themselves. When Figma is used, satisfy
 `bin/dev-flow figma-check <project-name>`.
 
 Before UI build, run `bin/dev-flow design-check <project-name>`. During build,
-think before coding: confirm the spec is clear, choose the simplest source
-architecture, check design readiness, record host needs, and route blockers back
-to spec/design/debug/security instead of coding around missing decisions. For
-UI-heavy or multi-file slices, record the feature module, container/presentational
-split, shared primitives, state/service boundary, and proof path before coding.
+think before coding: confirm the spec is clear, then create or update
+`dev-agent/tasks/TECHNICAL_PLAN.md` before implementation. Spec records
+product-level technical expectations; Build owns detailed platform/language,
+client/web/backend architecture, componentization, MVVM/state, routing,
+service/security, proof commands, and steward review triggers. Route blockers
+back to spec/design/debug/security/host requirements instead of guessing.
 Runtime visual inspection is a one-pass budget by default. Use it to catch P0/P1
 issues, then record remaining P2/P3 details in `dev-agent/reviews/UI_DEBT.md` and advance
 to the next implementation task.
@@ -208,7 +209,7 @@ reference for release verification and destructive data reset decisions.
 | Idea | `dev-agent/ideas/idea-brief.md` |
 | Spec | `dev-agent/product/PRD.md`, `dev-agent/specs/SPEC.md` |
 | Design, when UI applies | `dev-agent/design/DESIGN.md`, `VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`, `DESIGN_ARTIFACTS.md`, formal visual sources, and HTML/CSS companion packages |
-| Build | source under the project root, `dev-agent/reviews/VERIFICATION.md` or `dev-agent/reviews/BLOCKED_BUILD.md`, UI implementation trace when UI applies, optional autonomy/delegation logs, `dev-agent/reviews/UI_DEBT.md` when polish remains |
+| Build | source under the project root, `dev-agent/tasks/TECHNICAL_PLAN.md`, `dev-agent/reviews/VERIFICATION.md` or `dev-agent/reviews/BLOCKED_BUILD.md`, UI implementation trace when UI applies, optional autonomy/delegation logs, `dev-agent/reviews/UI_DEBT.md` when polish remains |
 | QA, when required | `dev-agent/reviews/FUNCTIONAL_TEST.md`, `MONKEY_TEST.md`, `ACCEPTANCE_QA.html`, `VISUAL_COMPARISON.md` as applicable |
 | Ship, when requested | `dev-agent/ship/LAUNCH.md` with risk, rollback, and GO/NO-GO |
 

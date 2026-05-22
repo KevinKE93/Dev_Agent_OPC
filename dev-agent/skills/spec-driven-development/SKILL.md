@@ -16,9 +16,10 @@ phases. The required outputs are `dev-agent/product/PRD.md` and
 `dev-agent/specs/SPEC.md`.
 
 Keep the split crisp: `PRD.md` owns users, scope, flows, product rules,
-acceptance, metrics, and non-goals. `SPEC.md` owns architecture, data,
-interfaces, commands, tests, privacy/security boundaries, risks, and open
-technical decisions.
+acceptance, metrics, and non-goals. `SPEC.md` owns product-level technical
+expectations, constraints, data/domain needs, interfaces, commands, tests,
+privacy/security boundaries, risks, and open technical decisions. Build owns
+the detailed development architecture in `tasks/TECHNICAL_PLAN.md` before code.
 
 In Dev Agent projects, this skill owns `<project-name>/dev-agent/specs/SPEC.md`.
 Do not create implementation artifacts from this skill; hand off to
@@ -88,9 +89,11 @@ Don't silently fill in ambiguous requirements. The spec's entire purpose is to s
    ```
 
 3. **Project Structure** — Where source code lives, where tests go, where docs belong.
-   Include source architecture boundaries for non-trivial code: feature modules,
-   shared UI primitives, containers, presentational views, services, hooks, and
-   stores. Keep this at the module level; implementation details belong in build.
+   Include source architecture expectations for non-trivial code: likely feature
+   modules, shared UI primitives, containers, presentational views, services,
+   hooks, and stores. Keep this at the expectation/constraint level; final
+   platform, language, component, MVVM/state, routing, security, microservice,
+   and slice decisions belong in Build's `tasks/TECHNICAL_PLAN.md`.
    ```
    <project-name>/           → Project root for code and stack manifests
    <project-name>/src/       → Simple source root when a monorepo is unnecessary
@@ -179,8 +182,10 @@ instead of leaving build to guess.
 [Directory layout with descriptions]
 
 ## Source Architecture
-[Feature modules, shared primitives, container/presentational boundaries, and
-state/service/hook ownership when code changes are non-trivial.]
+[Product-level expectations and constraints for feature modules, shared
+primitives, container/presentational boundaries, and state/service/hook
+ownership. Build must finalize detailed client/web/backend architecture in
+`tasks/TECHNICAL_PLAN.md` before implementation.]
 
 ## Code Style
 [Example snippet + key conventions]

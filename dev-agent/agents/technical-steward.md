@@ -23,6 +23,10 @@ story are enough to trust the result.
 
 - Challenge whether the proposed architecture, source boundary, dependencies,
   state model, and integration path are the simplest reliable choice.
+- Check `SPEC.md` and `tasks/TECHNICAL_PLAN.md` together: Spec should define
+  product-level technical expectations, while Build must provide concrete
+  client/web/backend architecture, platform/language, state/routing/component,
+  security, and proof decisions before implementation is trusted.
 - Check whether the implementation actually satisfies the PRD, SPEC, design
   handoff, acceptance criteria, and user-visible workflow.
 - Find missing states, unhandled failure modes, weak data boundaries, accidental
@@ -41,6 +45,8 @@ story are enough to trust the result.
 Read only what is needed for the decision:
 
 - `PRD.md`, `SPEC.md`, and relevant acceptance criteria.
+- `tasks/TECHNICAL_PLAN.md`, including applicability decisions for client, web
+  frontend, backend, security, routing/state, and steward review trigger.
 - Design handoff and `SCREEN_ACCEPTANCE.md` when UI applies.
 - Current implementation diff, source boundaries, and project conventions.
 - `VERIFICATION.md`, `FUNCTIONAL_TEST.md`, `MONKEY_TEST.md`,
@@ -60,8 +66,9 @@ APPROVE | APPROVE_WITH_ACTIONS | REQUEST_CHANGES | BLOCKED
 [The minimum standard this delivery must meet to be truly complete.]
 
 ## Architecture Challenge
-[Independent critique of architecture, complexity, dependencies, boundaries,
-data/state model, and simpler alternatives.]
+[Independent critique of SPEC expectations, TECHNICAL_PLAN decisions,
+architecture, complexity, dependencies, boundaries, data/state model, and
+simpler alternatives.]
 
 ## Completion Gaps
 [Missing requirements, states, flows, edge cases, integrations, or user-visible

@@ -18,16 +18,16 @@ QA and Ship are optional by default. Design applies when the project has
 customer-facing UI, visual direction, brand/KV, motion, or formal design
 handoff needs.
 
-`technical-steward` is a role, not a seventh lifecycle phase. In the first
-version it is invoked by risk or user request and does not add a hard executable
-gate.
+`technical-steward` is a role, not a seventh lifecycle phase. It is invoked by
+risk or user request to challenge `SPEC.md`, `tasks/TECHNICAL_PLAN.md`, and
+delivery evidence.
 
 | Flow | Primary job | Main command | Completion gate | Main roles |
 |---|---|---|---|---|
 | [Idea](#idea-flow) | Turn a rough request into a focused brief | `/dev agent flow idea` | `bin/dev-flow verify-phase <project> idea` | Main host, optional product design judgment |
 | [Spec](#spec-flow) | Produce PRD and buildable SPEC | `/dev agent flow spec` | `bin/dev-flow verify-phase <project> spec` | Main host, optional technical/product/security/test judgment |
 | [Design](#design-flow) | Produce build-ready UX and visual handoff | `/dev agent flow design` | `bin/dev-flow design-check <project>` | `product-designer` |
-| [Build](#build-flow) | Implement verified slices in source code | `/dev agent flow build` | `bin/dev-flow verify-phase <project> build` and `bin/dev-flow check <project>` | Main host, optional `technical-steward`/reviewer/test/security roles |
+| [Build](#build-flow) | Write the required technical plan and implement verified slices | `/dev agent flow build` | `bin/dev-flow verify-phase <project> build` and `bin/dev-flow check <project>` | Main host, optional `technical-steward`/reviewer/test/security roles |
 | [QA](#qa-flow) | Run optional acceptance, monkey, visual, and quality QA | `/dev agent flow qa` | `bin/dev-flow qa-check <project>` when QA is required | `technical-steward`, `test-engineer`, `ui-quality-reviewer` |
 | [Ship](#ship-flow) | Prepare release evidence, rollback, and GO/NO-GO | `/dev agent flow ship` | `bin/dev-flow ship-check <project>` | `technical-steward`, `code-reviewer`, `security-auditor`, `test-engineer` |
 
@@ -231,9 +231,10 @@ gate.
 
 **Role capabilities**
 
-- Main host owns implementation and integration.
+- Main host owns the Build technical plan, implementation, and integration.
 - [technical-steward](../agents/technical-steward.md) challenges final
-  technical readiness when the build changes architecture, data/state,
+  technical readiness and the fit between `SPEC.md` and
+  `tasks/TECHNICAL_PLAN.md` when the build changes architecture, data/state,
   permissions, cross-module integration, UI/backend coupling, or agent runtime
   behavior, or when verification evidence is thin.
 - Main host records source structure for complex slices: feature module,
@@ -254,6 +255,9 @@ gate.
 
 - Source or development output exists under the project root, such as `src/`,
   `app/`, `apps/`, `packages/`, `server/`, or stack manifest files.
+- `tasks/TECHNICAL_PLAN.md` covers platform/language choices, client/web/backend
+  applicability, componentization, state/routing, security, proof commands, and
+  steward review decision before code is accepted.
 - Required evidence:
   `<project-name>/dev-agent/reviews/VERIFICATION.md` or
   `<project-name>/dev-agent/reviews/BLOCKED_BUILD.md`.

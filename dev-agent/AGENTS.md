@@ -40,15 +40,16 @@ Map user intent to the smallest useful flow:
   technical specification, and agent runtime contracts:
   `spec-driven-development`
 - Customer-facing UI, visual direction, references, or screen acceptance: `design-flow`
-- Build slices, lightweight task slicing, and local proof: `incremental-implementation`
+- Build technical plans, slices, task slicing, and local proof: `incremental-implementation`
 - Debugging or unexpected behavior: `debugging-and-error-recovery`
 - UI implementation, optional Acceptance QA, and quality review: `frontend-ui-engineering`
 - Security-sensitive work: `security-and-hardening`
 - Release readiness: `shipping-and-launch`
 
 For APIs or public module boundaries, include `api-and-interface-design`.
-For high-risk plans, thin evidence, too-smooth QA, or release readiness, include
-the `technical-steward` persona as an independent quality challenge.
+For architecture/data/security/integration risk, thin evidence, too-smooth QA,
+or release readiness, include the `technical-steward` persona to challenge
+`SPEC.md` and `tasks/TECHNICAL_PLAN.md`.
 
 ## Personas, Skills, And Commands
 

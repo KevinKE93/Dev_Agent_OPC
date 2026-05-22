@@ -573,6 +573,7 @@ write_build_templates() {
   write_project_template "$dir" "tasks/TASKS.md" "tasks.md" "$project" "$project_type"
   write_project_template "$dir" "tasks/EXECUTION_PLAN.md" "execution-plan.md" "$project" "$project_type"
   write_project_template "$dir" "tasks/quality-gates.md" "quality-gates.md" "$project" "$project_type"
+  write_project_template "$dir" "tasks/TECHNICAL_PLAN.md" "technical-plan.md" "$project" "$project_type"
   write_project_template "$dir" "tasks/IMPLEMENTATION_TRACE.md" "implementation-trace.md" "$project" "$project_type"
   write_project_template "$dir" "tasks/AUTONOMY.md" "autonomy.md" "$project" "$project_type"
   write_project_template "$dir" "tasks/DELEGATION.md" "delegation.md" "$project" "$project_type"
@@ -635,7 +636,7 @@ phase_default_task() {
     idea) echo "Refine the initial idea" ;;
     spec) echo "Write PRD and buildable SPEC.md" ;;
     design) echo "Resolve design direction and build handoff" ;;
-    build) echo "Think through architecture, environment, and implement the next slice" ;;
+    build) echo "Write the technical plan, verify readiness, and implement the next slice" ;;
     qa) echo "Run optional acceptance, monkey, and visual QA for the completed build" ;;
     ship) echo "Prepare optional launch evidence and go/no-go decision" ;;
     *) echo "Continue workflow" ;;
@@ -673,6 +674,7 @@ phase_skill_files() {
       ;;
     build)
       echo "- dev-agent/skills/incremental-implementation/SKILL.md"
+      echo "- required Build technical plan before implementation"
       echo "- embedded proof-first build checklist"
       echo "- source structure discipline for feature modules and UI/component boundaries"
       if phase_is_applicable "$project" design; then
@@ -722,6 +724,7 @@ phase_load_list() {
       ;;
     build)
       echo "- $process_root/specs/SPEC.md"
+      echo "- $process_root/tasks/TECHNICAL_PLAN.md"
       echo "- $process_root/tasks/PLAN.md when present; otherwise derive a short build slice from SPEC/design"
       echo "- $process_root/tasks/IMPLEMENTATION_TRACE.md source structure note when present"
       echo "- $process_root/HOST_REQUIREMENTS.md when the slice needs host SDKs/CLIs/services"
@@ -780,6 +783,7 @@ phase_required_outputs() {
       fi
       ;;
     build)
+      echo "- $process_root/tasks/TECHNICAL_PLAN.md with platform/language decision, client/web/backend architecture applicability, state/routing/component strategy, security quality, build slice plan, and steward review decision"
       echo "- implemented source under the project root (for example src/, app/, apps/, packages/, or stack manifest files)"
       echo "- source structure note with feature/module boundary, container/presentational split, shared primitives, and proof path"
       echo "- tests or executable proof for the slice"
@@ -3390,6 +3394,87 @@ check_ui_spec_product_coverage() {
   [[ "$failures" -eq 0 ]]
 }
 
+technical_plan_has_build_slice_row() {
+  local path="$1"
+  awk '
+    /^## +Build Slice Plan/ { in_section = 1; next }
+    in_section && /^## +/ { exit }
+    in_section && /^\|/ && $0 !~ /\|[[:space:]]*-+[[:space:]]*\|/ && $0 !~ /\|[[:space:]]*Slice[[:space:]]*\|/ {
+      filled = 0
+      fields = split($0, cols, "|")
+      for (i = 2; i < fields; i++) {
+        cell = cols[i]
+        gsub(/^[[:space:]]+|[[:space:]]+$/, "", cell)
+        if (cell != "") {
+          filled++
+        }
+      }
+      if (filled >= 7) {
+        found = 1
+      }
+    }
+    END { exit(found ? 0 : 1) }
+  ' "$path"
+}
+
+technical_plan_has_placeholder() {
+  local path="$1"
+  grep -Eiq 'Target runtime\(s\):[[:space:]]*$|Cross-platform decision:[[:space:]]*$|Development language\(s\):[[:space:]]*$|Key tradeoffs:[[:space:]]*$|Applicability:[[:space:]]*$|Architecture pattern, including MVVM when relevant:[[:space:]]*$|Component/module boundaries:[[:space:]]*$|State management:[[:space:]]*$|Routing/navigation:[[:space:]]*$|Framework and rendering model:[[:space:]]*$|Component structure and shared primitives:[[:space:]]*$|State management and data fetching:[[:space:]]*$|Routing:[[:space:]]*$|Build/package boundaries:[[:space:]]*$|Service/module boundary:[[:space:]]*$|API/router design:[[:space:]]*$|Data model and persistence:[[:space:]]*$|Security/auth/permission model:[[:space:]]*$|Microservice or monolith decision:[[:space:]]*$|Background jobs, integrations, and observability:[[:space:]]*$|Security/privacy assumptions:[[:space:]]*$|Dependency and SDK decisions:[[:space:]]*$|Error handling and recovery:[[:space:]]*$|Performance constraints:[[:space:]]*$|Test strategy and proof commands:[[:space:]]*$|Required: yes/no|Trigger reason:[[:space:]]*$|Review result:[[:space:]]*$|Required actions:[[:space:]]*$' "$path"
+}
+
+technical_steward_required_for_project() {
+  local project="$1"
+  load_project_schema "$project"
+  [[ "$PROJECT_TYPE" == "api" || "$PROJECT_TYPE" == "agent" ]]
+}
+
+technical_plan_has_steward_approval() {
+  local path="$1"
+  grep -Eiq 'Required:[[:space:]]*yes' "$path" &&
+    grep -Eiq 'Review result:[[:space:]]*(APPROVE|APPROVE_WITH_ACTIONS)' "$path"
+}
+
+technical_plan_has_steward_decision() {
+  local path="$1"
+  grep -Eiq 'Required:[[:space:]]*(yes|no)' "$path" &&
+    grep -Eiq 'Trigger reason:[[:space:]]*.+' "$path" &&
+    grep -Eiq 'Review result:[[:space:]]*(APPROVE|APPROVE_WITH_ACTIONS|n/a|N/A|NOT_REQUIRED)' "$path" &&
+    grep -Eiq 'Required actions:[[:space:]]*.+' "$path"
+}
+
+check_technical_plan_coverage() {
+  local dir="$1"
+  local project="${2:-}"
+  local path="$dir/tasks/TECHNICAL_PLAN.md"
+  local failures=0
+  require_content_file "$dir" "tasks/TECHNICAL_PLAN.md" || return 1
+  if technical_plan_has_placeholder "$path"; then
+    echo "Incomplete technical plan: replace template placeholders in tasks/TECHNICAL_PLAN.md." >&2
+    failures=$((failures + 1))
+  fi
+  require_file_pattern "$dir" "tasks/TECHNICAL_PLAN.md" "technical plan: platform/language decision" 'Platform|Language|跨平台|开发语言|语言选型|Tech Stack|技术栈|平台' || failures=$((failures + 1))
+  require_file_pattern "$dir" "tasks/TECHNICAL_PLAN.md" "technical plan: client architecture applicability" 'Client Architecture|客户端|Mobile|Native|iOS|Android|跨平台|MVVM' || failures=$((failures + 1))
+  require_file_pattern "$dir" "tasks/TECHNICAL_PLAN.md" "technical plan: web frontend architecture applicability" 'Web Frontend Architecture|Web|前端|组件|Component|Router|路由' || failures=$((failures + 1))
+  require_file_pattern "$dir" "tasks/TECHNICAL_PLAN.md" "technical plan: backend architecture applicability" 'Backend Architecture|Backend|后端|API|Microservice|微服务|Service|Router|路由|Security|安全' || failures=$((failures + 1))
+  require_file_pattern "$dir" "tasks/TECHNICAL_PLAN.md" "technical plan: state/routing/component strategy" 'State|Routing|Router|状态管理|路由|Component|组件|MVVM|Store' || failures=$((failures + 1))
+  require_file_pattern "$dir" "tasks/TECHNICAL_PLAN.md" "technical plan: security and quality" 'Security|Privacy|安全|隐私|权限|Auth|Test|Quality|质量' || failures=$((failures + 1))
+  require_file_pattern "$dir" "tasks/TECHNICAL_PLAN.md" "technical plan: build slice and proof" 'Build Slice|Slice Plan|Proof|验证|Proof command|开发方案|实现计划' || failures=$((failures + 1))
+  require_file_pattern "$dir" "tasks/TECHNICAL_PLAN.md" "technical plan: steward review decision" 'Technical Steward|technical-steward|steward|技术经理|review|Review' || failures=$((failures + 1))
+  if ! technical_plan_has_build_slice_row "$path"; then
+    echo "Incomplete technical plan: add at least one concrete Build Slice Plan row." >&2
+    failures=$((failures + 1))
+  fi
+  if ! technical_plan_has_steward_decision "$path"; then
+    echo "Incomplete technical plan: record an explicit Technical Steward Review decision." >&2
+    failures=$((failures + 1))
+  fi
+  if [[ -n "$project" ]] && technical_steward_required_for_project "$project" && ! technical_plan_has_steward_approval "$path"; then
+    echo "Missing required technical-steward approval in tasks/TECHNICAL_PLAN.md." >&2
+    failures=$((failures + 1))
+  fi
+  [[ "$failures" -eq 0 ]]
+}
+
 require_any_file() {
   local dir="$1"
   local label="$2"
@@ -3502,6 +3587,10 @@ verify_phase_impl() {
       fi
       ;;
     build)
+      if ! check_technical_plan_coverage "$dir" "$project"; then
+        echo "Missing technical plan: add tasks/TECHNICAL_PLAN.md before implementation." >&2
+        failures=$((failures + 1))
+      fi
       if ! project_has_implemented_source "$project"; then
         echo "Missing evidence: implemented source under project root (src/, app/, apps/, packages/, or stack manifest files)." >&2
         failures=$((failures + 1))

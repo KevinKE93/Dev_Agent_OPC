@@ -25,7 +25,7 @@ Use this lean lifecycle for non-trivial product or engineering work:
 1. Idea: `dev-agent/skills/idea-refine/SKILL.md`
 2. Spec: `dev-agent/skills/spec-driven-development/SKILL.md`; write PRD, scope, stories, metrics, technical spec, and agent runtime contract when needed
 3. Design: `dev-agent/skills/design-flow/SKILL.md` when customer-facing UX or visual direction matters
-4. Build: `dev-agent/skills/incremental-implementation/SKILL.md`; include lightweight task slicing and proof-first verification inside build
+4. Build: `dev-agent/skills/incremental-implementation/SKILL.md`; create the required technical plan, then use task slicing and proof-first verification
 5. QA: optional; use acceptance/monkey/visual QA only when the project or user requires it
 6. Ship: optional; use `dev-agent/skills/shipping-and-launch/SKILL.md` only for release/go-no-go work
 
@@ -36,8 +36,9 @@ For APIs or public module boundaries, also load
 work, also load `dev-agent/skills/security-and-hardening/SKILL.md`.
 For production release, remote smoke, or data reset work, also load
 `dev-agent/references/production-data-safety.md`.
-For high-risk architecture, thin evidence, too-smooth QA, or release readiness,
-use `dev-agent/agents/technical-steward.md` as an independent quality challenge.
+For architecture, data, security, integration, thin evidence, too-smooth QA, or
+release readiness, use `dev-agent/agents/technical-steward.md` as an
+independent quality challenge over `SPEC.md` and `tasks/TECHNICAL_PLAN.md`.
 
 Do not bury problems in code. If requirements, design assets, host permissions,
 SDKs, or risk boundaries are insufficient, return the issue to the owning flow
@@ -139,12 +140,12 @@ themselves. When Figma is used, satisfy
 `bin/dev-flow figma-check <project-name>`.
 
 Before UI build, run `bin/dev-flow design-check <project-name>`. During build,
-think first: confirm the current requirement and spec are clear, choose the
-simplest source architecture, check whether design resources are sufficient for
-the requested fidelity, and only then code. For UI-heavy or multi-file slices,
-name the feature module, container/presentational split, shared primitives, and
-state/service boundary before implementation. If a needed asset or decision is
-missing, return to design/spec instead of guessing.
+think first: confirm the current requirement and spec are clear, then create or
+update `dev-agent/tasks/TECHNICAL_PLAN.md` before code. Build owns concrete
+platform/language decisions, client/web/backend architecture applicability,
+componentization, MVVM/state, routing, backend service/security choices, proof
+commands, and steward review triggers. If a needed asset or decision is missing,
+return to design/spec/security/host requirements instead of guessing.
 
 ## QA And Ship
 
@@ -186,7 +187,7 @@ created inside `dev-agent/` when `next`, `phase`, or a gate needs that phase.
 - Product/spec: `dev-agent/product/PRD.md`, `dev-agent/specs/SPEC.md`
 - Optional agent notes: `dev-agent/agent/` for legacy/imported material; canonical agent runtime contract belongs in `dev-agent/specs/SPEC.md`
 - Design: `dev-agent/design/DESIGN.md`, `VISUAL_SYSTEM.md`, `SCREEN_ACCEPTANCE.md`, `DESIGN_ARTIFACTS.md`, `DESIGN_IMAGE_DESCRIPTIONS.md`, `FIGMA_HANDOFF.md`, `dev-agent/design/approved/`, `dev-agent/design/cut-assets/`
-- Build planning/evidence: `dev-agent/tasks/status.md`, `dev-agent/tasks/TASKS.md`, `dev-agent/tasks/EXECUTION_PLAN.md`, `dev-agent/tasks/quality-gates.md`, `dev-agent/tasks/IMPLEMENTATION_TRACE.md`, `dev-agent/tasks/AUTONOMY.md`, `dev-agent/tasks/DELEGATION.md`, `dev-agent/tasks/subagents/TEMPLATE.md`, `dev-agent/reviews/VERIFICATION.md`, `dev-agent/reviews/BLOCKED_BUILD.md`, `dev-agent/reviews/UI_DEBT.md`
+- Build planning/evidence: `dev-agent/tasks/status.md`, `dev-agent/tasks/TASKS.md`, `dev-agent/tasks/EXECUTION_PLAN.md`, `dev-agent/tasks/quality-gates.md`, `dev-agent/tasks/TECHNICAL_PLAN.md`, `dev-agent/tasks/IMPLEMENTATION_TRACE.md`, `dev-agent/tasks/AUTONOMY.md`, `dev-agent/tasks/DELEGATION.md`, `dev-agent/tasks/subagents/TEMPLATE.md`, `dev-agent/reviews/VERIFICATION.md`, `dev-agent/reviews/BLOCKED_BUILD.md`, `dev-agent/reviews/UI_DEBT.md`
 - Optional QA: `dev-agent/reviews/FUNCTIONAL_TEST.md`, `dev-agent/reviews/MONKEY_TEST.md`, `dev-agent/reviews/ACCEPTANCE_QA.html`, `dev-agent/reviews/VISUAL_COMPARISON.md`, `dev-agent/reviews/acceptance-screenshots/`, `dev-agent/reviews/visual-screenshots/`
 - Optional ship: `dev-agent/ship/LAUNCH.md`
 - Source roots: project-root `src/`, `app/`, `apps/`, `packages/`, or another project-local source directory

@@ -66,7 +66,13 @@ Use the project-local workspace layout for all implementation work:
 
 ## Build Structure Discipline
 
-Before a UI-heavy or multi-file slice, name the source structure you will use.
+Before implementation, create or update
+`dev-agent/tasks/TECHNICAL_PLAN.md`. Build owns the concrete development plan:
+Spec sets product-level technical expectations and constraints; Build chooses
+the implementable architecture. Do not code until the plan covers the applicable
+client, web frontend, backend, security, routing/state, and proof decisions.
+
+For UI-heavy or multi-file slices, also name the source structure you will use.
 Record it in the working response or `dev-agent/tasks/IMPLEMENTATION_TRACE.md`
 when it affects future maintenance.
 
@@ -139,11 +145,11 @@ If Slice 1 fails, you discover it before investing in Slices 2 and 3.
 
 ### Rule -2: Build Micro-Plan
 
-Before coding, write a compact slice note in the working response,
-`dev-agent/tasks/status.md`, or `dev-agent/tasks/PLAN.md` only when the slice
-is too large to hold in the spec/status. Include the goal, target files, source
-boundary, proof command, and blocker/escalation path. This replaces a separate
-planning phase.
+Before coding, write the slice plan in `dev-agent/tasks/TECHNICAL_PLAN.md`.
+Include the goal, target files, source boundary, platform/language choices,
+component/module strategy, state/routing decisions, security implications, proof
+command, and blocker/escalation path. Use `status.md` only for progress
+checkpoints after the technical plan exists.
 
 For behavior changes, prefer a failing test or executable proof first. If that
 is not practical, record why and use the smallest manual or smoke proof that

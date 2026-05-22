@@ -30,6 +30,7 @@ FIGMA_SECTION_BOUNDARY="$ROOT/__${RUN_ID}_figma_section_boundary"
 FIGMA_MISSING_SOURCE="$ROOT/__${RUN_ID}_figma_missing_source"
 FIGMA_BAD_EXPORT="$ROOT/__${RUN_ID}_figma_bad_export"
 API_PROJECT="$ROOT/__${RUN_ID}_api"
+TECH_GATE_PROJECT="$ROOT/__${RUN_ID}_tech_gate"
 AGENT_PROJECT="$ROOT/__${RUN_ID}_agent"
 AUTO_TASK_PROJECT="$ROOT/__${RUN_ID}_auto_task"
 PLAN_PROJECT="$ROOT/__${RUN_ID}_plan"
@@ -69,6 +70,7 @@ API_NEXT_OUT="/private/tmp/dev-flow-${RUN_ID}-api-next.out"
 API_AUTONOMY_OUT="/private/tmp/dev-flow-${RUN_ID}-api-autonomy.out"
 API_DELEGATE_OUT="/private/tmp/dev-flow-${RUN_ID}-api-delegate.out"
 API_DELEGATE_DISABLED_OUT="/private/tmp/dev-flow-${RUN_ID}-api-delegate-disabled.out"
+TECH_GATE_OUT="/private/tmp/dev-flow-${RUN_ID}-tech-gate.out"
 AGENT_OUT="/private/tmp/dev-flow-${RUN_ID}-agent.out"
 AUTO_TASK_NEXT_OUT="/private/tmp/dev-flow-${RUN_ID}-auto-task-next.out"
 AUTO_TASK_FULL_OUT="/private/tmp/dev-flow-${RUN_ID}-auto-task-full.out"
@@ -97,7 +99,7 @@ cleanup_path() {
 }
 
 cleanup() {
-cleanup_path "$LAZY_PROJECT" "$EXISTING_UNINIT" "$UI_BLOCK" "$LIGHT_UI" "$UI_DESIGN_DISABLED" "$BRIEF_DESIGN_BYPASS" "$SPEC_GAP" "$DELEGATED" "$INVALID" "$SVG_ONLY" "$SVG_LEAK" "$SVG_CUT_ALLOWED" "$SELF_RENDERED_PNG" "$IDENTITY_BAD_SOURCE" "$ICON_NO_HTML" "$MISSING_COVERAGE" "$SCREENSHOT_SWAP" "$DRAFT_PATH" "$NO_CUTS" "$HTML_ONLY" "$HTML_MISSING_CSS" "$AI_MISSING_HTML" "$FIGMA_GOOD" "$FIGMA_SECTION_BOUNDARY" "$FIGMA_MISSING_SOURCE" "$FIGMA_BAD_EXPORT" "$API_PROJECT" "$AGENT_PROJECT" "$AUTO_TASK_PROJECT" "$PLAN_PROJECT" "$ENV_PROJECT" "$BAD_ENV" "$LEGACY_PROJECT" "$OLD_LAYOUT" "$BAD_VISUAL" "$ADAPTER_OUT" "$INSTALL_DEST" "$INSTALL_WORKSPACE" "$UI_BLOCK_OUT" "$LIGHT_UI_NEXT_OUT" "$LIGHT_UI_POLISH_OUT" "$LIGHT_UI_POLISH_NEXT_OUT" "$LIGHT_UI_POLISH_STOP_OUT" "$UI_DESIGN_DISABLED_OUT" "$BRIEF_DESIGN_BYPASS_OUT" "$SPEC_GAP_OUT" "$INVALID_OUT" "$EXCEPTION_OUT" "$SVG_ONLY_OUT" "$SVG_LEAK_OUT" "$SVG_CUT_ALLOWED_OUT" "$SELF_RENDERED_PNG_OUT" "$IDENTITY_BAD_SOURCE_OUT" "$MISSING_COVERAGE_OUT" "$SCREENSHOT_SWAP_OUT" "$DRAFT_PATH_OUT" "$AI_MISSING_HTML_OUT" "$HTML_MISSING_CSS_OUT" "$HTML_ONLY_OUT" "$FIGMA_MISSING_SOURCE_OUT" "$FIGMA_BAD_EXPORT_OUT" "$API_OUT" "$API_NEXT_OUT" "$API_AUTONOMY_OUT" "$API_DELEGATE_OUT" "$API_DELEGATE_DISABLED_OUT" "$AGENT_OUT" "$AUTO_TASK_NEXT_OUT" "$PLAN_OUT" "$PLAN_NEXT_OUT" "$PLAN_AUTONOMY_OUT" "$PLAN_TASK_OUT" "$ENV_OUT" "$BAD_ENV_OUT" "$DOCTOR_OUT" "$BAD_VISUAL_OUT" "$TRACE_MISSING_HTML_OUT" "$NEXT_UI_OUT"
+cleanup_path "$LAZY_PROJECT" "$EXISTING_UNINIT" "$UI_BLOCK" "$LIGHT_UI" "$UI_DESIGN_DISABLED" "$BRIEF_DESIGN_BYPASS" "$SPEC_GAP" "$DELEGATED" "$INVALID" "$SVG_ONLY" "$SVG_LEAK" "$SVG_CUT_ALLOWED" "$SELF_RENDERED_PNG" "$IDENTITY_BAD_SOURCE" "$ICON_NO_HTML" "$MISSING_COVERAGE" "$SCREENSHOT_SWAP" "$DRAFT_PATH" "$NO_CUTS" "$HTML_ONLY" "$HTML_MISSING_CSS" "$AI_MISSING_HTML" "$FIGMA_GOOD" "$FIGMA_SECTION_BOUNDARY" "$FIGMA_MISSING_SOURCE" "$FIGMA_BAD_EXPORT" "$API_PROJECT" "$TECH_GATE_PROJECT" "$AGENT_PROJECT" "$AUTO_TASK_PROJECT" "$PLAN_PROJECT" "$ENV_PROJECT" "$BAD_ENV" "$LEGACY_PROJECT" "$OLD_LAYOUT" "$BAD_VISUAL" "$ADAPTER_OUT" "$INSTALL_DEST" "$INSTALL_WORKSPACE" "$UI_BLOCK_OUT" "$LIGHT_UI_NEXT_OUT" "$LIGHT_UI_POLISH_OUT" "$LIGHT_UI_POLISH_NEXT_OUT" "$LIGHT_UI_POLISH_STOP_OUT" "$UI_DESIGN_DISABLED_OUT" "$BRIEF_DESIGN_BYPASS_OUT" "$SPEC_GAP_OUT" "$INVALID_OUT" "$EXCEPTION_OUT" "$SVG_ONLY_OUT" "$SVG_LEAK_OUT" "$SVG_CUT_ALLOWED_OUT" "$SELF_RENDERED_PNG_OUT" "$IDENTITY_BAD_SOURCE_OUT" "$MISSING_COVERAGE_OUT" "$SCREENSHOT_SWAP_OUT" "$DRAFT_PATH_OUT" "$AI_MISSING_HTML_OUT" "$HTML_MISSING_CSS_OUT" "$HTML_ONLY_OUT" "$FIGMA_MISSING_SOURCE_OUT" "$FIGMA_BAD_EXPORT_OUT" "$API_OUT" "$API_NEXT_OUT" "$API_AUTONOMY_OUT" "$API_DELEGATE_OUT" "$API_DELEGATE_DISABLED_OUT" "$TECH_GATE_OUT" "$AGENT_OUT" "$AUTO_TASK_NEXT_OUT" "$PLAN_OUT" "$PLAN_NEXT_OUT" "$PLAN_AUTONOMY_OUT" "$PLAN_TASK_OUT" "$ENV_OUT" "$BAD_ENV_OUT" "$DOCTOR_OUT" "$BAD_VISUAL_OUT" "$TRACE_MISSING_HTML_OUT" "$NEXT_UI_OUT"
 }
 trap cleanup EXIT
 
@@ -276,7 +278,11 @@ grep -q 'Atomic Components' dev-agent/skills/incremental-implementation/SKILL.md
 grep -q 'module boundary' dev-agent/commands/build.md
 grep -q 'module boundary' dev-agent/.claude/commands/build.md
 grep -q 'module boundary' dev-agent/.gemini/commands/build.toml
+grep -q 'TECHNICAL_PLAN.md' dev-agent/commands/build.md
+grep -q 'TECHNICAL_PLAN.md' dev-agent/.claude/commands/build.md
+grep -q 'TECHNICAL_PLAN.md' dev-agent/.gemini/commands/build.toml
 grep -q 'Source Structure' dev-agent/templates/project/implementation-trace.md
+grep -q 'Technical Plan' dev-agent/templates/project/technical-plan.md
 grep -q 'Source Structure' dev-agent/templates/project/quality-gates.md
 if rg -n 'Valid Source type values|Allowed `Source type`|manual-design|local-approved|SVG/XML sketches|SVG files may|Browser, Playwright|browser/simulator/runtime screenshots|semantic HTML companion|HTML companions|imagegen/GPT Image high-fidelity|formal producers|designer-upload|uploaded-approved|external-design|Figma frames created from those captures|Source type` set to `figma`|Keep SVG|SVG files under' AGENTS.md DEV_FLOW.md README.md dev-agent/commands dev-agent/.claude/commands dev-agent/.gemini/commands dev-agent/skills dev-agent/agents dev-agent/templates/project >/dev/null; then
   rg -n 'Valid Source type values|Allowed `Source type`|manual-design|local-approved|SVG/XML sketches|SVG files may|Browser, Playwright|browser/simulator/runtime screenshots|semantic HTML companion|HTML companions|imagegen/GPT Image high-fidelity|formal producers|designer-upload|uploaded-approved|external-design|Figma frames created from those captures|Source type` set to `figma`|Keep SVG|SVG files under' AGENTS.md DEV_FLOW.md README.md dev-agent/commands dev-agent/.claude/commands dev-agent/.gemini/commands dev-agent/skills dev-agent/agents dev-agent/templates/project >&2
@@ -340,6 +346,7 @@ write_file "$API_PROJECT/dev-agent/specs/SPEC.md" \
   "# Spec" "" "Create a small HTTP API." "Implementation will live under apps/api." "UI design is out of scope."
 bin/dev-flow phase "$(basename "$API_PROJECT")" build "Build API implementation without UI design" >"$API_OUT" 2>&1
 grep -q "Updated $(basename "$API_PROJECT") to phase: build" "$API_OUT"
+test -f "$API_PROJECT/dev-agent/tasks/TECHNICAL_PLAN.md"
 bin/dev-flow next "$(basename "$API_PROJECT")" --full >"$API_NEXT_OUT"
 grep -q "Autonomy:" "$API_NEXT_OUT"
 grep -q "Continue: yes" "$API_NEXT_OUT"
@@ -357,6 +364,62 @@ grep -q "worker:" "$API_DELEGATE_OUT"
 printf '%s\n' 'SUBAGENTS="disabled"' >> "$API_PROJECT/dev-agent/state/applicability.env"
 bin/dev-flow delegate "$(basename "$API_PROJECT")" >"$API_DELEGATE_DISABLED_OUT"
 grep -q "Status: disabled" "$API_DELEGATE_DISABLED_OUT"
+
+bin/dev-flow init "$(basename "$TECH_GATE_PROJECT")" --type api >/dev/null
+write_file "$TECH_GATE_PROJECT/dev-agent/ideas/idea-brief.md" \
+  "# Idea Brief" "" \
+  "Build a JSON API." \
+  "No customer-facing UI is in scope." \
+  "This fixture exercises the strict Build technical plan gate."
+write_file "$TECH_GATE_PROJECT/dev-agent/product/PRD.md" \
+  "# PRD" "" \
+  "Build a JSON API." \
+  "MVP scope is one small HTTP API." \
+  "No customer-facing UI is in scope." \
+  "Acceptance: API source exists and technical plan gate passes only when concrete."
+write_file "$TECH_GATE_PROJECT/dev-agent/specs/SPEC.md" \
+  "# Spec" "" \
+  "Create a small HTTP API." \
+  "Implementation will live under apps/api." \
+  "UI design is out of scope." \
+  "Testing uses build verification for this fixture."
+bin/dev-flow phase "$(basename "$TECH_GATE_PROJECT")" build "Build API implementation with strict technical plan" >/dev/null
+mkdir -p "$TECH_GATE_PROJECT/apps/api" "$TECH_GATE_PROJECT/dev-agent/reviews"
+write_file "$TECH_GATE_PROJECT/apps/api/server.js" \
+  "export function health() { return { ok: true }; }"
+write_file "$TECH_GATE_PROJECT/dev-agent/reviews/VERIFICATION.md" \
+  "# Verification" "" "## Result" "API fixture source exists."
+if bin/dev-flow verify-phase "$(basename "$TECH_GATE_PROJECT")" build >"$TECH_GATE_OUT" 2>&1; then
+  cat "$TECH_GATE_OUT" >&2
+  echo "Expected untouched TECHNICAL_PLAN.md template to fail build verification." >&2
+  exit 1
+fi
+grep -q "Incomplete technical plan" "$TECH_GATE_OUT"
+write_file "$TECH_GATE_PROJECT/dev-agent/tasks/TECHNICAL_PLAN.md" \
+  "# Technical Plan" "" \
+  "## Platform And Language Decision" "Node.js API runtime under apps/api; no client runtime and no cross-platform app target." \
+  "## Client Architecture" "Not applicable because this is an API-only fixture with no mobile or desktop client." \
+  "## Web Frontend Architecture" "Not applicable because this fixture has no web frontend, components, state, or router." \
+  "## Backend Architecture" "Monolith API module in apps/api/server.js with one health route boundary; no microservice split." \
+  "## Cross-Cutting Security And Quality" "No auth, secrets, permissions, or user data; proof uses build verification and source inspection." \
+  "## Build Slice Plan" "| Slice | Goal | Target files/modules | Technical decision | Proof command | Risk | Status |" "|---|---|---|---|---|---|---|" "| API-1 | Add health route fixture | apps/api/server.js | Use a single module route boundary | bin/dev-flow verify-phase $(basename "$TECH_GATE_PROJECT") build | api | planned |" \
+  "## Technical Steward Review" "- Required: no" "- Trigger reason: API project without steward review should fail." "- Review result: n/a" "- Required actions: add steward review before build approval."
+if bin/dev-flow verify-phase "$(basename "$TECH_GATE_PROJECT")" build >"$TECH_GATE_OUT" 2>&1; then
+  cat "$TECH_GATE_OUT" >&2
+  echo "Expected API build verification to require technical-steward review." >&2
+  exit 1
+fi
+grep -q "Missing required technical-steward approval" "$TECH_GATE_OUT"
+write_file "$TECH_GATE_PROJECT/dev-agent/tasks/TECHNICAL_PLAN.md" \
+  "# Technical Plan" "" \
+  "## Platform And Language Decision" "Node.js API runtime under apps/api; no client runtime and no cross-platform app target." \
+  "## Client Architecture" "Not applicable because this is an API-only fixture with no mobile or desktop client." \
+  "## Web Frontend Architecture" "Not applicable because this fixture has no web frontend, components, state, or router." \
+  "## Backend Architecture" "Monolith API module in apps/api/server.js with one health route boundary; no microservice split." \
+  "## Cross-Cutting Security And Quality" "No auth, secrets, permissions, or user data; proof uses build verification and source inspection." \
+  "## Build Slice Plan" "| Slice | Goal | Target files/modules | Technical decision | Proof command | Risk | Status |" "|---|---|---|---|---|---|---|" "| API-1 | Add health route fixture | apps/api/server.js | Use a single module route boundary | bin/dev-flow verify-phase $(basename "$TECH_GATE_PROJECT") build | api | planned |" \
+  "## Technical Steward Review" "- Required: yes" "- Trigger reason: API project touches backend architecture." "- Review result: APPROVE" "- Required actions: none."
+bin/dev-flow verify-phase "$(basename "$TECH_GATE_PROJECT")" build >/dev/null
 
 bin/dev-flow init "$(basename "$AGENT_PROJECT")" --type agent >/dev/null
 grep -q 'AGENT_CONTRACT="required"' "$AGENT_PROJECT/dev-agent/state/applicability.env"
@@ -664,6 +727,15 @@ write_file "$UI_DESIGN_DISABLED/dev-agent/specs/SPEC.md" \
   "## Open Questions" "None for the fixture."
 write_file "$UI_DESIGN_DISABLED/dev-agent/tasks/IMPLEMENTATION_TRACE.md" \
   "# Implementation Trace" "" "## Trace" "- Code-only refactor; design phase is explicitly not applicable."
+write_file "$UI_DESIGN_DISABLED/dev-agent/tasks/TECHNICAL_PLAN.md" \
+  "# Technical Plan" "" \
+  "## Platform And Language Decision" "Existing browser JavaScript remains in place for this route refactor; no cross-platform runtime change." \
+  "## Client Architecture" "No client architecture change beyond a route constants module." \
+  "## Web Frontend Architecture" "Route constants stay in apps/web/routes.js; no component, state, or router behavior changes." \
+  "## Backend Architecture" "Not applicable; no backend surface changes." \
+  "## Cross-Cutting Security And Quality" "No data, auth, permission, or deletion behavior changes." \
+  "## Build Slice Plan" "| Slice | Goal | Target files/modules | Technical decision | Proof command | Risk | Status |" "|---|---|---|---|---|---|---|" "| Route-1 | Move route constants | apps/web/routes.js | Keep a single route constants module | source inspection | low | planned |" \
+  "## Technical Steward Review" "- Required: no" "- Trigger reason: low-risk code-only refactor." "- Review result: n/a" "- Required actions: none."
 write_file "$UI_DESIGN_DISABLED/apps/web/routes.js" \
   "export const ROUTES = { home: '/', settings: '/settings' };"
 write_file "$UI_DESIGN_DISABLED/dev-agent/reviews/VERIFICATION.md" \
@@ -753,6 +825,21 @@ write_html_description "$LIGHT_UI/dev-agent/design/approved/html/status-default.
 bin/dev-flow design-check "$(basename "$LIGHT_UI")" --allow-no-reference >/dev/null
 write_file "$LIGHT_UI/dev-agent/tasks/IMPLEMENTATION_TRACE.md" \
   "# Implementation Trace" "" "## Screen Trace" "| Screen | State | Implementation target | Approved asset | Design source | HTML companion | Cut assets | Test evidence | Status |" "|---|---|---|---|---|---|---|---|---|" "| Status | Default | apps/web/index.html | design/approved/status-default.png | gpt-image-2://smoke/status-default | design/approved/html/status-default.html | none | reviews/VERIFICATION.md | implemented |"
+if bin/dev-flow verify-phase "$(basename "$LIGHT_UI")" build >"$LIGHT_UI_NEXT_OUT" 2>&1; then
+  cat "$LIGHT_UI_NEXT_OUT" >&2
+  echo "Expected build verification to fail without tasks/TECHNICAL_PLAN.md." >&2
+  exit 1
+fi
+grep -q "Missing technical plan" "$LIGHT_UI_NEXT_OUT"
+write_file "$LIGHT_UI/dev-agent/tasks/TECHNICAL_PLAN.md" \
+  "# Technical Plan" "" \
+  "## Platform And Language Decision" "Static web frontend under apps/web; no native or cross-platform client runtime." \
+  "## Client Architecture" "Not applicable beyond the web frontend." \
+  "## Web Frontend Architecture" "apps/web/index.html owns the status page; CSS and markup remain local for the fixture; no router needed." \
+  "## Backend Architecture" "Not applicable; this fixture has no backend." \
+  "## Cross-Cutting Security And Quality" "No user data, auth, permissions, or secrets are introduced." \
+  "## Build Slice Plan" "| Slice | Goal | Target files/modules | Technical decision | Proof command | Risk | Status |" "|---|---|---|---|---|---|---|" "| UI-1 | Create status page | apps/web/index.html | Static HTML fixture from approved design asset | bin/dev-flow verify-phase $(basename "$LIGHT_UI") build | low | planned |" \
+  "## Technical Steward Review" "- Required: no" "- Trigger reason: low-risk static UI fixture with direct evidence." "- Review result: n/a" "- Required actions: none."
 write_file "$LIGHT_UI/apps/web/index.html" \
   "<!doctype html>" \
   "<html lang=\"en\"><head><meta charset=\"utf-8\"><title>Status</title></head><body><main><h1>Status</h1><button>Refresh</button></main></body></html>"
@@ -1187,6 +1274,15 @@ printf '%s\n' 'AUTOMATED_QA="required"' 'VISUAL_QA="required"' >> "$DELEGATED/de
 
 write_file "$DELEGATED/dev-agent/tasks/PLAN.md" \
   "# Plan" "" "## Design Handoff" "Implement from DESIGN.md, VISUAL_SYSTEM.md, SCREEN_ACCEPTANCE.md, and approved design assets under design/approved/." "" "## Task 1" "Build the static UI under apps/web." "Acceptance: source exists, functional QA passes, monkey QA passes, and VISUAL_COMPARISON.md scores the implemented screens."
+write_file "$DELEGATED/dev-agent/tasks/TECHNICAL_PLAN.md" \
+  "# Technical Plan" "" \
+  "## Platform And Language Decision" "Static web frontend under apps/web; no native or cross-platform client runtime." \
+  "## Client Architecture" "Not applicable beyond the web frontend." \
+  "## Web Frontend Architecture" "apps/web/index.html owns onboarding and dashboard fixture screens; component extraction is not required for this smoke fixture; no router needed." \
+  "## Backend Architecture" "Not applicable; this fixture has no backend." \
+  "## Cross-Cutting Security And Quality" "No user data, auth, permissions, or secrets are introduced." \
+  "## Build Slice Plan" "| Slice | Goal | Target files/modules | Technical decision | Proof command | Risk | Status |" "|---|---|---|---|---|---|---|" "| UI-1 | Implement audited UI fixture | apps/web/index.html | Static HTML fixture with trace coverage | bin/dev-flow verify-phase $(basename "$DELEGATED") build | visual-qa | planned |" \
+  "## Technical Steward Review" "- Required: yes" "- Trigger reason: QA and visual evidence are part of the fixture." "- Review result: APPROVE" "- Required actions: none."
 write_file "$DELEGATED/dev-agent/tasks/IMPLEMENTATION_TRACE.md" \
   "# Implementation Trace" "" "## Screen Trace" "| Screen | State | Implementation target | Approved asset | Design source | HTML companion | Cut assets | Test evidence | Status |" "|---|---|---|---|---|---|---|---|---|" "| Onboarding | Default | apps/web/index.html | design/approved/onboarding-default.png | imagegen://smoke/onboarding-default | none | design/cut-assets/primary-icon.png | reviews/FUNCTIONAL_TEST.md | planned |" "| Dashboard | Empty | apps/web/index.html | design/approved/dashboard-empty.png | gpt-image-2://smoke/dashboard-empty | design/approved/html/dashboard-empty.html | none | reviews/FUNCTIONAL_TEST.md | planned |"
 if bin/dev-flow verify-phase "$(basename "$DELEGATED")" build >"$TRACE_MISSING_HTML_OUT" 2>&1; then

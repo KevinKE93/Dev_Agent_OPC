@@ -13,6 +13,7 @@ Project-specific verification belongs here. Keep commands runnable from this pro
 - [ ] `dev-agent/references/design-artifacts.md` is satisfied when formal visual assets are required
 - [ ] `dev-agent/references/figma-handoff.md` is satisfied when Figma is used
 - [ ] `bin/dev-flow design-check {{PROJECT}}` passes before UI implementation, when UI applies
+- [ ] `tasks/TECHNICAL_PLAN.md` exists before implementation and covers platform/language, client/web/backend applicability, state/routing/component strategy, security, build slice proof, and steward review decision
 - [ ] `tasks/IMPLEMENTATION_TRACE.md` maps required UI screens to implementation targets and evidence, when UI applies
 - [ ] Source Structure is recorded for UI-heavy or multi-file build slices
 
