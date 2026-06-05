@@ -4,6 +4,9 @@ Customer-facing UI must have approved formal visual assets before
 high-fidelity UI build. For non-Figma work, the visual source must be generated
 through Image Gen/GPT Image and synchronized with a matching HTML/CSS companion
 so build does not invent layout. Figma handoff can skip the HTML companion.
+A confirmed brief, product direction, visual-system note, or prose design
+review is not a visual target. High-fidelity build requires a selected formal
+visual source such as an Image Gen/GPT Image raster board or Figma frame.
 
 All relative paths in this contract, such as `design/approved/...`,
 `tasks/IMPLEMENTATION_TRACE.md`, and `reviews/visual-screenshots/...`, are
@@ -30,6 +33,12 @@ relative to `<project-name>/dev-agent/`. Implementation targets such as
   companion that is detached from the generated design image.
 - Figma handoff: when Figma is used, satisfy `dev-agent/references/figma-handoff.md`.
 - Verification assets: browser screenshots, simulator captures, Playwright/Chrome captures, and runtime output. Save under `dev-agent/reviews/visual-screenshots/` only when an exception or blocked flow needs evidence.
+- Raster calibration: for high-fidelity visual QA, record how the approved
+  visual target should be rasterized and compared to runtime: source path,
+  natural dimensions, target viewport, device pixel ratio or export scale,
+  crop/frame, theme, route, state, and any intentionally ignored regions.
+  This belongs in `reviews/VISUAL_COMPARISON.md`, with source details also
+  allowed in `DESIGN_ARTIFACTS.md` implementation notes.
 - Delegated reference board: when the user delegates visual direction and no external reference is provided, save the generated reference direction in `dev-agent/design/REFERENCE_BOARD.md`.
 
 Product-designer outputs, drafts, and verification assets are forbidden as
@@ -84,6 +93,9 @@ non-empty, include real document structure, and include linked or inline CSS.
 Icon/logo/app-icon rows do not require HTML companions. Figma rows do not
 require HTML companions. Optional motion resources should be recorded as `JS:`
 or `Lottie:` paths under `design/approved/html/` or `design/cut-assets/`.
+For high-fidelity screens, `Implementation notes` should also include raster
+comparison hints when known, such as `Raster: 1440x1024 @1x, crop full frame,
+state default`.
 
 When `Source type` is `imagegen`, `gpt-image`, or `gpt-image-2`,
 non-icon rows must map the approved image to the HTML/CSS companion package in
@@ -106,6 +118,10 @@ When `Source type` is `figma` or `figma-mcp`, satisfy
   companions that encode layout hierarchy, content, components, states, colors,
   spacing, typography, interactions, motion, responsive behavior, and
   implementation notes.
+- High-fidelity visual QA must compare runtime screenshots against a calibrated
+  raster baseline from the approved source. Do not compare unmatched states,
+  device frames, crops, density scales, or browser chrome without recording the
+  mismatch and either correcting it or blocking the comparison.
 - SVG, Mermaid, Markdown, and code-native files can be drafts or precise diagrams, but they do not satisfy the approved asset gate by themselves.
 - SVG/XML sketches must not be stored under `design/approved/`. SVG files may be stored under `design/cut-assets/` only as manifested element/runtime assets, not as screen layout references.
 - Browser, Playwright, Chrome, simulator, running-app screenshots, and local
@@ -122,7 +138,11 @@ When `Source type` is `figma` or `figma-mcp`, satisfy
 
 ## Cut Asset Rules
 
-`ASSET_MANIFEST.md` must identify the approved source asset, region or frame, output path, format, alpha behavior, runtime path, usage, and notes. Transparent PNG assets must preserve alpha. Icon matrices and spritesheets must record grid, frame size, frame order, anchor point, scale, and intended FPS or state mapping.
+`ASSET_MANIFEST.md` must identify the approved source asset, region or frame,
+output path, format, alpha behavior, runtime path, usage, replacement/source
+reason, and notes. Transparent PNG assets must preserve alpha. Icon matrices
+and spritesheets must record grid, frame size, frame order, anchor point, scale,
+and intended FPS or state mapping.
 
 ## Implementation Use
 

@@ -5,11 +5,10 @@ description: Use when a spec needs customer-facing UX, visual direction, screen 
 
 # Design Flow
 
-Turn an approved spec into a build-ready design package. Use after
-`spec-driven-development` and before build when the spec says the work touches
-UI, visual direction, brand/KV, interaction states, motion, or any
-customer-facing workflow where visual quality affects delivery. Skip design only
-when the spec or project applicability clearly marks UI/design as not needed.
+Turn an approved spec into a build-ready design package. Use after spec and
+before build when work touches UI, visual direction, brand/KV, interaction
+states, motion, or customer-facing workflows where visual quality matters. Skip
+only when spec/applicability clearly marks UI/design as not needed.
 
 ## Operating Rules
 
@@ -29,6 +28,10 @@ when the spec or project applicability clearly marks UI/design as not needed.
   Image or Figma, but it is not a development resource by itself.
 - Require a formal high-fidelity visual source before high-fidelity build:
   Image Gen/GPT Image raster boards or Figma frames.
+- A confirmed brief, PRD, style direction, or `DESIGN.md` package is not a
+  visual target. If no URL, screenshot, Figma frame, Image Gen/GPT Image board,
+  or other formal visual source has been selected, return to visual generation
+  or Figma handoff instead of entering build.
 - For Image Gen/GPT Image sources, use synchronized high-fidelity HTML/CSS
   companion packages as implementation-readable handoff for every non-icon
   visual asset. Icon/logo/app-icon assets do not require HTML. Figma handoff can
@@ -39,19 +42,9 @@ when the spec or project applicability clearly marks UI/design as not needed.
 
 ## Outputs
 
-Save design artifacts under `<project-name>/dev-agent/design/`:
-
-- `DESIGN.md`
-- `VISUAL_SYSTEM.md`
-- `SCREEN_ACCEPTANCE.md`
-- `DESIGN_ARTIFACTS.md`
-- `DESIGN_IMAGE_DESCRIPTIONS.md` when required by the design artifact contract
-- `FIGMA_HANDOFF.md` when required by the Figma handoff contract
-- `REFERENCE_BOARD.md` when visual direction is delegated
-- HTML/CSS companion packages under `design/approved/html/`
-- formal visual assets, brand/KV assets, logos/icons, and runtime element
-  assets when required
-- references, drafts, and mocks under their matching non-approved folders
+Save design artifacts under `<project-name>/dev-agent/design/`: core design
+docs, artifact ledgers, delegated reference board, approved visuals/HTML
+companions, cut assets, and non-approved references/drafts/mocks.
 
 Use `dev-agent/templates/project/` for file templates. Use
 `dev-agent/references/design-artifacts.md` and
@@ -149,6 +142,10 @@ Use `dev-agent/templates/project/` for file templates. Use
     - Use generated or Figma visuals as the source of truth, and keep required
       HTML/CSS companion packages as implementation-readable synchronized
       handoff.
+    - For visible runtime assets inside the approved visual target, identify
+      whether each asset is sourced, cut, generated, or intentionally replaced.
+      Record runtime assets and replacement reasons in
+      `design/cut-assets/ASSET_MANIFEST.md`.
     - When identity assets are required, provide logo or app-icon variants sized
       for the target platform from Image Gen/GPT Image outputs. Local SVG
       renders are drafts only and must not be treated as final PNG assets.
@@ -157,6 +154,8 @@ Use `dev-agent/templates/project/` for file templates. Use
     - Update `DESIGN_ARTIFACTS.md`, `DESIGN_IMAGE_DESCRIPTIONS.md`,
       `FIGMA_HANDOFF.md`, and `ASSET_MANIFEST.md` only when the referenced
       contracts require them.
+    - For high-fidelity QA, record raster comparison hints: source dimensions,
+      viewport, export scale, crop/frame, state, and density assumptions.
     - Keep `dev-agent/tasks/IMPLEMENTATION_TRACE.md` aligned with the screens and states
       that build will implement, including source-structure notes when the UI
       needs reusable components or multiple feature modules.

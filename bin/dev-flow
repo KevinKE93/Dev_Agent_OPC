@@ -2877,12 +2877,13 @@ check_implementation_trace_coverage() {
 check_visual_comparison_contract() {
   local dir="$1"
   local path="$dir/reviews/VISUAL_COMPARISON.md"
-  local missing required line screen screen_cell asset_cell runtime_cell score_cell decision_cell full_path
+  local missing required line screen
+  local screen_cell asset_cell source_raster_cell runtime_cell calibration_cell diff_cell score_cell decision_cell notes_cell full_path
   missing=0
   required=0
   [[ -f "$path" ]] || return 1
-  if ! grep -Eiq '^\|[[:space:]]*Screen[[:space:]]*\|[[:space:]]*Approved asset path[[:space:]]*\|[[:space:]]*Runtime surface[[:space:]]*\|[[:space:]]*Fidelity score[[:space:]]*\|[[:space:]]*Decision[[:space:]]*\|[[:space:]]*Notes[[:space:]]*\|[[:space:]]*$' "$path"; then
-    echo "Missing visual comparison matrix columns in reviews/VISUAL_COMPARISON.md: use '| Screen | Approved asset path | Runtime surface | Fidelity score | Decision | Notes |'." >&2
+  if ! grep -Eiq '^\|[[:space:]]*Screen[[:space:]]*\|[[:space:]]*Approved asset path[[:space:]]*\|[[:space:]]*Source raster baseline[[:space:]]*\|[[:space:]]*Runtime surface[[:space:]]*\|[[:space:]]*Calibration[[:space:]]*\|[[:space:]]*Diff artifact[[:space:]]*\|[[:space:]]*Fidelity score[[:space:]]*\|[[:space:]]*Decision[[:space:]]*\|[[:space:]]*Notes[[:space:]]*\|[[:space:]]*$' "$path"; then
+    echo "Missing visual comparison matrix columns in reviews/VISUAL_COMPARISON.md: use '| Screen | Approved asset path | Source raster baseline | Runtime surface | Calibration | Diff artifact | Fidelity score | Decision | Notes |'." >&2
     return 1
   fi
   while IFS= read -r screen; do
@@ -2892,17 +2893,25 @@ check_visual_comparison_contract() {
       [[ "$line" == \|* ]] || continue
       [[ "$line" == *"|---"* || "$line" == *"---|"* ]] && continue
       [[ "$line" =~ ^\|[[:space:]]*Screen[[:space:]]*\| ]] && continue
-      IFS='|' read -r _ screen_cell asset_cell runtime_cell score_cell decision_cell _ _ <<< "$line"
+      IFS='|' read -r _ screen_cell asset_cell source_raster_cell runtime_cell calibration_cell diff_cell score_cell decision_cell notes_cell _ <<< "$line"
       [[ "$(trim_md_cell "$screen_cell")" == "$screen" ]] || continue
       asset_cell="$(trim_md_cell "$asset_cell")"
+      source_raster_cell="$(trim_md_cell "$source_raster_cell")"
       runtime_cell="$(trim_md_cell "$runtime_cell")"
+      calibration_cell="$(trim_md_cell "$calibration_cell")"
+      diff_cell="$(trim_md_cell "$diff_cell")"
       score_cell="$(trim_md_cell "$score_cell")"
       decision_cell="$(trim_md_cell "$decision_cell")"
       case "$asset_cell" in
         /*) full_path="$asset_cell" ;;
         *) full_path="$dir/$asset_cell" ;;
       esac
-      if [[ -z "$runtime_cell" || "$runtime_cell" == "-" || "$runtime_cell" == "TBD" || "$runtime_cell" == "TODO" || -z "$decision_cell" || "$decision_cell" == "-" || "$decision_cell" == "TBD" || "$decision_cell" == "TODO" || ! "$score_cell" =~ ^[0-9]+(/[0-9]+)?$ ]] || ! is_project_approved_design_path "$dir" "$asset_cell" "$full_path" || ! is_formal_design_artifact "$full_path" "$dir"; then
+      if [[ -z "$source_raster_cell" || "$source_raster_cell" == "-" || "$source_raster_cell" == "TBD" || "$source_raster_cell" == "TODO" ||
+            -z "$runtime_cell" || "$runtime_cell" == "-" || "$runtime_cell" == "TBD" || "$runtime_cell" == "TODO" ||
+            -z "$calibration_cell" || "$calibration_cell" == "-" || "$calibration_cell" == "TBD" || "$calibration_cell" == "TODO" ||
+            -z "$diff_cell" || "$diff_cell" == "-" || "$diff_cell" == "TBD" || "$diff_cell" == "TODO" ||
+            -z "$decision_cell" || "$decision_cell" == "-" || "$decision_cell" == "TBD" || "$decision_cell" == "TODO" ||
+            ! "$score_cell" =~ ^[0-9]+(/[0-9]+)?$ ]] || ! is_project_approved_design_path "$dir" "$asset_cell" "$full_path" || ! is_formal_design_artifact "$full_path" "$dir"; then
         echo "Incomplete visual comparison row for screen: $screen" >&2
         missing=$((missing + 1))
       fi
@@ -3704,7 +3713,7 @@ qa_check_impl() {
       failures=$((failures + 1))
     fi
     check_required_headings "$dir/reviews/VISUAL_COMPARISON.md" "reviews/VISUAL_COMPARISON.md" \
-      "Compared Inputs" "Screen Fidelity Matrix" "Score Breakdown" "Differences" "Decision" || failures=$((failures + 1))
+      "Compared Inputs" "Raster Calibration" "Screen Fidelity Matrix" "Score Breakdown" "Differences" "Decision" || failures=$((failures + 1))
     if ! check_visual_comparison_contract "$dir"; then
       failures=$((failures + 1))
     fi

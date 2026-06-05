@@ -9,7 +9,9 @@ Use this rubric after implementation.
 - `reviews/ACCEPTANCE_QA.html` summarizes automated QA scope, runtime, issues, and decision when Acceptance QA runs.
 - `reviews/VISUAL_COMPARISON.md` compares the implemented UI to formal visual assets, HTML/CSS companion packages, cut assets, references, and screen acceptance criteria.
 - `VISUAL_COMPARISON.md` includes a per-screen fidelity matrix covering every `SCREEN_ACCEPTANCE.md` screen.
-- Every fidelity matrix row includes screen, approved visual asset path, companion path when required, runtime surface, fidelity score, decision, and notes.
+- Every fidelity matrix row includes screen, approved visual asset path, source
+  raster baseline, runtime surface, calibration, diff artifact, fidelity score,
+  decision, and notes.
 - `VISUAL_COMPARISON.md` includes `Overall score: N/100`; the workflow gate expects at least 90/100 for high-fidelity delivery.
 - `reviews/acceptance-screenshots/` or `reviews/visual-screenshots/` is used only when an exception occurs or a flow cannot be completed.
 
@@ -21,6 +23,10 @@ Use this rubric after implementation.
 - Mobile or desktop layout is unusable.
 - Visual output ignores provided reference direction.
 - Runtime UI materially diverges from formal visual assets or companion packages without a recorded design reason.
+- Source and runtime screenshots are compared without matching viewport, state,
+  crop/frame, theme, and density assumptions.
+- High-fidelity visual QA lacks a source raster baseline, runtime screenshot,
+  and image-diff artifact or documented blocker.
 
 ## Important Issues
 
@@ -43,6 +49,10 @@ Use this rubric after implementation.
 - Functional tests cover required flows.
 - Monkey or exploratory tests cover unstable interactions.
 - Visual comparison covers required breakpoints and key states.
+- Raster calibration records source dimensions, runtime viewport, device pixel
+  ratio or export scale, crop/frame, route, state, and ignored regions.
+- Image diff evidence exists for high-fidelity UI, or a blocker explains why it
+  could not be produced.
 - Console/runtime issues were checked where possible.
 - Findings cite specific screens or components.
 - Residual risks are named.

@@ -4,7 +4,10 @@ Map required UI screens and states to concrete implementation targets before
 build starts. Use `none` for asset/source fields when formal design packages are
 not required. Non-UI projects may keep this file as a no-op trace. The `HTML
 companion` column records the approved HTML/CSS design package path when one is
-required.
+required. The `Cut assets` column should reference
+`design/cut-assets/ASSET_MANIFEST.md` when the screen uses visible images,
+logos, non-standard icons, illustrations, textures, avatars, product images, or
+backgrounds that must be sourced, cut, generated, or intentionally replaced.
 
 ## Screen Trace
 | Screen | State | Implementation target | Approved asset | Design source | HTML companion | Cut assets | Test evidence | Status |

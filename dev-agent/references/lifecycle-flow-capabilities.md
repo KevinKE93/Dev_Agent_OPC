@@ -335,7 +335,11 @@ delivery evidence.
 - `VISUAL_COMPARISON.md` must include `Overall score: N/100`; high-fidelity UI
   delivery requires at least `90/100` unless the user explicitly lowers the bar.
 - `VISUAL_COMPARISON.md` must include `Compared Inputs`,
-  `Screen Fidelity Matrix`, `Score Breakdown`, `Differences`, and `Decision`.
+  `Raster Calibration`, `Screen Fidelity Matrix`, `Score Breakdown`,
+  `Differences`, and `Decision`.
+- High-fidelity visual QA must record a source raster baseline, runtime
+  screenshot, calibration note, and image-diff artifact for each screen, or name
+  the blocker that prevents calibrated comparison.
 - If an exception or blocked-flow record exists, screenshot evidence must be
   under `reviews/acceptance-screenshots/` or `reviews/visual-screenshots/`, or
   `reviews/BLOCKED_SCREENSHOT.md` must explain why capture is impossible.

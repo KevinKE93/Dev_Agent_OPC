@@ -55,6 +55,10 @@ confirmed, stop and return to design instead of implementing around a guess.
   skip HTML.
 - If a needed visual source, runtime asset, or acceptance decision is missing,
   return to design instead of guessing.
+- For high-fidelity visual implementation, a written brief or visual-system
+  description is not enough. Build only from the selected approved visual target
+  and its companion handoff, then compare the runtime against a calibrated
+  raster baseline of that target.
 
 ## Implementation Workflow
 
@@ -72,6 +76,10 @@ confirmed, stop and return to design instead of implementing around a guess.
      responsive behavior, states, and motion. Keep the formal visual source as
      the visual fidelity target, and adapt to the app stack deliberately instead
      of copying brittle static markup wholesale.
+   - Before coding high-fidelity UI, calibrate the approved design raster:
+     natural dimensions, intended viewport, device pixel ratio or export scale,
+     crop/frame, density, and state. Use that calibration to choose runtime
+     viewport screenshots and image-diff evidence.
    - Preserve hierarchy first: navigation, primary action, grouping, density,
      responsive behavior, and required empty/loading/error/success states.
    - Adapt intentionally when platform conventions require it, and record the
@@ -144,6 +152,11 @@ Use `references/accessibility-checklist.md` for detail. Minimum bar:
 
 - Use `design/cut-assets/ASSET_MANIFEST.md` as the runtime asset source of truth
   when the design artifact contract requires it.
+- Catalog each visible image, logo, non-standard icon, illustration, texture,
+  avatar, product image, and background from the approved target before
+  replacing placeholders in UI code. The manifest should say whether the runtime
+  asset is sourced, cut from an approved asset, generated, or intentionally
+  replaced, and why.
 - If a runtime asset is missing or ambiguous, return to design.
 - For mobile apps, replace default app icon, adaptive icon, and splash icon
   before release packaging when product assets are in scope.
@@ -165,9 +178,11 @@ overall requested customer-facing UI scope:
    subagents are available, split the lanes and merge evidence in the main host.
 5. When `VISUAL_QA` is required, compare the UI against the required design
    contract inputs; save `reviews/VISUAL_COMPARISON.md`.
-6. `VISUAL_COMPARISON.md` must include `Overall score: N/100`, per-screen rows
-   for every `SCREEN_ACCEPTANCE.md` screen, approved asset path, runtime
-   surface, score, decision, differences, and final decision.
+6. `VISUAL_COMPARISON.md` must include `Overall score: N/100`, calibrated
+   compared inputs, per-screen rows for every `SCREEN_ACCEPTANCE.md` screen,
+   approved asset path, source raster baseline, runtime surface, calibration
+   note, diff artifact or blocker, score, decision, differences, and final
+   decision.
 7. Review implementation quality before delivery: correctness, state coverage,
    accessibility, source boundaries, simplicity, security/privacy impact, and
    performance risk. Use specialist personas only when risk warrants it.
@@ -191,6 +206,8 @@ Use `references/visual-qa-rubric.md` for detailed scoring.
 - Text overlaps, clips, or becomes unreadable at required breakpoints.
 - Keyboard or screen-reader access is broken.
 - UI ignores approved asset hierarchy, imagery, or icon direction.
+- High-fidelity QA compares screenshots from different viewports, states,
+  frames, crops, or density assumptions without a recorded calibration.
 - Visual comparison misses screens or scores below 90/100 for high-fidelity work.
 - The agent keeps taking screenshots or using device/simulator time to tune P2/P3
   details after the UI polish budget is used.

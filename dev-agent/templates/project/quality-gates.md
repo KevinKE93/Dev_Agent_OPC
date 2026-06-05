@@ -11,6 +11,8 @@ Project-specific verification belongs here. Keep commands runnable from this pro
 - [ ] `bin/dev-flow env-check {{PROJECT}}` passes before the current build slice or ship scope uses host capabilities
 - [ ] Reference intake exists for customer-facing UI work
 - [ ] `dev-agent/references/design-artifacts.md` is satisfied when formal visual assets are required
+- [ ] High-fidelity UI has a selected formal visual target; a confirmed brief or prose design direction alone is not used as the build target
+- [ ] Visible runtime assets are cataloged in `design/cut-assets/ASSET_MANIFEST.md`, or `CUT_ASSETS_REQUIRED: no` records the rationale
 - [ ] `dev-agent/references/figma-handoff.md` is satisfied when Figma is used
 - [ ] `bin/dev-flow design-check {{PROJECT}}` passes before UI implementation, when UI applies
 - [ ] `tasks/TECHNICAL_PLAN.md` exists before implementation and covers platform/language, client/web/backend applicability, state/routing/component strategy, security, build slice proof, and steward review decision
@@ -30,5 +32,6 @@ Project-specific verification belongs here. Keep commands runnable from this pro
 - [ ] Functional flow test, when `AUTOMATED_QA` is required
 - [ ] Monkey or exploratory stress test, when `AUTOMATED_QA` is required
 - [ ] Visual comparison score is at least 90/100 against required design contract inputs, when `VISUAL_QA` is required
+- [ ] High-fidelity visual comparison records source raster baseline, runtime screenshot, calibration, and image-diff artifact or blocker
 - [ ] `bin/dev-flow doctor {{PROJECT}}`, before delivery
 - [ ] `bin/dev-flow qa-check {{PROJECT}}`, before delivery only when QA is required

@@ -37,3 +37,7 @@ work/
 /.openclaw/
 /.opencode/
 dev-agent/.opencode/
+
+# Self-hosted dev-flow process layer generated when maintaining the workflow pack
+dev-agent/.dev-agent/
+dev-agent/dev-agent/

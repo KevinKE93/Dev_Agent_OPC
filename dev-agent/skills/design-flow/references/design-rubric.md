@@ -28,7 +28,12 @@ Use this rubric before customer-facing UI build.
 
 ## Implementation Readiness
 
+- High-fidelity UI has a selected formal visual target; a confirmed brief,
+  sketch, product-designer prose, or local prototype is not build-ready by
+  itself.
 - Screens are decomposed into implementable components.
 - Breakpoints are specified.
 - Accessibility expectations are named.
-- The design names what must be verified by functional tests, monkey/exploratory tests, and visual comparison, with screenshots only for exceptions or blocked flows.
+- The design names what must be verified by functional tests,
+  monkey/exploratory tests, and visual comparison, including raster calibration
+  and image-diff evidence for high-fidelity UI.
